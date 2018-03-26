@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/LexicalAnalizer/LexicalAnalizer.iml" filepath="$PROJECT_DIR$/LexicalAnalizer/LexicalAnalizer.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/MathisonCompiler.iml" filepath="$PROJECT_DIR$/.idea/MathisonCompiler.iml" />
     </modules>
   </component>
