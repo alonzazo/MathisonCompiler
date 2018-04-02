@@ -1,0 +1,13 @@
+num fiboRec ( num n ) {
+    si ( n <= 1 )
+	{
+        imprimir 1
+	    devolver 1
+    }
+    sino
+	{
+        enesimo = fiboRec ( n - 1 ) + fiboRec ( n - 2 )
+	    imprimir enesimo
+	    devolver enesimo
+	}
+}
