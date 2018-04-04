@@ -9,6 +9,8 @@
 yybegin(YYINITIAL);
 %init}
 
+
+
 Y			=		(y|Y)
 O			=		(o|O)
 PARA		=		(p|P)(a|A)(r|R)(a|A)
@@ -56,6 +58,17 @@ VAR 		= 		([a-z]|[A-Z])([a-z]|[A-Z]|_|[0-9])*
 MEI			=		\<\=
 MAI			=		\>\=
 II			=		\=\=
+
+FIN_LINEA	=		(\r|\n)
+CARACTER	=		[^\r\n]
+COMENTARIO	= {COMENTARIO_NORMAL} | {COMENTARIO_LINEA}
+COMENTARIO_NORMAL   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
+COMENTARIO_LINEA	= "//" {CARACTER}* {FIN_LINEA}?
+
+DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\(|\)|\/=\\|=|\*\*=|\/\/=|\^=
+LineTerminator = \r|\n|\r\n
+InputCharacter = [^\r\n]
+WhiteSpace     = {LineTerminator} | [ \t\f]
 
 %%
 
@@ -331,8 +344,19 @@ II			=		\=\=
 		{
             System.out.println(yytext() + " - nombre de variable");
         }
-        
+{COMENTARIO}
+		{
+			System.out.println(yytext() + " - comentario");
+		}
+{DELIMITADOR}
+        {
+            System.out.println(yytext() + " - delimitador");
+        }
+
+/* whitespace */
+{WhiteSpace}
+        { /* ignore */ }
 
 
-
-.|\n	{}
+[^]     { throw new Error("Illegal character <"
+            + yytext()+">"); }
