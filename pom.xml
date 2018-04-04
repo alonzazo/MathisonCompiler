@@ -8,13 +8,4 @@
     <artifactId>MathisonCompiler</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <!-- https://mvnrepository.com/artifact/de.jflex/jflex -->
-    <dependencies>
-        <dependency>
-            <groupId>de.jflex</groupId>
-            <artifactId>jflex</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-    </dependencies>
-
 </project>
