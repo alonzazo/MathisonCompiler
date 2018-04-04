@@ -65,7 +65,7 @@ COMENTARIO	= {COMENTARIO_NORMAL} | {COMENTARIO_LINEA}
 COMENTARIO_NORMAL   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
 COMENTARIO_LINEA	= "//" {CARACTER}* {FIN_LINEA}?
 
-DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\(|\)|\/=\\|=|\*\*=|\/\/=|\^=
+DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^=
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
 WhiteSpace     = {LineTerminator} | [ \t\f]
