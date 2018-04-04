@@ -65,7 +65,7 @@ COMENTARIO	= {COMENTARIO_NORMAL} | {COMENTARIO_LINEA}
 COMENTARIO_NORMAL   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
 COMENTARIO_LINEA	= "//" {CARACTER}* {FIN_LINEA}?
 
-DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\(|\)|\/=\\|=|\*\*=|\/\/=|\^=
+DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^=
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
 WhiteSpace     = {LineTerminator} | [ \t\f]
@@ -178,7 +178,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 			return 0;
 		}
 		
-"*"
+"\*"
 		{
 			System.out.println(yytext() + " es el operador de multiplicacion");
 		}
@@ -188,7 +188,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 			System.out.println(yytext() + " es el operador 'menor que'");
 		}
 		
-"^"
+"\^"
 		{
 			System.out.println(yytext() + " es el operador de potencia");
 		}
@@ -307,32 +307,32 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
         
 {MEI}    
 		{
-            System.out.println(yytext() + " - operador basico");
+            System.out.println(yytext() + " - operador menor o igual");
         }
         
 {MAI}    
 		{
-            System.out.println(yytext() + " - operador basico");
+            System.out.println(yytext() + " - operador mayor o igual");
         }
         
 "!"    
 		{
-			System.out.println(yytext() + " - operador basico");
+			System.out.println(yytext() + " - operador distinto");
 		}
 
-"/"    	
+"\/"
 		{
-			System.out.println(yytext() + " - operador basico");
+			System.out.println(yytext() + " - operador de division");
 		}
 		
-"+"    	
+"\+"
 		{
-			System.out.println(yytext() + " - operador basico");
+			System.out.println(yytext() + " - operador de suma");
 		}
         
 {II}    
 		{
-            System.out.println(yytext() + " - operador basico");
+            System.out.println(yytext() + " - operador de comparacion de igualdad");
         }
  
 {NUMERO}    
