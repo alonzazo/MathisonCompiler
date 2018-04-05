@@ -51,8 +51,7 @@ MOSTRAR 	= 		(m|M)(o|O)(s|S)(t|T)(r|R)(a|A)(r|R)
 EJECUTAR 	= 		(e|E)(j|J)(e|E)(c|C)(u|U)(t|T)(a|A)(r|R)
 EN 			= 		(e|E)(n|N)
 CONTINUAR 	= 		(c|C)(o|O)(n|N)(t|T)(i|I)(n|N)(u|U)(a|A)(r|R)
-FINALIZAR 	= 		(f|F)(i|I)(n|N)(a|A)(l|L)(i|I)(z|Z)(a|A)(r|R)
-ES 			= 		(e|E)(s|S)
+FINALMENTE 	= 		(F|f)(I|i)(N|n)(A|a)(L|l)(M|m)(E|e)(N|n)(T|t)(E|e)
 VAR 		= 		([a-z]|[A-Z])([a-z]|[A-Z]|_|[0-9])*
 
 MEI			=		\<\=
@@ -63,7 +62,7 @@ FIN_LINEA	=		(\r|\n)
 CARACTER	=		[^\r\n]
 COMENTARIO	= {COMENTARIO_NORMAL} | {COMENTARIO_LINEA}
 COMENTARIO_NORMAL   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
-COMENTARIO_LINEA	= "//" {CARACTER}* {FIN_LINEA}?
+COMENTARIO_LINEA	= \/\/{CARACTER}*{FIN_LINEA}?
 
 DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\(|\)|\/=\\|=|\*\*=|\/\/=|\^=
 LineTerminator = \r|\n|\r\n
@@ -74,102 +73,102 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 
 {Y}
 		{
-			System.out.println(yytext() + " es el operador logico and");
+			System.out.println(yytext() + "\t es el operador logico and");
 		}
 		
 {O}
 		{
-			System.out.println(yytext() + " es el operador logico or");
+			System.out.println(yytext() + "\t es el operador logico or");
 		}
 		
 {PARA}
 		{
-			System.out.println(yytext() + " es el ciclo for");
+			System.out.println(yytext() + "\t es el ciclo for");
 		}
 		
 {DESDE}
 		{
-			System.out.println(yytext() + " es un acompañante para el ciclo for que inicializa la variable iteradora");
+			System.out.println(yytext() + "\t es un acompañante para el ciclo for que inicializa la variable iteradora");
 		}
 		
 {HASTA}
 		{
-			System.out.println(yytext() + " es un acompañante para el ciclo for que establece la condicion de salida");
+			System.out.println(yytext() + "\t es un acompañante para el ciclo for que establece la condicion de salida");
 		}
 		
 {AVANCE}
 		{
-			System.out.println(yytext() + " es un acompañante para el ciclo for que indica cuanto cambia el iterador");
+			System.out.println(yytext() + "\t es un acompañante para el ciclo for que indica cuanto cambia el iterador");
 		}
 		
 {MIENTRAS}
 		{
-			System.out.println(yytext() + " es el ciclo while");
+			System.out.println(yytext() + "\t es el ciclo while");
 		}
 		
 {HACER}
 		{
-			System.out.println(yytext() + " es el acompañante do del ciclo while");
+			System.out.println(yytext() + "\t es el acompañante do del ciclo while");
 		}
 		
 {SI}
 		{
-			System.out.println(yytext() + " es la condicional if");
+			System.out.println(yytext() + "\t es la condicional if");
 		}
 		
 {SINO}
 		{
-			System.out.println(yytext() + " es el acompañante del if llamado else");
+			System.out.println(yytext() + "\t es el acompañante del if llamado else");
 		}
 		
 {DEVOLVER}
 		{
-			System.out.println(yytext() + " es el return");
+			System.out.println(yytext() + "\t es el return");
 		}
 		
 {PROC}
 		{
-			System.out.println(yytext() + " es una funcion que no devuelve o void");
+			System.out.println(yytext() + "\t es una funcion que no devuelve o void");
 		}
 		
 {CLASE}
 		{
-			System.out.println(yytext() + " es una clase");
+			System.out.println(yytext() + "\t es una clase");
 		}
 		
 {NUM}
 		{
-			System.out.println(yytext() + " es el tipo de dato generico numerico");
+			System.out.println(yytext() + "\t es el tipo de dato generico numerico");
 		}
 		
 {CAD}
 		{
-			System.out.println(yytext() + " es el tipo de dato generico para cadenas de caracteres");
+			System.out.println(yytext() + "\t es el tipo de dato generico para cadenas de caracteres");
 		}
 		
 {BOOL}
 		{
-			System.out.println(yytext() + " es el tipo de dato booleano");
+			System.out.println(yytext() + "\t es el tipo de dato booleano");
 		}
 		
 {PUBLICO}
 		{
-			System.out.println(yytext() + " es seguridad publica");
+			System.out.println(yytext() + "\t es seguridad publica");
 		}
 		
 {PRIVADO}
 		{
-			System.out.println(yytext() + " es seguridad privada");
+			System.out.println(yytext() + "\t es seguridad privada");
 		}
 		
 {IMPRIMIR}
 		{
-			System.out.println(yytext() + " es para imprimir en consola");
+			System.out.println(yytext() + "\t es para imprimir en consola");
 		}
 		
 {LEER}
 		{
-			System.out.println(yytext() + " es para leer lo que ponga el usuario en consola");
+			System.out.println(yytext() + "\t es para leer lo que ponga el usuario en consola");
 		}
 
 {FIN}
@@ -180,32 +179,32 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 		
 "*"
 		{
-			System.out.println(yytext() + " es el operador de multiplicacion");
+			System.out.println(yytext() + "\t es el operador de multiplicacion");
 		}
 		
 "<"
 		{
-			System.out.println(yytext() + " es el operador 'menor que'");
+			System.out.println(yytext() + "\t es el operador 'menor que'");
 		}
 		
 "^"
 		{
-			System.out.println(yytext() + " es el operador de potencia");
+			System.out.println(yytext() + "\t es el operador de potencia");
 		}
 		
 "-"
 		{
-			System.out.println(yytext() + " es el operador de resta");
+			System.out.println(yytext() + "\t es el operador de resta");
 		}
 		
 ">"
 		{
-			System.out.println(yytext() + " es el operador 'mayor que'");
+			System.out.println(yytext() + "\t es el operador 'mayor que'");
 		}
 		
 "="
 		{
-			System.out.println(yytext() + " es el operador de igualdad");
+			System.out.println(yytext() + "\t es el operador de igualdad");
 		}
 		
 
@@ -213,144 +212,144 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 
 {IMPORTAR}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
             
 {MOD}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
 
 {INTENTAR}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }            
 
 {ATRAPAR}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
 
 {LANZAR}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
 
 {CONSTANTE}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
             
 {REVISAR}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
 
 {CASO}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }            
 
 {COMO}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
 
 {DEFECTO}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
 
 {CON}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
             
-{TERMINAR}    
+{TERMINAR}
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
 
 {EXCEPTO}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }            
 
 {MOSTRAR}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
 
-{EJECUTAR}    
+{EJECUTAR}
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
 
 {EN}    {
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
             
 {CONTINUAR}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
 
 {FINALIZAR}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }            
 
 {ES}    
 		{
-            System.out.println(yytext() + " - palabra reservada");
+            System.out.println(yytext() + "\t - palabra reservada");
         }
         
 {MEI}    
 		{
-            System.out.println(yytext() + " - operador basico");
+            System.out.println(yytext() + "\t - operador basico");
         }
         
 {MAI}    
 		{
-            System.out.println(yytext() + " - operador basico");
+            System.out.println(yytext() + "\t - operador basico");
         }
         
 "!"    
 		{
-			System.out.println(yytext() + " - operador basico");
+			System.out.println(yytext() + "\t - operador basico");
 		}
 
 "/"    	
 		{
-			System.out.println(yytext() + " - operador basico");
+			System.out.println(yytext() + "\t - operador basico");
 		}
 		
 "+"    	
 		{
-			System.out.println(yytext() + " - operador basico");
+			System.out.println(yytext() + "\t - operador basico");
 		}
         
 {II}    
 		{
-            System.out.println(yytext() + " - operador basico");
+            System.out.println(yytext() + "\t - operador basico");
         }
  
 {NUMERO}    
 		{
-            System.out.println(yytext() + " - es un numero");
+            System.out.println(yytext() + "\t - es un numero");
         }
  
 {VAR}    
 		{
-            System.out.println(yytext() + " - nombre de variable");
+            System.out.println(yytext() + "\t - nombre de variable");
         }
 {COMENTARIO}
 		{
-			System.out.println(yytext() + " - comentario");
+			System.out.println(yytext() + "\t - comentario");
 		}
 {DELIMITADOR}
         {
-            System.out.println(yytext() + " - delimitador");
+            System.out.println(yytext() + "\t - delimitador");
         }
 
 /* whitespace */

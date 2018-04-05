@@ -1,0 +1,34 @@
+//--------------------------------------------------------RECURSIÓN LAMBDA
+/*
+Estructura:
+rec {TIPODATO} {NOMBRE} (param1, param2...) (condicion_caso_base)caso_base : (cond_caso_trivial1)caso_trivial1 : (cond_caso_trivial2)caso_trivial2 :: callback
+Ejemplo:*/
+
+rec num fiboRec(num n) (n <= 1) 1 : fiboRec( n-1 ) + fiboRec( n-2 )
+
+//--------------------------------------------------------RECURSIÓN MULTILÍNEA
+/*Estructura:
+rec {TIPODATO} {NOMBRE} (param1, param2...){
+    (condicion_caso_base){
+        //PROCEDIMIENTO SIEMPRE EL PRIMERO VA A SER CASO BASE
+    }
+    (condicion_caso_trivial1){              //La condición es opcional como en el ejemplo
+        //Procedimiento, todos los siguientes al caso base son triviales, excepto cuando hay cuatro puntos.
+    }
+    ::{
+        //Procedimiento para los callbacks
+    }
+}
+
+Ejemplo:*/
+
+rec num fiboRec(){
+    (n <= 1){                                   //CASO BASE
+        devolver 1
+    }
+    {                                           //CASO TRIVIAL
+        enesimo = fiboRec ( n - 1 ) + fiboRec ( n - 2 )
+        imprimir enesimo
+        devolver enesimo
+    }
+}
