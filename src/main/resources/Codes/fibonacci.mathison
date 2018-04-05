@@ -1,13 +1,15 @@
 num fiboRec ( num n ) {
-    si ( n <= 1 )
+    si ( n <= 1 ) //CASO BASE
 	{
         imprimir 1
 	    devolver 1
     }
-    sino
+    sino          //CASO TRIVIAL
 	{
         enesimo = fiboRec ( n - 1 ) + fiboRec ( n - 2 )
 	    imprimir enesimo
 	    devolver enesimo
 	}
 }
+
+

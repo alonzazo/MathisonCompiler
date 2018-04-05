@@ -823,7 +823,8 @@ class Lexer {
           }
           case 51: break;
           case 17:
-          { System.out.println(yytext() + " - comentario");
+          {
+            System.out.println(yytext().replace("\r","")+ " - comentario");
           }
           case 52: break;
           case 18:
