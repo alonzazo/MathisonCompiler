@@ -1,3 +1,28 @@
+/*
+Mathison
+
+Instrucciones para correr el analizador léxico:
+1. Compilar el archivo lexer1.jflex con Jflex
+2. Se generará el archivo Lexer.java y se corre con algún IDE con soporte para Java
+3. Se ingresan las palabras, cadenas, numeros o símbolos por medio de línea de
+comando o en un archivo de texto
+4. Las reglas son las siguientes:
+	- Las variables deben empezar con una letra y pueden tener solamente letras,
+	números y guiones bajos
+	- Los números pueden ser negativos o positivos y pueden tener o no decimales
+	separados por un punto
+	- Las palabras reservadas se pueden escribir en mayúsculas, minúsculas o
+	con un combinación de ambas, estas se listan más abajo
+	- Los comentarios se escriben con dos slash, para comentarios de una
+	línea o con slash-asterisco asterisco-slash, para comentarios multilínea
+	y ambos aceptan cualquier caracter
+	- Los literales de cadena se escriben entre comillas y aceptan cualquier
+	carecter que no sean comillas a menos que esten precedidas por un backslash
+	- Se pueden escribir expresiones separadas o no por espacios que serán
+	identificadas por el analizador, esto no aplica para comentarios o literales
+	de cadena donde identifica toda la expresión como una sola
+*/
+
 %%
 %standalone
 %class Lexer
@@ -9,7 +34,7 @@
 yybegin(YYINITIAL);
 %init}
 
-
+//Palabras reservadas
 
 Y		=		(y|Y)
 O		=		(o|O)
@@ -32,8 +57,8 @@ PRIVADO		=		(p|P)(r|R)(i|I)(v|V)(a|A)(d|D)(o|O)
 IMPRIMIR	=		(i|I)(m|M)(p|P)(r|R)(i|I)(m|M)(i|I)(r|R)
 LEER		=		(l|L)(e|E)(e|E)(r|R)
 FIN		= 		(f|F)(i|I)(n|N)
-
-NUMERO 		=    		\-?[0-9]+(\.[0-9]+)?
+VERDADERO	=		(V|v)(E|e)(R|r)(D|d)(A|a)(D|d)(E|e)(R|r)(O|o)
+FALSO		=		(F|f)(A|a)(L|l)(S|s)(O|o)
 IMPORTAR 	= 		(i|I)(m|M)(p|P)(o|O)(r|R)(t|T)(a|A)(r|R)
 MOD 		= 		(m|M)(o|O)(d|D)
 INTENTAR 	= 		(i|I)(n|N)(t|T)(e|E)(n|N)(t|T)(a|A)(r|R)
@@ -52,11 +77,17 @@ EJECUTAR 	= 		(e|E)(j|J)(e|E)(c|C)(u|U)(t|T)(a|A)(r|R)
 EN 		= 		(e|E)(n|N)
 CONTINUAR 	= 		(c|C)(o|O)(n|N)(t|T)(i|I)(n|N)(u|U)(a|A)(r|R)
 FINALMENTE 	= 		(F|f)(I|i)(N|n)(A|a)(L|l)(M|m)(E|e)(N|n)(T|t)(E|e)
-VAR 		= 		([a-z]|[A-Z])([a-z]|[A-Z]|_|[0-9])*
+
+//Operadores compuestos
 
 MEI		=		\<\=
 MAI		=		\>\=
 II		=		\=\=
+
+//Otras declaraciones
+
+NUMERO 		=    		\-?[0-9]+(\.[0-9]+)?
+VAR 		= 		([a-z]|[A-Z])([a-z]|[A-Z]|_|[0-9])*
 
 FIN_LINEA	=		(\r|\n)
 CARACTER	=		[^\r\n]
