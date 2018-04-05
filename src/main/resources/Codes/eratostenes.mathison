@@ -1,3 +1,7 @@
+/*
+Este es un comentario soez
+*/
+
 num[] cribaEratostenes(num n)
 {
 	si((n mod 1) ! 0 o (n < 0)) //Restricciones
@@ -10,7 +14,7 @@ num[] cribaEratostenes(num n)
 	para num i desde 0 hasta n avance 1		//un ciclo for
 	{
         numeros[i] = 0
-    }
+    }/* Un saludito para mami*/
 	num marcado = 0
 	para num i desde 2 hasta n avance 1
 	{
