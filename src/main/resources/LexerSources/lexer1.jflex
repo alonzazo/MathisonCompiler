@@ -25,6 +25,7 @@ DEVOLVER	=		(d|D)(e|E)(v|V)(o|O)(l|L)(v|V)(e|E)(r|R)
 PROC		=		(p|P)(r|R)(o|O)(c|C)
 CLASE		=		(c|C)(l|L)(a|A)(s|S)(e|E)
 NUM			=		(n|N)(u|U)(m|M)
+REC			=		(r|R)(e|E)(c|C)
 CAD			=		(c|C)(a|A)(d|D)
 BOOL		=		(b|B)(o|O)(o|O)(l|L)
 PUBLICO		=		(p|P)(u|U)(b|B)(l|L)(i|I)(c|C)(o|O)
@@ -64,7 +65,7 @@ COMENTARIO	= {COMENTARIO_NORMAL} | {COMENTARIO_LINEA}
 COMENTARIO_NORMAL   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
 COMENTARIO_LINEA	= \/\/{CARACTER}*{FIN_LINEA}?
 
-DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^=
+DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^=|:|::
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
 WhiteSpace     = {LineTerminator} | [ \t\f]
@@ -139,6 +140,11 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 {NUM}
 		{
 			System.out.println(yytext() + "\t es el tipo de dato generico numerico");
+		}
+
+{REC}
+		{
+			System.out.println(yytext() + "\t es la palabra reservada para indicar una recursión");
 		}
 		
 {CAD}
@@ -294,12 +300,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
             System.out.println(yytext() + "\t - palabra reservada");
         }
 
-{FINALIZAR}    
-		{
-            System.out.println(yytext() + "\t - palabra reservada");
-        }            
-
-{ES}    
+{FINALMENTE}
 		{
             System.out.println(yytext() + "\t - palabra reservada");
         }
