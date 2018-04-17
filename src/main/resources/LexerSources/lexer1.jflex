@@ -30,6 +30,28 @@ comando o en un archivo de texto
 %line
 %column
 
+%cup
+
+/*
+    Declaraciones
+
+    El codigo entre %{  y %} sera copiado integramente en el
+    analizador generado.
+*/
+%{
+    /*  Generamos un java_cup.Symbol para guardar el tipo de token
+        encontrado */
+    private Symbol symbol(int type) {
+        return new Symbol(type, yyline, yycolumn);
+    }
+
+    /* Generamos un Symbol para el tipo de token encontrado
+       junto con su valor */
+    private Symbol symbol(int type, Object value) {
+        return new Symbol(type, yyline, yycolumn, value);
+    }
+%}
+
 %init{
 yybegin(YYINITIAL);
 %init}
