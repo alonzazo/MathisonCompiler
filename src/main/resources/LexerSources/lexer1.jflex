@@ -400,7 +400,7 @@ DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^
 
 {NUMERO}
 		{
-           return symbol(sym.CADENA, new Double(yytext()));
+           return symbol(sym.NUMERO, new Double(yytext()));
 
         }
 
