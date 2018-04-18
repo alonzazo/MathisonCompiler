@@ -127,281 +127,296 @@ DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^
 
 {Y}
 		{
-			System.out.println(yytext() + "\t es el operador logico and");
+			return symbol(sym.OL_Y);
 		}
-		
+
 {O}
 		{
-			System.out.println(yytext() + "\t es el operador logico or");
+			return symbol(sym.OL_O);
 		}
-		
+
+	/*Lo que se utiliza para los ciclos, inicia con CI*/
+
 {PARA}
 		{
-			System.out.println(yytext() + "\t es el ciclo for");
+			return symbol(sym.CI_PARA);
 		}
-		
+
 {DESDE}
 		{
-			System.out.println(yytext() + "\t es un acompañante para el ciclo for que inicializa la variable iteradora");
+			return symbol(sym.CI_DESDE);
 		}
-		
+
 {HASTA}
 		{
-			System.out.println(yytext() + "\t es un acompañante para el ciclo for que establece la condicion de salida");
+			return symbol(sym.CI_HASTA);
 		}
-		
+
 {AVANCE}
 		{
-			System.out.println(yytext() + "\t es un acompañante para el ciclo for que indica cuanto cambia el iterador");
+			return symbol(sym.CI_AVANCE);
 		}
-		
+
 {MIENTRAS}
 		{
-			System.out.println(yytext() + "\t es el ciclo while");
+			return symbol(sym.CI_MIENTRAS);
 		}
-		
+
 {HACER}
 		{
-			System.out.println(yytext() + "\t es el acompañante do del ciclo while");
+			return symbol(sym.CI_HACER);
 		}
-		
+
 {SI}
 		{
-			System.out.println(yytext() + "\t es la condicional if");
+			return symbol(sym.CI_SI);
 		}
-		
+
 {SINO}
 		{
-			System.out.println(yytext() + "\t es el acompañante del if llamado else");
+			return symbol(sym.CI_SINO);
 		}
-		
+
 {DEVOLVER}
 		{
-			System.out.println(yytext() + "\t es el return");
+			return symbol(sym.CI_DEVOLVER);
 		}
-		
+
+		/* PALABRAS RESERVADAS, PR */
+
 {PROC}
 		{
-			System.out.println(yytext() + "\t es una funcion que no devuelve o void");
+			return symbol(sym.PR_PROC);
 		}
-		
+
 {CLASE}
 		{
-			System.out.println(yytext() + "\t es una clase");
+			return symbol(sym.PR_HACER);
 		}
-		
+
 {NUM}
 		{
-			System.out.println(yytext() + "\t es el tipo de dato generico numerico");
+			return symbol(sym.PR_HACER);
 		}
 
 {REC}
 		{
-			System.out.println(yytext() + "\t es la palabra reservada para indicar una recursión");
+			return symbol(sym.PR_REC);
 		}
 
 {CAD}
 		{
-			System.out.println(yytext() + "\t es el tipo de dato generico para cadenas de caracteres");
+			return symbol(sym.PR_CAD);
 		}
-		
+
 {BOOL}
 		{
-			System.out.println(yytext() + "\t es el tipo de dato booleano");
+			return symbol(sym.PR_BOOL);
 		}
-		
+
 {PUBLICO}
 		{
-			System.out.println(yytext() + "\t es seguridad publica");
+			return symbol(sym.PR_PUBLICO);
 		}
-		
+
 {PRIVADO}
 		{
-			System.out.println(yytext() + "\t es seguridad privada");
+			return symbol(sym.PR_PRIVADO);
+
 		}
-		
+
 {IMPRIMIR}
 		{
-			System.out.println(yytext() + "\t es para imprimir en consola");
+			return symbol(sym.PR_IMPRIMIR);
 		}
-		
+
 {LEER}
 		{
-			System.out.println(yytext() + "\t es para leer lo que ponga el usuario en consola");
+			return symbol(sym.PR_LEER);
 		}
 
 {FIN}
 		{
-			System.out.println("El programa va a terminar");
-			return 0;
+            return symbol(sym.PR_HACER);
 		}
-		
+
+		/*Operadores numericos ON*/
+
 "\*"
 		{
-			System.out.println(yytext() + "\t es el operador de multiplicacion");
+			return symbol(sym.ON_MULTIPLICACION);
 		}
-		
-"<"
-		{
-			System.out.println(yytext() + "\t es el operador 'menor que'");
-		}
-		
+
+
+
 "\^"
 		{
-			System.out.println(yytext() + "\t es el operador de potencia");
+			return symbol(sym.ON_POTENCIA);
 		}
-		
+
 "-"
 		{
-			System.out.println(yytext() + "\t es el operador de resta");
+			return symbol(sym.ON_RESTA);
 		}
-		
-">"
-		{
-			System.out.println(yytext() + "\t es el operador 'mayor que'");
-		}
-		
+
+
+
+
 "="
 		{
-			System.out.println(yytext() + "\t es el operador de igualdad");
+			return symbol(sym.ON_IGUAL);
 		}
-		
 
+{MOD}
+        	{
+			return symbol(sym.ON_MODULO);
+             }
 
+"\/"
+   {
+      return symbol(sym.ON_DIVISION);
+    }
 
-{IMPORTAR}    
-		{
-            System.out.println(yytext() + "\t - palabra reservada");
-        }
-            
-{MOD}    
-		{
-            System.out.println(yytext() + "\t - palabra reservada");
-        }
+ "\+"
+     {
+       return symbol(sym.ON_SUMA);
+       }
 
-{INTENTAR}    
-		{
-            System.out.println(yytext() + "\t - palabra reservada");
-        }            
+             		/*OPERADORES DE COMPARACION OC*/
 
-{ATRAPAR}    
-		{
-            System.out.println(yytext() + "\t - palabra reservada");
-        }
+    "<"
+         {
+          return symbol(sym.OC_MENORQUE);
+     }
 
-{LANZAR}    
-		{
-            System.out.println(yytext() + "\t - palabra reservada");
-        }
+     ">"
+     {
+       return symbol(sym.OC_MAYORQUE);
+      }
 
-{CONSTANTE}    
-		{
-            System.out.println(yytext() + "\t - palabra reservada");
-        }
-            
-{REVISAR}    
-		{
-            System.out.println(yytext() + "\t - palabra reservada");
-        }
+       {MEI}
+           {
+            return symbol(sym.OC_MENOROIGUAL);
+       }
 
-{CASO}    
-		{
-            System.out.println(yytext() + "\t - palabra reservada");
-        }            
+       {MAI}
+          {
+           return symbol(sym.OC_MAYOROIGUAL);
+          }
 
-{COMO}    
-		{
-            System.out.println(yytext() + "\t - palabra reservada");
-        }
+             "!"
+          {
+           return symbol(sym.OC_DISTINTO);
+          }
 
-{DEFECTO}    
+{II}
 		{
-            System.out.println(yytext() + "\t - palabra reservada");
+		           return symbol(sym.OC_IGUALDAD);
         }
 
-{CON}    
+
+
+/*PALABRAS RESERVADAS MENOS UTILIZADAS PR*/
+
+{IMPORTAR}
 		{
-            System.out.println(yytext() + "\t - palabra reservada");
+			return symbol(sym.PR_IMPORTAR);
         }
-            
+
+
+{INTENTAR}
+		{
+			return symbol(sym.PR_INTENTAR);
+        }
+
+{ATRAPAR}
+		{
+			return symbol(sym.PR_ATRAPAR);
+        }
+
+{LANZAR}
+		{
+			return symbol(sym.PR_LANZAR);
+        }
+
+{CONSTANTE}
+		{
+			return symbol(sym.PR_CONSTANTE);
+        }
+
+{REVISAR}
+		{
+			return symbol(sym.PR_REVISAR);
+        }
+
+{CASO}
+		{
+			return symbol(sym.PR_CASO);
+        }
+
+{COMO}
+		{
+			return symbol(sym.PR_COMO);
+        }
+
+{DEFECTO}
+		{
+			return symbol(sym.PR_COMO);
+        }
+
+{CON}
+		{
+			return symbol(sym.PR_CON);
+        }
+
 {TERMINAR}
 		{
-            System.out.println(yytext() + "\t - palabra reservada");
+			return symbol(sym.PR_TERMINAR);
         }
 
-{EXCEPTO}    
+{EXCEPTO}
 		{
-            System.out.println(yytext() + "\t - palabra reservada");
-        }            
+			return symbol(sym.PR_EXCEPTO);
+        }
 
-{MOSTRAR}    
+{MOSTRAR}
 		{
-            System.out.println(yytext() + "\t - palabra reservada");
+			return symbol(sym.PR_MOSTRAR);
         }
 
 {EJECUTAR}
 		{
-            System.out.println(yytext() + "\t - palabra reservada");
+			return symbol(sym.PR_EJECUTAR;
         }
 
 {EN}    {
-            System.out.println(yytext() + "\t - palabra reservada");
+			return symbol(sym.PR_EN);
         }
-            
-{CONTINUAR}    
+
+{CONTINUAR}
 		{
-            System.out.println(yytext() + "\t - palabra reservada");
+			return symbol(sym.PR_CONTINUAR);
         }
 
 {FINALMENTE}
 		{
-            System.out.println(yytext() + "\t - palabra reservada");
+			return symbol(sym.PR_FINALMENTE);
         }
-        
-{MEI}    
-		{
 
-            System.out.println(yytext() + "\t - operador menor o igual");
-        }
-        
-{MAI}    
+{NUMERO}
 		{
-            System.out.println(yytext() + "\t - operador mayor o igual");
-        }
-        
-"!"    
-		{
-			System.out.println(yytext() + "\t - operador distinto");
-		}
+           return symbol(sym.PR_NUM);
+           return symbol(sym.PR_CADENA,new double(yytext()));
 
-"\/"
-		{
-			System.out.println(yytext() + "\t - operador de division");
-		}
-		
-"\+"
-		{
-			System.out.println(yytext() + "\t - operador de suma");
-		}
-        
-{II}    
-		{
-            System.out.println(yytext() + "\t - operador de comparacion de igualdad");
         }
- 
-{NUMERO}    
+
+{VAR}
 		{
-            System.out.println(yytext() + "\t - es un numero");
-        }
- 
-{VAR}    
-		{
-            System.out.println(yytext() + "\t - nombre de variable");
+           return symbol(sym.PR_VAR);
         }
 
 {COMENTARIO}
 	{
-	    System.out.println(yytext() + "\t - es un comentario");
 	}
 
 {DELIMITADOR}
@@ -416,8 +431,19 @@ DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^
 
 {CADENA}
         {
-            System.out.println(yytext() + "\t - es un literal de cadena");
+           return symbol(sym.PR_CADENA,new String(yytext()));
         }
+
+
+{VERDADERO}
+        {
+           return symbol(sym.PR_VERDADERO);
+        }
+ {FALSO}
+                {
+                   return symbol(sym.PR_FALSO);
+                }
+
 
 [^]     { throw new Error("Illegal character <"
             + yytext()+">"); }
