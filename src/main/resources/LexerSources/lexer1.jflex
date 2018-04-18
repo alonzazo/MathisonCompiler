@@ -418,38 +418,38 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
 	}
 
 
-{\[}
+"["
     {
         return symbol(sym.CORCHETEABIERTO);
     }
 
-{\]}
+"]"
      {
             return symbol(sym.CORCHETECERRADO);
      }
 
-{\{}
+"{"
      {
             return symbol(sym.LLAVEABIERTO);
      }
 
-{\}}
+"}"
      {
             return symbol(sym.LLAVECERRADO);
      }
 
-{\(}
+"("
        {
               return symbol(sym.PARENTESISABIERTO);
        }
 
 
-{\)}
+")"
        {
               return symbol(sym.PARENTESISCERRADO);
        }
 
-{:}
+":"
     {
     return symbol(sym.DOSPUNTOS);
     }
