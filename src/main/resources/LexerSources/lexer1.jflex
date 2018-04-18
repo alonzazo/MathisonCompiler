@@ -127,192 +127,187 @@ DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^
 
 {Y}
 		{
-			return symbol(sym.OL_Y);
+			return symbol(sym.Y);
 		}
 
 {O}
 		{
-			return symbol(sym.OL_O);
+			return symbol(sym.O);
 		}
 
 	/*Lo que se utiliza para los ciclos, inicia con CI*/
 
 {PARA}
 		{
-			return symbol(sym.CI_PARA);
+			return symbol(sym.PARA);
 		}
 
 {DESDE}
 		{
-			return symbol(sym.CI_DESDE);
+			return symbol(sym.DESDE);
 		}
 
 {HASTA}
 		{
-			return symbol(sym.CI_HASTA);
+			return symbol(sym.HASTA);
 		}
 
 {AVANCE}
 		{
-			return symbol(sym.CI_AVANCE);
+			return symbol(sym.AVANCE);
 		}
 
 {MIENTRAS}
 		{
-			return symbol(sym.CI_MIENTRAS);
+			return symbol(sym.MIENTRAS);
 		}
 
 {HACER}
 		{
-			return symbol(sym.CI_HACER);
+			return symbol(sym.HACER);
 		}
 
 {SI}
 		{
-			return symbol(sym.CI_SI);
+			return symbol(sym.SI);
 		}
 
 {SINO}
 		{
-			return symbol(sym.CI_SINO);
+			return symbol(sym.SINO);
 		}
 
 {DEVOLVER}
 		{
-			return symbol(sym.CI_DEVOLVER);
+			return symbol(sym.DEVOLVER);
 		}
 
 		/* PALABRAS RESERVADAS, PR */
 
 {PROC}
 		{
-			return symbol(sym.PR_PROC);
+			return symbol(sym.PROC);
 		}
 
 {CLASE}
 		{
-			return symbol(sym.PR_HACER);
+			return symbol(sym.CLASE);
 		}
 
 {NUM}
 		{
-			return symbol(sym.PR_HACER);
+			return symbol(sym.NUM);
 		}
 
 {REC}
 		{
-			return symbol(sym.PR_REC);
+			return symbol(sym.REC);
 		}
 
 {CAD}
 		{
-			return symbol(sym.PR_CAD);
+			return symbol(sym.CAD);
 		}
 
 {BOOL}
 		{
-			return symbol(sym.PR_BOOL);
+			return symbol(sym.BOOL);
 		}
 
 {PUBLICO}
 		{
-			return symbol(sym.PR_PUBLICO);
+			return symbol(sym.PUBLICO);
 		}
 
 {PRIVADO}
 		{
-			return symbol(sym.PR_PRIVADO);
+			return symbol(sym.PRIVADO);
 
 		}
 
 {IMPRIMIR}
 		{
-			return symbol(sym.PR_IMPRIMIR);
+			return symbol(sym.IMPRIMIR);
 		}
 
 {LEER}
 		{
-			return symbol(sym.PR_LEER);
+			return symbol(sym.LEER);
 		}
 
 {FIN}
 		{
-            return symbol(sym.PR_HACER);
+            return symbol(sym.FIN);
 		}
 
 		/*Operadores numericos ON*/
 
 "\*"
 		{
-			return symbol(sym.ON_MULTIPLICACION);
+			return symbol(sym.MULTIPLICACION);
 		}
-
-
 
 "\^"
 		{
-			return symbol(sym.ON_POTENCIA);
+			return symbol(sym.POTENCIA);
 		}
 
 "-"
 		{
-			return symbol(sym.ON_RESTA);
+			return symbol(sym.RESTA);
 		}
-
-
-
 
 "="
 		{
-			return symbol(sym.ON_IGUAL);
+			return symbol(sym.IGUAL);
 		}
 
 {MOD}
         	{
-			return symbol(sym.ON_MODULO);
+			return symbol(sym.MOD);
              }
 
 "\/"
    {
-      return symbol(sym.ON_DIVISION);
+      return symbol(sym.DIVISION);
     }
 
  "\+"
      {
-       return symbol(sym.ON_SUMA);
+       return symbol(sym.SUMA);
        }
 
              		/*OPERADORES DE COMPARACION OC*/
 
-    "<"
-         {
+"<"
+    {
           return symbol(sym.OC_MENORQUE);
-     }
+    }
 
-     ">"
-     {
-       return symbol(sym.OC_MAYORQUE);
-      }
+">"
+    {
+        return symbol(sym.OC_MAYORQUE);
+    }
 
-       {MEI}
-           {
-            return symbol(sym.OC_MENOROIGUAL);
-       }
+{MEI}
+    {
+        return symbol(sym.MENOROIGUAL);
+    }
 
-       {MAI}
-          {
-           return symbol(sym.OC_MAYOROIGUAL);
-          }
+{MAI}
+    {
+        return symbol(sym.MAYOROIGUAL);
+    }
 
-             "!"
-          {
-           return symbol(sym.OC_DISTINTO);
-          }
+"!"
+    {
+        return symbol(sym.DISTINTO);
+    }
 
 {II}
-		{
-		           return symbol(sym.OC_IGUALDAD);
-        }
+    {
+	    return symbol(sym.IGUAL);
+    }
 
 
 
@@ -320,108 +315,108 @@ DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^
 
 {IMPORTAR}
 		{
-			return symbol(sym.PR_IMPORTAR);
+			return symbol(sym.IMPORTAR);
         }
 
 
 {INTENTAR}
 		{
-			return symbol(sym.PR_INTENTAR);
+			return symbol(sym.INTENTAR);
         }
 
 {ATRAPAR}
 		{
-			return symbol(sym.PR_ATRAPAR);
+			return symbol(sym.ATRAPAR);
         }
 
 {LANZAR}
 		{
-			return symbol(sym.PR_LANZAR);
+			return symbol(sym.LANZAR);
         }
 
 {CONSTANTE}
 		{
-			return symbol(sym.PR_CONSTANTE);
+			return symbol(sym.CONSTANTE);
         }
 
 {REVISAR}
 		{
-			return symbol(sym.PR_REVISAR);
+			return symbol(sym.REVISAR);
         }
 
 {CASO}
 		{
-			return symbol(sym.PR_CASO);
+			return symbol(sym.CASO);
         }
 
 {COMO}
 		{
-			return symbol(sym.PR_COMO);
+			return symbol(sym.COMO);
         }
 
 {DEFECTO}
 		{
-			return symbol(sym.PR_COMO);
+			return symbol(sym.DEFECTO);
         }
 
 {CON}
 		{
-			return symbol(sym.PR_CON);
+			return symbol(sym.CON);
         }
 
 {TERMINAR}
 		{
-			return symbol(sym.PR_TERMINAR);
+			return symbol(sym.TERMINAR);
         }
 
 {EXCEPTO}
 		{
-			return symbol(sym.PR_EXCEPTO);
+			return symbol(sym.EXCEPTO);
         }
 
 {MOSTRAR}
 		{
-			return symbol(sym.PR_MOSTRAR);
+			return symbol(sym.MOSTRAR);
         }
 
 {EJECUTAR}
 		{
-			return symbol(sym.PR_EJECUTAR;
+			return symbol(sym.EJECUTAR;
         }
 
 {EN}    {
-			return symbol(sym.PR_EN);
+			return symbol(sym.EN);
         }
 
 {CONTINUAR}
 		{
-			return symbol(sym.PR_CONTINUAR);
+			return symbol(sym.CONTINUAR);
         }
 
 {FINALMENTE}
 		{
-			return symbol(sym.PR_FINALMENTE);
+			return symbol(sym.FINALMENTE);
         }
 
 {NUMERO}
 		{
-           return symbol(sym.PR_NUM);
-           return symbol(sym.PR_CADENA,new double(yytext()));
+           return symbol(sym.CADENA, new Double(yytext()));
 
         }
 
 {VAR}
 		{
-           return symbol(sym.PR_VAR);
+           return symbol(sym.VAR, new String(yytext()));
         }
 
 {COMENTARIO}
 	{
+	    /* no haceer nada*/
 	}
 
 {DELIMITADOR}
         {
-            System.out.println(yytext() + "\t - es un delimitador");
+            return symbol(sym.DELIMITADOR,new String(yytext()));
         }
 
 {ESPACIO}
@@ -431,18 +426,18 @@ DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^
 
 {CADENA}
         {
-           return symbol(sym.PR_CADENA,new String(yytext()));
+           return symbol(sym.CADENA,new String(yytext()));
         }
 
 
 {VERDADERO}
         {
-           return symbol(sym.PR_VERDADERO);
+           return symbol(sym.VERDADERO);
         }
- {FALSO}
-                {
-                   return symbol(sym.PR_FALSO);
-                }
+{FALSO}
+        {
+            return symbol(sym.FALSO);
+        }
 
 
 [^]     { throw new Error("Illegal character <"
