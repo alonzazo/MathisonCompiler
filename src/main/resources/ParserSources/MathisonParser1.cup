@@ -57,21 +57,30 @@ parser code {:
 
    Terminales que no tienen un valor son listados primero, los terminales que
    tienen un valor como los enteros son listados en la segunda o demas lineas. */
+
+   //PALABRAS RESERVADAS
 terminal        Y, O, PARA, DESDE, HASTA, AVANCE, MIENTRAS, HACER, SI;
 terminal        SINO, DEVOLVER, PROC, CLASE, REC, CAD, BOOL, PUBLICO;
 terminal        PRIVADO, IMPRIMIR, LEER, FIN, VERDADERO, FALSO, IMPORTAR;
 terminal        INTENTAR, ATRAPAR, LANZAR, CONSTANTE, REVISAR, CASO;
 terminal        COMO, DEFECTO, CON, TERMINAR, EXCEPTO, MOSTRAR, EJECUTAR, NUM;
 terminal        EN, CONTINUAR, FINALMENTE;
-terminal        MEI, MAI, II, MENORQUE, MAYORQUE, MENOROIGUAL,MAYOROIGUAL,DISTINTO;
-terminal        SUMA, RESTA, MULTIPLICACION, DIVISION, MOD, POTENCIA, ASIGNACION, IGUAL;
-//DELIMITADOR
 
-terminal Double NUMERO;
-terminal String VAR;
-terminal String DELIMITADOR;
-terminal String CADENA;
-   
+//COMPARACION
+terminal        MEI, MAI, II, MENORQUE, MAYORQUE, MENOROIGUAL,MAYOROIGUAL,DISTINTO;
+
+//ARITMETICA
+terminal        SUMA, RESTA, MULTIPLICACION, DIVISION, MOD, POTENCIA, ASIGNACION, IGUAL;
+
+//DELIMITADOR
+terminal     CORCHETEABIERTO,CORCHETECERRADO,LLAVEABIERTO,LLAVECERRADO,PARENTESISABIERTO,PARENTESISCERRADO, DOSPUNTOS;
+
+//CON VALOR ASOCIADO
+terminal    Double NUMERO;
+terminal    String VAR;
+terminal    String DELIMITADOR;
+terminal     String CADENA;
+
 /* No terminales usados en la seccion gramatical. 
 
    Primero se lista los no terminales que tienen un valor Object y despues
