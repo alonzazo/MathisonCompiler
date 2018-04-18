@@ -10,7 +10,7 @@ import java.io.FileReader;
 /* Codigo del parser, se copia integramente a la clase final.
     Agregamos el manejo de errores. */
 parser code {:
-    
+
     /* Reporte de error encontrado. */
     public void report_error(String message, Object info) {
         StringBuilder m = new StringBuilder("Error");
