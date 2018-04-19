@@ -121,7 +121,6 @@ COMENTARIO_LINEA	= \/\/{CARACTER}*{FIN_LINEA}?
 ESPACIO     =       {FIN_LINEA} | [ \t\f]
 
 CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
-DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^=|:|::
 
 %%
 
@@ -247,10 +246,14 @@ DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^
 			return symbol(sym.MULTIPLICACION);
 		}
 
+
 "\^"
 		{
 			return symbol(sym.POTENCIA);
 		}
+
+
+
 
 "-"
 		{
@@ -259,7 +262,7 @@ DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^
 
 "="
 		{
-			return symbol(sym.IGUAL);
+			return symbol(sym.ASIGNACION);
 		}
 
 {MOD}
@@ -281,12 +284,12 @@ DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^
 
 "<"
     {
-          return symbol(sym.OC_MENORQUE);
+          return symbol(sym.MENORQUE);
     }
 
 ">"
     {
-        return symbol(sym.OC_MAYORQUE);
+        return symbol(sym.MAYORQUE);
     }
 
 {MEI}
@@ -414,10 +417,43 @@ DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^
 	    /* no haceer nada*/
 	}
 
-{DELIMITADOR}
-        {
-            return symbol(sym.DELIMITADOR,new String(yytext()));
-        }
+
+"["
+    {
+        return symbol(sym.CORCHETEABIERTO);
+    }
+
+"]"
+     {
+            return symbol(sym.CORCHETECERRADO);
+     }
+
+"{"
+     {
+            return symbol(sym.LLAVEABIERTO);
+     }
+
+"}"
+     {
+            return symbol(sym.LLAVECERRADO);
+     }
+
+"("
+       {
+              return symbol(sym.PARENTESISABIERTO);
+       }
+
+
+")"
+       {
+              return symbol(sym.PARENTESISCERRADO);
+       }
+
+":"
+    {
+    return symbol(sym.DOSPUNTOS);
+    }
+
 
 {ESPACIO}
         {
@@ -429,7 +465,6 @@ DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^
            return symbol(sym.CADENA,new String(yytext()));
         }
 
-
 {VERDADERO}
         {
            return symbol(sym.VERDADERO);
@@ -440,5 +475,4 @@ DELIMITADOR = \[|\]|\+=|\-=|%=|>>=|<<=|\*=|&=|\{|\}|\(|\)|\/=|\|=|\*\*=|\/\/=|\^
         }
 
 
-[^]     { throw new Error("Illegal character <"
-            + yytext()+">"); }
+[^]     { throw new Error("Illegal character <" + yytext()+">"); }
