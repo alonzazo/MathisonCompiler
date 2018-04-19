@@ -7,11 +7,10 @@ package SintacticalAnalizer;
 
 import java_cup.runtime.*;
 import java.io.FileReader;
-import java_cup.runtime.XMLElement;
 import LexicalAnalizer.Lexer;
-import org.omg.CORBA.portable.InputStream;
-
 import java.util.Scanner;
+import java_cup.runtime.XMLElement;
+
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
   */
 @SuppressWarnings({"rawtypes"})
@@ -958,24 +957,22 @@ public class Parser extends java_cup.runtime.lr_parser {
                   //java.io.FileInputStream stream = new java.io.FileInputStream(path);
 
                   //Se utiliza getResource para como root la carpeta Resources como Root
-                  //java.io.Reader reader = new java.io.InputStreamReader(new java.io.FileInputStream(args[i]), encodingName);
-
                     java.io.Reader reader = new java.io.InputStreamReader(Parser.class.getResourceAsStream("../" + args[i]), encodingName);
                     lexer = new Lexer(reader);
 
-                    //--------------------------------------------------------Recorrido sobre el LEXER (Etapa 3)
-                    boolean flag = true;
-                    Symbol currentSymbol;
-                    while (flag) {
-                        currentSymbol = lexer.next_token();
-                        if (currentSymbol.value == null) System.out.println(sym.terminalNames[currentSymbol.sym]);
-                        else System.out.println(sym.terminalNames[currentSymbol.sym] +" " + currentSymbol.value );
-                        if (0 == currentSymbol.sym) flag = false;
-                    }
+                                        //--------------------------------------------------------Recorrido sobre el LEXER (Etapa 3)
+                                        boolean flag = true;
+                                        Symbol currentSymbol;
+                                        while (flag) {
+                                            currentSymbol = lexer.next_token();
+                                            if (currentSymbol.value == null) System.out.println(sym.terminalNames[currentSymbol.sym]);
+                                            else System.out.println(sym.terminalNames[currentSymbol.sym] +" " + currentSymbol.value );
+                                            if (0 == currentSymbol.sym) flag = false;
+                                        }
 
-                    //--------------------------------------------------------Parser
-                  Parser asin = new Parser(lexer);
-                    Object result = asin.parse().value;
+                                        //--------------------------------------------------------Aplicacion de PARSER
+                                      Parser asin = new Parser(lexer);
+                                        Object result = asin.parse().value;
                 }
                 catch (java.io.FileNotFoundException e) {
                   System.out.println("File not found : \""+args[i]+"\"" + e.getMessage());
