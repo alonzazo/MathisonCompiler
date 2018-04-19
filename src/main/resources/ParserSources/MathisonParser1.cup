@@ -1,11 +1,13 @@
  
    
 /* ---------------Seccion de declaraciones preliminares--------------------*/
-package ejemplocup;
+package SintacticalAnalizer;
 
 /* Import the class java_cup.runtime.*  */
 import java_cup.runtime.*;
 import java.io.FileReader;
+import LexicalAnalizer.Lexer;
+import java.util.Scanner;
    
 /* Codigo del parser, se copia integramente a la clase final.
     Agregamos el manejo de errores. */
@@ -43,7 +45,7 @@ parser code {:
             //Intervención para no tomar como entrada los parámetros del programa
             System.out.println("Escriba la dirección del archivo que desea analizar:");
             Scanner scan = new Scanner(System.in);
-            argv = scan.nextLine().split(" ");
+            args = scan.nextLine().split(" ");
             //--------------------------------------------------------FIN DE INTERVENCIÓN
 
             if (args.length == 0) {
