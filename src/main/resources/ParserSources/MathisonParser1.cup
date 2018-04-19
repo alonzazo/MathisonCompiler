@@ -70,11 +70,12 @@ parser code {:
                   //java.io.FileInputStream stream = new java.io.FileInputStream(path);
 
                   //Se utiliza getResource para como root la carpeta Resources como Root
-                  java.io.Reader reader = new java.io.InputStreamReader(Lexer.class.getResourceAsStream(argv[i]), encodingName);
-                  Parser asin = new Parser(
-                                      new Lexer(reader));
-                              Object result = asin.parse().value;
-                              System.out.println("\n*** Resultados finales ***");
+                  java.io.Reader reader = new java.io.InputStreamReader(new java.io.FileInputStream(argv[i]), encodingName);
+                                    //java.io.Reader reader = new java.io.InputStreamReader("C:\\Users\\Daniel\\IdeaProjects\\MathisonCompiler\\src\\main\\resources\\Codes\\eratostenes.mathison", encodingName);
+                                    Parser asin = new Parser(
+                                                        new Lexer(reader));
+                                                Object result = asin.parse().value;
+                                                System.out.println("\n*** Resultados finales ***");
                 }
                 catch (java.io.FileNotFoundException e) {
                   System.out.println("File not found : \""+argv[i]+"\"" + e.getMessage());
@@ -174,13 +175,19 @@ non terminal Integer    expr, factor, termino;
    su procesado.
 */
 
+    expr_list ::= Y | O | PARA | DESDE | HASTA | AVANCE | MIENTRAS | HACER | SI | SINO | DEVOLVER | PROC | CLASE | REC | CAD | BOOL | PUBLICO | PRIVADO | IMPRIMIR | LEER | FIN | VERDADERO | FALSO | IMPORTAR |INTENTAR | ATRAPAR | LANZAR | CONSTANTE | REVISAR | CASO
+                  | COMO | DEFECTO | CON | TERMINAR | EXCEPTO | MOSTRAR | EJECUTAR | NUM | EN | CONTINUAR | FINALMENTE | MEI | MAI | II | MENORQUE | MAYORQUE | MENOROIGUAL | MAYOROIGUAL | DISTINTO
+                  | SUMA | RESTA | MULTIPLICACION | DIVISION | MOD | POTENCIA | ASIGNACION | IGUAL | CORCHETEABIERTO | CORCHETECERRADO | LLAVEABIERTO | LLAVECERRADO | PARENTESISABIERTO | PARENTESISCERRADO | DOSPUNTOS | NUMERO | VAR | DELIMITADOR | CADENA;
+
+    expr_list ::= expr_list expr_list;
+    /*
     expr_list ::= expr_list expr_part
                   |
                   expr_part
                   ;
-
+    */
 /* 'expr_part' se compone de una expr seguida de SEMI, o de una asign seguida de SEMI.
-   asign:a esta estableciendo que a representa al objeto asociado a asign, entre {: :}
+   asign:a esta estableciendo que a representa al objeto asociado a asign | entre {: :}
    se coloca el sodigo en java para las acciones a tomar al cumplirse una produccion.
 */
 /*
