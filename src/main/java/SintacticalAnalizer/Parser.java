@@ -951,7 +951,7 @@ public class Parser extends java_cup.runtime.lr_parser {
                 }
               }
               for (int i = firstFilePos; i < args.length; i++) {
-                //Lexer scanner = null;
+                Lexer lexer = null;
                 try {
 
                   //String path = Lexer.class.getResource(args[i]).getPath();
@@ -960,11 +960,22 @@ public class Parser extends java_cup.runtime.lr_parser {
                   //Se utiliza getResource para como root la carpeta Resources como Root
                   //java.io.Reader reader = new java.io.InputStreamReader(new java.io.FileInputStream(args[i]), encodingName);
 
-                  java.io.Reader reader = new java.io.InputStreamReader(Parser.class.getResourceAsStream("../" + args[i]), encodingName);
-                                    Parser asin = new Parser(
-                                                        new Lexer(reader));
-                                                Object result = asin.parse().value;
-                                                System.out.println("\n*** Resultados finales ***");
+                    java.io.Reader reader = new java.io.InputStreamReader(Parser.class.getResourceAsStream("../" + args[i]), encodingName);
+                    lexer = new Lexer(reader);
+
+                    //--------------------------------------------------------Recorrido sobre el LEXER (Etapa 3)
+                    boolean flag = true;
+                    Symbol currentSymbol;
+                    while (flag) {
+                        currentSymbol = lexer.next_token();
+                        if (currentSymbol.value == null) System.out.println(sym.terminalNames[currentSymbol.sym]);
+                        else System.out.println(sym.terminalNames[currentSymbol.sym] +" " + currentSymbol.value );
+                        if (0 == currentSymbol.sym) flag = false;
+                    }
+
+                    //--------------------------------------------------------Parser
+                  Parser asin = new Parser(lexer);
+                    Object result = asin.parse().value;
                 }
                 catch (java.io.FileNotFoundException e) {
                   System.out.println("File not found : \""+args[i]+"\"" + e.getMessage());
