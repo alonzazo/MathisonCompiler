@@ -39,10 +39,56 @@ parser code {:
        de simbolos correspondiente. */
     public static void main(String[] args){
         try {
-            AnalizadorSintactico asin = new AnalizadorSintactico(
-                    new AnalizadorLexico( new FileReader(args[0])));
-            Object result = asin.parse().value;
-            System.out.println("\n*** Resultados finales ***");
+        //--------------------------------------------------------INICIO DE INTERVENCIÓN
+            //Intervención para no tomar como entrada los parámetros del programa
+            System.out.println("Escriba la dirección del archivo que desea analizar:");
+            Scanner scan = new Scanner(System.in);
+            argv = scan.nextLine().split(" ");
+            //--------------------------------------------------------FIN DE INTERVENCIÓN
+
+            if (argv.length == 0) {
+              System.out.println("Usage : java Lexer [ --encoding <name> ] <inputfile(s)>");
+            }
+            else {
+              int firstFilePos = 0;
+              String encodingName = "UTF-8";
+              if (argv[0].equals("--encoding")) {
+                firstFilePos = 2;
+                encodingName = argv[1];
+                try {
+                  java.nio.charset.Charset.forName(encodingName); // Side-effect: is encodingName valid?
+                } catch (Exception e) {
+                  System.out.println("Invalid encoding '" + encodingName + "'");
+                  return;
+                }
+              }
+              for (int i = firstFilePos; i < argv.length; i++) {
+                Lexer scanner = null;
+                try {
+
+                  //String path = Lexer.class.getResource(argv[i]).getPath();
+                  //java.io.FileInputStream stream = new java.io.FileInputStream(path);
+
+                  //Se utiliza getResource para como root la carpeta Resources como Root
+                  java.io.Reader reader = new java.io.InputStreamReader(Lexer.class.getResourceAsStream(argv[i]), encodingName);
+                  Parser asin = new Parser(
+                                      new Lexer(reader));
+                              Object result = asin.parse().value;
+                              System.out.println("\n*** Resultados finales ***");
+                }
+                catch (java.io.FileNotFoundException e) {
+                  System.out.println("File not found : \""+argv[i]+"\"" + e.getMessage());
+                }
+                catch (java.io.IOException e) {
+                  System.out.println("IO error scanning file \""+argv[i]+"\"");
+                  System.out.println(e);
+                }
+                catch (Exception e) {
+                  System.out.println("Unexpected exception:");
+                  e.printStackTrace();
+                }
+              }
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -87,7 +133,7 @@ non terminal Integer    expr, factor, termino;
   Precedencia de los no terminales, no sirve con simbolos terminales.
   Por eso no la usamos. Además indica si se asocia a izquierda o derecha.
 */
-  /*precedence left OP_SUMA, OP_RESTA; 
+  /*precedence left OP_SUMA, OP_RESTA;
   precedence left OP_MULT;*/
 
 
@@ -118,30 +164,31 @@ non terminal Integer    expr, factor, termino;
    termina en simbolos terminales se dice que no reduce, y por lo tanto nunca se finaliza
    su procesado.
 */
-   
+
     expr_list ::= expr_list expr_part
                   |
                   expr_part
                   ;
+
 /* 'expr_part' se compone de una expr seguida de SEMI, o de una asign seguida de SEMI.
    asign:a esta estableciendo que a representa al objeto asociado a asign, entre {: :}
    se coloca el sodigo en java para las acciones a tomar al cumplirse una produccion.
 */
-   
+/*
    expr_part ::= expr:e
                   {:
                     System.out.println(" = " + e); 
                   :} 
                   SEMI
                  ;
-                  
+*/
 /* 'expr' puede ser una expresion que inicia por numero entero op_suma expr,
   de esa forma se realiza una suma. Tambien puede ser un numero entero, con esto
   se devuelve el valor del entero. En RESULT se almacena el valor de las acciones,
   y se pasa al siguiente nivel de la gramatica.
 */              
 
-   expr      ::=  expr:e OP_SUMA factor:f
+/*   expr      ::=  expr:e OP_SUMA factor:f
                   {:
                     RESULT = new Integer(e.intValue() + f.intValue());
                   :}
@@ -156,8 +203,8 @@ non terminal Integer    expr, factor, termino;
                     RESULT = n; 
                   :}
                   ;
-
-factor        ::=  factor:f OP_MULT termino:e
+*/
+/*factor        ::=  factor:f OP_MULT termino:e
                   {:
                     RESULT = new Integer(f.intValue() * e.intValue());
                   :}
@@ -167,8 +214,8 @@ factor        ::=  factor:f OP_MULT termino:e
                     RESULT = t;
                   :}
                   ;
-
-termino       ::=  PARENIZQ expr:e PARENDER
+*/
+/*termino       ::=  PARENIZQ expr:e PARENDER
                   {:
                     RESULT = e;
                   :}
@@ -177,4 +224,5 @@ termino       ::=  PARENIZQ expr:e PARENDER
                   {:
                     RESULT = e;
                   :}
-                  ; 
+                  ;
+*/
