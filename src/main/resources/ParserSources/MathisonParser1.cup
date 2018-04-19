@@ -84,6 +84,7 @@ parser code {:
                                             else System.out.println(sym.terminalNames[currentSymbol.sym] +" " + currentSymbol.value );
                                             if (0 == currentSymbol.sym) flag = false;
                                         }
+                                        lexer.yyreset(new java.io.InputStreamReader(Parser.class.getResourceAsStream("../" + args[i]), encodingName)); //Reseteamos el Lexer
 
                                         //--------------------------------------------------------Aplicacion de PARSER
                                       Parser asin = new Parser(lexer);
@@ -189,7 +190,7 @@ non terminal Integer    expr, factor, termino;
 
 
 
-    expr_list ::= expr_list expr_part;
+    expr_list ::= expr_part expr_list;
 
     expr_part ::= Y | O | PARA | DESDE | HASTA | AVANCE | MIENTRAS | HACER | SI | SINO | DEVOLVER | PROC | CLASE | REC | CAD | BOOL | PUBLICO | PRIVADO | IMPRIMIR | LEER | FIN | VERDADERO | FALSO | IMPORTAR |INTENTAR | ATRAPAR | LANZAR | CONSTANTE | REVISAR | CASO
                       | COMO | DEFECTO | CON | TERMINAR | EXCEPTO | MOSTRAR | EJECUTAR | NUM | EN | CONTINUAR | FINALMENTE | MEI | MAI | II | MENORQUE | MAYORQUE | MENOROIGUAL | MAYOROIGUAL | DISTINTO
