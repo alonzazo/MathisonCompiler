@@ -190,7 +190,8 @@ non terminal Integer    expr, factor, termino;
 
 
 
-    expr_list ::= expr_part expr_list;
+    expr_list ::= expr_part expr_list
+                    | expr_part;
 
     expr_part ::= Y | O | PARA | DESDE | HASTA | AVANCE | MIENTRAS | HACER | SI | SINO | DEVOLVER | PROC | CLASE | REC | CAD | BOOL | PUBLICO | PRIVADO | IMPRIMIR | LEER | FIN | VERDADERO | FALSO | IMPORTAR |INTENTAR | ATRAPAR | LANZAR | CONSTANTE | REVISAR | CASO
                       | COMO | DEFECTO | CON | TERMINAR | EXCEPTO | MOSTRAR | EJECUTAR | NUM | EN | CONTINUAR | FINALMENTE | MEI | MAI | II | MENORQUE | MAYORQUE | MENOROIGUAL | MAYOROIGUAL | DISTINTO
