@@ -1,7 +1,7 @@
  
    
 /* ---------------Seccion de declaraciones preliminares--------------------*/
-package SintacticalAnalizer;
+package SyntacticalAnalizer;
 
 /* Import the class java_cup.runtime.*  */
 import java_cup.runtime.*;
@@ -146,7 +146,7 @@ terminal     String CADENA;
    Primero se lista los no terminales que tienen un valor Object y despues
    se lista los no terminales que tienen un entero. Un Object se refiere a que
    no tienen tipo, pudiendo ser entero o String. */
-non terminal Object     expr_list, expr_part;
+non terminal            expr_list, expr_part;
 non terminal Integer    expr, factor, termino;
    
 
@@ -190,11 +190,17 @@ non terminal Integer    expr, factor, termino;
 
 
 
-    expr_list ::= expr_part expr_list;
+    expr_list ::= expr_list expr_part:e     //{: System.out.println(e);:}
+                  | expr_part:e             //{: System.out.println(e);:}
+                  ;
 
-    expr_part ::= Y | O | PARA | DESDE | HASTA | AVANCE | MIENTRAS | HACER | SI | SINO | DEVOLVER | PROC | CLASE | REC | CAD | BOOL | PUBLICO | PRIVADO | IMPRIMIR | LEER | FIN | VERDADERO | FALSO | IMPORTAR |INTENTAR | ATRAPAR | LANZAR | CONSTANTE | REVISAR | CASO
-                      | COMO | DEFECTO | CON | TERMINAR | EXCEPTO | MOSTRAR | EJECUTAR | NUM | EN | CONTINUAR | FINALMENTE | MEI | MAI | II | MENORQUE | MAYORQUE | MENOROIGUAL | MAYOROIGUAL | DISTINTO
-                      | SUMA | RESTA | MULTIPLICACION | DIVISION | MOD | POTENCIA | ASIGNACION | IGUAL | CORCHETEABIERTO | CORCHETECERRADO | LLAVEABIERTO | LLAVECERRADO | PARENTESISABIERTO | PARENTESISCERRADO | DOSPUNTOS | NUMERO | VAR | DELIMITADOR | CADENA;
+    expr_part ::= Y | O | PARA | DESDE | HASTA | AVANCE | MIENTRAS | HACER | SI | SINO | DEVOLVER | PROC | CLASE
+                    | REC | CAD | BOOL | PUBLICO | PRIVADO | IMPRIMIR | LEER | FIN | VERDADERO | FALSO | IMPORTAR
+                    | INTENTAR | ATRAPAR | LANZAR | CONSTANTE | REVISAR | CASO | COMO | DEFECTO | CON | TERMINAR
+                    | EXCEPTO | MOSTRAR | EJECUTAR | NUM | EN | CONTINUAR | FINALMENTE | MEI | MAI | II | MENORQUE
+                    | MAYORQUE | MENOROIGUAL | MAYOROIGUAL | DISTINTO | SUMA | RESTA | MULTIPLICACION | DIVISION | MOD
+                    | POTENCIA | ASIGNACION | IGUAL | CORCHETEABIERTO | CORCHETECERRADO | LLAVEABIERTO | LLAVECERRADO
+                    | PARENTESISABIERTO | PARENTESISCERRADO | DOSPUNTOS | NUMERO | VAR | DELIMITADOR | CADENA;
     /*
     expr_list ::= expr_list expr_part
                   |
