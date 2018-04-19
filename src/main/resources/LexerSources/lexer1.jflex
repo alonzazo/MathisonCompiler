@@ -474,5 +474,10 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
             return symbol(sym.FALSO);
         }
 
+ <<EOF>>
+        {
+            return symbol(sym.EOF);
+        }
+
 
 [^]     { throw new Error("Illegal character <" + yytext()+">"); }
