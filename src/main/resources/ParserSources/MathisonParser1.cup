@@ -76,6 +76,7 @@ parser code {:
                     lexer = new Lexer(reader);
 
                                         //--------------------------------------------------------Recorrido sobre el LEXER (Etapa 3)
+                                        /*
                                         boolean flag = true;
                                         Symbol currentSymbol;
                                         while (flag) {
@@ -85,7 +86,7 @@ parser code {:
                                             if (0 == currentSymbol.sym) flag = false;
                                         }
                                         lexer.yyreset(new java.io.InputStreamReader(Parser.class.getResourceAsStream("../" + args[i]), encodingName)); //Reseteamos el Lexer
-
+                                        */
                                         //--------------------------------------------------------Aplicacion de PARSER
                                       Parser asin = new Parser(lexer);
                                         Object result = asin.parse().value;
@@ -165,24 +166,32 @@ non terminal Integer    expr, factor, termino;
 /* La gramatica de nuestro analizador.
    
    expr_list ::=   expr_list expr_part
+                                {: System.out.println();:}
                  | expr_part
    expr_part ::=   expr SEMI
    expr      ::=   expr PLUS factor
+                                {: System.out.println();:}
                  | expr MINUS factor
+                                {: System.out.println();:}
                  | factor
    factor    ::=   factor TIMES term
+                                {: System.out.println();:}
                  | factor DIVIDE term
+                                {: System.out.println();:}
                  | term
    term     ::=    LPAREN expr RPAREN
+                                {: System.out.println();:}
                  | NUMBER
-                 | ID     
+                                {: System.out.println();:}
+                 | ID
 */
    
 /* 'expr_list' es la raiz de la gramatica. Una 'expr_list' puede ser una 'expr_list'
    seguida de una expr_part, o puede ser una expr_part.
    Un terminal o no terminal se define <termino> ::= termino1 termino2 ... terminoN.;
    donde termino puede ser terminal o no terminal, solo se permite un simbolo a la
-   izquierda. La | sirve para indicar que es una produccion u otra.
+   izquierda. La                {: System.out.println();:}
+   | sirve para indicar que es una produccion u otra.
    Debemos pasar de simbolos no terminales a simbolos terminales. Una gramatica que no
    termina en simbolos terminales se dice que no reduce, y por lo tanto nunca se finaliza
    su procesado.
@@ -190,17 +199,79 @@ non terminal Integer    expr, factor, termino;
 
 
 
-    expr_list ::= expr_part:e expr_list      //{: System.out.println(e);:}
-                  | expr_part:e             //{: System.out.println(e);:}
+    expr_list ::= expr_part expr_list      //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
+                  | expr_part             //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
                   ;
 
-    expr_part ::= Y | O | PARA | DESDE | HASTA | AVANCE | MIENTRAS | HACER | SI | SINO | DEVOLVER | PROC | CLASE
-                    | REC | CAD | BOOL | PUBLICO | PRIVADO | IMPRIMIR | LEER | FIN | VERDADERO | FALSO | IMPORTAR
-                    | INTENTAR | ATRAPAR | LANZAR | CONSTANTE | REVISAR | CASO | COMO | DEFECTO | CON | TERMINAR
-                    | EXCEPTO | MOSTRAR | EJECUTAR | NUM | EN | CONTINUAR | FINALMENTE | MEI | MAI | II | MENORQUE
-                    | MAYORQUE | MENOROIGUAL | MAYOROIGUAL | DISTINTO | SUMA | RESTA | MULTIPLICACION | DIVISION | MOD
-                    | POTENCIA | ASIGNACION | IGUAL | CORCHETEABIERTO | CORCHETECERRADO | LLAVEABIERTO | LLAVECERRADO
-                    | PARENTESISABIERTO | PARENTESISCERRADO | DOSPUNTOS | NUMERO | VAR | DELIMITADOR | CADENA;
+    expr_part ::= Y                 {: System.out.println("Y");:}
+                | O                 {: System.out.println("O");:}
+                | PARA              {: System.out.println("PARA");:}
+                | DESDE             {: System.out.println("DESDE");:}
+                | HASTA             {: System.out.println("HASTA");:}
+                | AVANCE            {: System.out.println("AVANCE");:}
+                | MIENTRAS          {: System.out.println("MIENTRAS");:}
+                | HACER             {: System.out.println("HACER");:}
+                | SI                {: System.out.println("SI");:}
+                | SINO              {: System.out.println("SINO");:}
+                | DEVOLVER          {: System.out.println("DEVOLVER");:}
+                | PROC              {: System.out.println("PROC");:}
+                | CLASE             {: System.out.println("CLASE");:}
+                | REC               {: System.out.println("REC");:}
+                | CAD               {: System.out.println("CAD");:}
+                | BOOL              {: System.out.println("BOOL");:}
+                | PUBLICO           {: System.out.println("PUBLICO");:}
+                | PRIVADO           {: System.out.println("PRIVADO");:}
+                | IMPRIMIR          {: System.out.println("IMPRIMIR");:}
+                | LEER              {: System.out.println("LEER");:}
+                | FIN               {: System.out.println("FIN");:}
+                | VERDADERO         {: System.out.println("VERDADERO");:}
+                | FALSO             {: System.out.println("FALSO");:}
+                | IMPORTAR          {: System.out.println("IMPORTAR");:}
+                | INTENTAR          {: System.out.println("INTENTAR");:}
+                | ATRAPAR           {: System.out.println("ATRAPAR");:}
+                | LANZAR            {: System.out.println("LANZAR");:}
+                | CONSTANTE         {: System.out.println("CONSTANTE");:}
+                | REVISAR           {: System.out.println("REVISAR");:}
+                | CASO              {: System.out.println("CASO");:}
+                | COMO              {: System.out.println("COMO");:}
+                | DEFECTO           {: System.out.println("DEFECTO");:}
+                | CON               {: System.out.println("CON");:}
+                | TERMINAR          {: System.out.println("TERMINAR");:}
+                | EXCEPTO           {: System.out.println("EXCEPTO");:}
+                | MOSTRAR           {: System.out.println("MOSTRAR");:}
+                | EJECUTAR          {: System.out.println("EJECUTAR");:}
+                | NUM               {: System.out.println("NUM");:}
+                | EN                {: System.out.println("EN");:}
+                | CONTINUAR         {: System.out.println("CONTINUAR");:}
+                | FINALMENTE        {: System.out.println("FINALMENTE");:}
+                | MEI               {: System.out.println("MEI");:}
+                | MAI               {: System.out.println("MAI");:}
+                | II                {: System.out.println("II");:}
+                | MENORQUE          {: System.out.println("MENORQUE");:}
+                | MAYORQUE          {: System.out.println("MAYORQUE");:}
+                | MENOROIGUAL       {: System.out.println("MENOROIGUAL");:}
+                | MAYOROIGUAL       {: System.out.println("MAYOROIGUAL");:}
+                | DISTINTO          {: System.out.println("DISTINTO");:}
+                | SUMA              {: System.out.println("SUMA");:}
+                | RESTA             {: System.out.println("RESTA");:}
+                | MULTIPLICACION    {: System.out.println("MUTIPLICACION");:}
+                | DIVISION          {: System.out.println("DIVISION");:}
+                | MOD               {: System.out.println("MOD");:}
+                | POTENCIA          {: System.out.println("POTENCIA");:}
+                | ASIGNACION        {: System.out.println("ASIGNACION");:}
+                | IGUAL             {: System.out.println("IGUAL");:}
+                | CORCHETEABIERTO   {: System.out.println("CORCHETEABIERTO");:}
+                | CORCHETECERRADO   {: System.out.println("CORCHETECERRADO");:}
+                | LLAVEABIERTO      {: System.out.println("LLAVEABIERTO");:}
+                | LLAVECERRADO      {: System.out.println("LLAVECERRADO");:}
+                | PARENTESISABIERTO {: System.out.println("PARENTESISABIERTO");:}
+                | PARENTESISCERRADO {: System.out.println("PARENTESISCERRADO");:}
+                | DOSPUNTOS         {: System.out.println("DOSPUNTOS");:}
+                | NUMERO:e            {: System.out.println("NUMERO " + e);:}
+                | VAR:e               {: System.out.println("VAR " + e);:}
+                | DELIMITADOR:e       {: System.out.println("DELIMITADOR " + e);:}
+                | CADENA:e            {: System.out.println("CADENA" + e);:}
+                ;
     /*
     expr_list ::= expr_list expr_part
                   |
@@ -208,7 +279,8 @@ non terminal Integer    expr, factor, termino;
                   ;
     */
 /* 'expr_part' se compone de una expr seguida de SEMI, o de una asign seguida de SEMI.
-   asign:a esta estableciendo que a representa al objeto asociado a asign | entre {: :}
+   asign:a esta estableciendo que a representa al objeto asociado a asign               {: System.out.println();:}
+   | entre {: :}
    se coloca el sodigo en java para las acciones a tomar al cumplirse una produccion.
 */
 /*
