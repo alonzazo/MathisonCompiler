@@ -109,7 +109,7 @@ II			=		\=\=
 
 //Otras declaraciones
 
-NUMERO 		=    		\-?[0-9]+(\.[0-9]+)?
+NUMERO 		=    	[0-9]+(\.[0-9]+)?
 VAR 		= 		([a-z]|[A-Z])([a-z]|[A-Z]|_|[0-9])*
 
 FIN_LINEA	=		(\r|\n)
