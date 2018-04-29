@@ -184,16 +184,61 @@ non terminal    ciclo_para, ciclo_mientras, condicion;
 
    /*sentencia ::= ciclo_para
                  | ciclo_mientras
-                 | condicion
-                 | expresion
+                 | condicion_si
+                 | condicion_revisar
+                 | asignacion
                  |
                  ;*/
 
-   ciclo_para ::= PARA VAR:v DESDE expresion HASTA expresion AVANCE NUMERO:n LLAVEABIERTO lista_sentencias LLAVECERRADO;
+   ciclo_para ::= PARA VAR:v DESDE expresion HASTA expresion_booleana AVANCE NUMERO:n LLAVEABIERTO lista_sentencias LLAVECERRADO;
 
-   ciclo_mientras ::= MIENTRAS PARENTESISABIERTO expresion PARENTESISCERRADO HACER LLAVEABIERTO lista_sentencias LLAVECERRADO
-                      | HACER LLAVEABIERTO lista_sentencias LLAVECERRADO MIENTRAS PARENTESISABIERTO expresion PARENTESISCERRADO DELIMITADOR
-                      ;
+   ciclo_mientras ::= MIENTRAS PARENTESISABIERTO expresion_booleana PARENTESISCERRADO HACER LLAVEABIERTO lista_sentencias LLAVECERRADO
+                    | HACER LLAVEABIERTO lista_sentencias LLAVECERRADO MIENTRAS PARENTESISABIERTO expresion PARENTESISCERRADO DELIMITADOR
+                    ;
+
+   condicion_si ::= SI PARENTESISABIERTO expresion_booleana PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO si0
+                  ;
+
+   si0 ::= SINO LLAVEABIERTO lista_sentencias LLAVECERRADO
+         ;
+
+   condicion_revisar ::= REVISAR PARENTESISABIERTO expresion_numerica PARENTESISCERRADO LLAVEABIERTO revisar0 LLAVECERRADO
+                       ;
+
+   revisar0 :: = CASO expresion_numerica: lista_sentencias SALIR
+               | DEFECTO: lista_sentencias SALIR
+
+
+   asignacion ::= num asignacion
+                | cad asignacion
+                | boo asignacion
+                |
+                ;
+
+
+   num ::= NUMERO VAR:v num0
+         ;
+
+   num0 ::= ;
+          | = expresion_numerica;
+          ;
+
+
+   cad ::= CADENA VAR:v cad0
+         ;
+
+   cad0 ::= ;
+          | = expresion_cadena;
+          ;
+
+
+   boo ::= BOOL VAR:v boo0
+         ;
+
+   boo0 ::= ;
+          | = expresion_booleana;
+          ;
+
 
 /* La gramatica de nuestro analizador.
    
