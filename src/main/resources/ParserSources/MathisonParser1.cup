@@ -74,19 +74,6 @@ parser code {:
                   //Se utiliza getResource para como root la carpeta Resources como Root
                     java.io.Reader reader = new java.io.InputStreamReader(Parser.class.getResourceAsStream("../" + args[i]), encodingName);
                     lexer = new Lexer(reader);
-
-                                        //--------------------------------------------------------Recorrido sobre el LEXER (Etapa 3)
-                                        /*
-                                        boolean flag = true;
-                                        Symbol currentSymbol;
-                                        while (flag) {
-                                            currentSymbol = lexer.next_token();
-                                            if (currentSymbol.value == null) System.out.println(sym.terminalNames[currentSymbol.sym]);
-                                            else System.out.println(sym.terminalNames[currentSymbol.sym] +" " + currentSymbol.value );
-                                            if (0 == currentSymbol.sym) flag = false;
-                                        }
-                                        lexer.yyreset(new java.io.InputStreamReader(Parser.class.getResourceAsStream("../" + args[i]), encodingName)); //Reseteamos el Lexer
-                                        */
                                         //--------------------------------------------------------Aplicacion de PARSER
                                       Parser asin = new Parser(lexer);
                                         Object result = asin.parse().value;
@@ -110,8 +97,6 @@ parser code {:
     }
 :};
    
-
-   
 /* ------------Declaracion de simbolos terminales y no terminales---------- */
    
 /* Terminales (tokens obtenidos por el analizador lexico).  
@@ -119,37 +104,40 @@ parser code {:
    Terminales que no tienen un valor son listados primero, los terminales que
    tienen un valor como los enteros son listados en la segunda o demas lineas. */
 
-   //PALABRAS RESERVADAS
-terminal        Y, O, PARA, DESDE, HASTA, AVANCE, MIENTRAS, HACER, SI;
-terminal        SINO, DEVOLVER, PROC, CLASE, REC, CAD, BOOL, PUBLICO;
-terminal        PRIVADO, IMPRIMIR, LEER, FIN, VERDADERO, FALSO, IMPORTAR;
-terminal        INTENTAR, ATRAPAR, LANZAR, CONSTANTE, REVISAR, CASO;
-terminal        COMO, DEFECTO, CON, TERMINAR, EXCEPTO, MOSTRAR, EJECUTAR, NUM;
-terminal        EN, CONTINUAR, FINALMENTE;
+//PALABRAS RESERVADAS
+terminal    Y, O, PARA, DESDE, HASTA, AVANCE, MIENTRAS, HACER, SI;
+terminal    SINO, DEVOLVER, PROC, CLASE, REC, CAD, BOOL, PUBLICO;
+terminal    PRIVADO, IMPRIMIR, LEER, FIN, VERDADERO, FALSO, IMPORTAR;
+terminal    INTENTAR, ATRAPAR, LANZAR, CONSTANTE, REVISAR, CASO;
+terminal    COMO, DEFECTO, CON, TERMINAR, EXCEPTO, MOSTRAR, EJECUTAR, NUM;
+terminal    EN, CONTINUAR, FINALMENTE;
 
 //COMPARACION
-terminal        MEI, MAI, II, MENORQUE, MAYORQUE, MENOROIGUAL,MAYOROIGUAL,DISTINTO;
+terminal    MEI, MAI, II, MENORQUE, MAYORQUE, MENOROIGUAL,MAYOROIGUAL,DISTINTO;
 
 //ARITMETICA
-terminal        SUMA, RESTA, MULTIPLICACION, DIVISION, MOD, POTENCIA, ASIGNACION, IGUAL;
+terminal    SUMA, RESTA, MULTIPLICACION, DIVISION, MOD, POTENCIA, ASIGNACION, IGUAL;
 
 //DELIMITADOR
-terminal     CORCHETEABIERTO,CORCHETECERRADO,LLAVEABIERTO,LLAVECERRADO,PARENTESISABIERTO,PARENTESISCERRADO, DOSPUNTOS;
+terminal    CORCHETEABIERTO,CORCHETECERRADO,LLAVEABIERTO,LLAVECERRADO,PARENTESISABIERTO,PARENTESISCERRADO, DOSPUNTOS;
 
 //CON VALOR ASOCIADO
 terminal    Double NUMERO;
 terminal    String VAR;
 terminal    String DELIMITADOR;
-terminal     String CADENA;
+terminal    String CADENA;
 
 /* No terminales usados en la seccion gramatical. 
 
    Primero se lista los no terminales que tienen un valor Object y despues
    se lista los no terminales que tienen un entero. Un Object se refiere a que
    no tienen tipo, pudiendo ser entero o String. */
-non terminal Object     expr_list, expr_part;
-non terminal Integer    expr, factor, termino;
-   
+//non terminal Object     expr_list, expr_part;
+//non terminal Integer    expr, factor, termino;
+
+non terminal    programa, lista_clases, clase, cuerpo_clase, sentencia, lista_sentencias;
+non terminal    lista_metodos, metodo, lista_expresiones, expresion;
+non terminal    ciclo_para, ciclo_mientras, condicion;
 
 /* -------------Seccion de predencia y asociacion de los terminales----------- */
    
@@ -161,8 +149,97 @@ non terminal Integer    expr, factor, termino;
   precedence left OP_MULT;*/
 
 
-/* ------------------- Seccion de la gramatica ------------------------ */
-   
+/* ------------------------- Seccion de la gramatica ------------------------- */
+
+
+   programa ::= lista_clases
+                |
+                ;
+
+   lista_clases ::= clase lista_clases
+                    | clase
+                    ;
+
+   clase ::= PUBLICO CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO
+   	         | PRIVADO CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO
+   	         | CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO
+   	         ;
+
+   cuerpo_clase ::= cuerpo_clase expresion
+                    | cuerpo_clase metodo
+                    |
+                    ;
+
+   metodo ::= PUBLICO PROC VAR:v LLAVEABIERTO lista_sentencias LLAVECERRADO
+              | PRIVADO PROC VAR:v LLAVEABIERTO lista_sentencias LLAVECERRADO
+              | PROC VAR:v LLAVEABIERTO lista_sentencias LLAVECERRADO
+              ;
+
+   lista_sentencias ::= lista_sentencias ciclo_para
+                        | lista_sentencias ciclo_mientras
+                        | lista_sentencias condicion
+                        | lista_sentencias expresion
+                        |
+                        ;
+
+   /*sentencia ::= ciclo_para
+                 | ciclo_mientras
+                 | condicion_si
+                 | condicion_revisar
+                 | asignacion
+                 |
+                 ;*/
+
+   ciclo_para ::= PARA VAR:v DESDE expresion HASTA expresion_booleana AVANCE NUMERO:n LLAVEABIERTO lista_sentencias LLAVECERRADO;
+
+   ciclo_mientras ::= MIENTRAS PARENTESISABIERTO expresion_booleana PARENTESISCERRADO HACER LLAVEABIERTO lista_sentencias LLAVECERRADO
+                    | HACER LLAVEABIERTO lista_sentencias LLAVECERRADO MIENTRAS PARENTESISABIERTO expresion PARENTESISCERRADO DELIMITADOR
+                    ;
+
+   condicion_si ::= SI PARENTESISABIERTO expresion_booleana PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO si0
+                  ;
+
+   si0 ::= SINO LLAVEABIERTO lista_sentencias LLAVECERRADO
+         ;
+
+   condicion_revisar ::= REVISAR PARENTESISABIERTO expresion_numerica PARENTESISCERRADO LLAVEABIERTO revisar0 LLAVECERRADO
+                       ;
+
+   revisar0 :: = CASO expresion_numerica: lista_sentencias SALIR
+               | DEFECTO: lista_sentencias SALIR
+
+
+   asignacion ::= num asignacion
+                | cad asignacion
+                | boo asignacion
+                |
+                ;
+
+
+   num ::= NUMERO VAR:v num0
+         ;
+
+   num0 ::= ;
+          | = expresion_numerica;
+          ;
+
+
+   cad ::= CADENA VAR:v cad0
+         ;
+
+   cad0 ::= ;
+          | = expresion_cadena;
+          ;
+
+
+   boo ::= BOOL VAR:v boo0
+         ;
+
+   boo0 ::= ;
+          | = expresion_booleana;
+          ;
+
+
 /* La gramatica de nuestro analizador.
    
    expr_list ::=   expr_list expr_part
@@ -199,28 +276,18 @@ non terminal Integer    expr, factor, termino;
 
 
 
-    expr_list ::= expr_part expr_list      //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
-                  | expr_part             //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
-                  ;
+    //lista_expresiones ::= expresion lista_expresiones      //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
+      //            | expresion             //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
+        //          ;
 
-    expr_part ::= Y                 {: System.out.println("Y");:}
+    expresion ::= Y                 {: System.out.println("Y");:}
                 | O                 {: System.out.println("O");:}
-                | PARA              {: System.out.println("PARA");:}
-                | DESDE             {: System.out.println("DESDE");:}
-                | HASTA             {: System.out.println("HASTA");:}
-                | AVANCE            {: System.out.println("AVANCE");:}
-                | MIENTRAS          {: System.out.println("MIENTRAS");:}
-                | HACER             {: System.out.println("HACER");:}
                 | SI                {: System.out.println("SI");:}
                 | SINO              {: System.out.println("SINO");:}
                 | DEVOLVER          {: System.out.println("DEVOLVER");:}
-                | PROC              {: System.out.println("PROC");:}
-                | CLASE             {: System.out.println("CLASE");:}
                 | REC               {: System.out.println("REC");:}
                 | CAD               {: System.out.println("CAD");:}
                 | BOOL              {: System.out.println("BOOL");:}
-                | PUBLICO           {: System.out.println("PUBLICO");:}
-                | PRIVADO           {: System.out.println("PRIVADO");:}
                 | IMPRIMIR          {: System.out.println("IMPRIMIR");:}
                 | LEER              {: System.out.println("LEER");:}
                 | FIN               {: System.out.println("FIN");:}
@@ -262,15 +329,13 @@ non terminal Integer    expr, factor, termino;
                 | IGUAL             {: System.out.println("IGUAL");:}
                 | CORCHETEABIERTO   {: System.out.println("CORCHETEABIERTO");:}
                 | CORCHETECERRADO   {: System.out.println("CORCHETECERRADO");:}
-                | LLAVEABIERTO      {: System.out.println("LLAVEABIERTO");:}
-                | LLAVECERRADO      {: System.out.println("LLAVECERRADO");:}
                 | PARENTESISABIERTO {: System.out.println("PARENTESISABIERTO");:}
                 | PARENTESISCERRADO {: System.out.println("PARENTESISCERRADO");:}
                 | DOSPUNTOS         {: System.out.println("DOSPUNTOS");:}
-                | NUMERO:e            {: System.out.println("NUMERO " + e);:}
-                | VAR:e               {: System.out.println("VAR " + e);:}
-                | DELIMITADOR:e       {: System.out.println("DELIMITADOR " + e);:}
-                | CADENA:e            {: System.out.println("CADENA" + e);:}
+                | NUMERO:e          {: System.out.println("NUMERO " + e);:}
+                | VAR:e             {: System.out.println("VAR " + e);:}
+                | DELIMITADOR:e     {: System.out.println("DELIMITADOR " + e);:}
+                | CADENA:e          {: System.out.println("CADENA" + e);:}
                 ;
     /*
     expr_list ::= expr_list expr_part
