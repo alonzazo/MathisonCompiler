@@ -2,7 +2,7 @@
 Este es un comentario soez
 */
 
-num[] cribaEratostenes(num n)
+publico num[] cribaEratostenes(num n)
 {
 	si((n mod 1) ! 0 o (n < 0)) //Restricciones
 	{

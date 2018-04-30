@@ -119,7 +119,9 @@ terminal    MEI, MAI, II, MENORQUE, MAYORQUE, MENOROIGUAL,MAYOROIGUAL,DISTINTO;
 terminal    SUMA, RESTA, MULTIPLICACION, DIVISION, MOD, POTENCIA, ASIGNACION, IGUAL;
 
 //DELIMITADOR
-terminal    CORCHETEABIERTO,CORCHETECERRADO,LLAVEABIERTO,LLAVECERRADO,PARENTESISABIERTO,PARENTESISCERRADO, DOSPUNTOS;
+terminal    CORCHETEABIERTO,CORCHETECERRADO,LLAVEABIERTO,LLAVECERRADO,PARENTESISABIERTO,PARENTESISCERRADO, DOSPUNTOS, COMA;
+
+terminal SALIR;
 
 //CON VALOR ASOCIADO
 terminal    Double NUMERO;
@@ -136,8 +138,9 @@ terminal    String CADENA;
 //non terminal Integer    expr, factor, termino;
 
 non terminal    programa, lista_clases, clase, cuerpo_clase, sentencia, lista_sentencias;
-non terminal    lista_metodos, metodo, lista_expresiones, expresion;
-non terminal    ciclo_para, ciclo_mientras, condicion;
+non terminal    lista_metodos, metodo, lista_expresiones, expresion, lista_parametros, expresion_booleana, variable_arreglo;
+non terminal    ciclo_para, ciclo_mientras, condicion, condicion_si, sino; //condicion_revisar, expresion_numerica, revisar0, asignacion;
+non terminal    visibilidad, tipo_dato;
 
 /* -------------Seccion de predencia y asociacion de los terminales----------- */
    
@@ -152,35 +155,71 @@ non terminal    ciclo_para, ciclo_mientras, condicion;
 /* ------------------------- Seccion de la gramatica ------------------------- */
 
 
-   programa ::= lista_clases
-                |
-                ;
 
+////--------------------------------------------------------Estructura general
+//Un programa será un conjunto de clases y métodos
+//. Sí, debido a que se enseñará a niños, se permite
+//tener métodos sueltos. Además, tener un main (co
+//ntrolador estático) dentro de un objeto nunca tu
+//vo sentido.
+
+   programa ::= clase programa
+                | metodo programa
+                | clase
+                | metodo
+                ;
+/*
    lista_clases ::= clase lista_clases
                     | clase
                     ;
+*/
+   clase ::= visibilidad CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO
+           ;
+/*
+   lista_metodos ::= metodo lista_metodos
+                 |  metodo
+   	             ;
+*/
+   metodo ::= visibilidad PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO
+            | visibilidad PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO
+            ;
 
-   clase ::= PUBLICO CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO
-   	         | PRIVADO CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO
-   	         | CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO
-   	         ;
+    visibilidad ::= PUBLICO
+                       | PRIVADO
+                       |
+                       ;
 
+   lista_parametros ::= tipo_dato variable_arreglo COMA lista_parametros
+                    |   tipo_dato variable_arreglo
+                    ;
+
+   variable_arreglo ::= VAR:v
+                    | VAR:v CORCHETEABIERTO CORCHETECERRADO
+                    ;
+
+   tipo_dato ::=    CAD
+               |    NUM
+               |    VAR:tipo_no_primitivo
+               ;
+/*
    cuerpo_clase ::= cuerpo_clase expresion
                     | cuerpo_clase metodo
                     |
                     ;
-
-   metodo ::= PUBLICO PROC VAR:v LLAVEABIERTO lista_sentencias LLAVECERRADO
-              | PRIVADO PROC VAR:v LLAVEABIERTO lista_sentencias LLAVECERRADO
-              | PROC VAR:v LLAVEABIERTO lista_sentencias LLAVECERRADO
-              ;
-
+*/
+   cuerpo_clase ::= lista_expresiones
+                    ;
+/*
    lista_sentencias ::= lista_sentencias ciclo_para
                         | lista_sentencias ciclo_mientras
                         | lista_sentencias condicion
                         | lista_sentencias expresion
                         |
                         ;
+*/
+   lista_sentencias ::= lista_expresiones;
+
+
 
    /*sentencia ::= ciclo_para
                  | ciclo_mientras
@@ -189,57 +228,56 @@ non terminal    ciclo_para, ciclo_mientras, condicion;
                  | asignacion
                  |
                  ;*/
-
+/*
    ciclo_para ::= PARA VAR:v DESDE expresion HASTA expresion_booleana AVANCE NUMERO:n LLAVEABIERTO lista_sentencias LLAVECERRADO;
 
    ciclo_mientras ::= MIENTRAS PARENTESISABIERTO expresion_booleana PARENTESISCERRADO HACER LLAVEABIERTO lista_sentencias LLAVECERRADO
                     | HACER LLAVEABIERTO lista_sentencias LLAVECERRADO MIENTRAS PARENTESISABIERTO expresion PARENTESISCERRADO DELIMITADOR
                     ;
 
-   condicion_si ::= SI PARENTESISABIERTO expresion_booleana PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO si0
+   condicion_si ::= SI PARENTESISABIERTO expresion_booleana PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO sino
                   ;
 
-   si0 ::= SINO LLAVEABIERTO lista_sentencias LLAVECERRADO
+   sino ::= SINO LLAVEABIERTO lista_sentencias LLAVECERRADO
          ;
 
    condicion_revisar ::= REVISAR PARENTESISABIERTO expresion_numerica PARENTESISCERRADO LLAVEABIERTO revisar0 LLAVECERRADO
                        ;
 
-   revisar0 :: = CASO expresion_numerica: lista_sentencias SALIR
+   revisar0 ::= CASO expresion_numerica: lista_sentencias SALIR
                | DEFECTO: lista_sentencias SALIR
+               ;*/
 
-
-   asignacion ::= num asignacion
-                | cad asignacion
-                | boo asignacion
-                |
+/*
+   asignacion ::= NUM asignacion
+                | CAD asignacion
+                | BOOL asignacion
                 ;
 
 
    num ::= NUMERO VAR:v num0
          ;
 
-   num0 ::= ;
-          | = expresion_numerica;
-          ;
+   num0 ::= expresion_numerica;
+
 
 
    cad ::= CADENA VAR:v cad0
          ;
 
-   cad0 ::= ;
-          | = expresion_cadena;
-          ;
+   cad0 ::= expresion_cadena;
+
 
 
    boo ::= BOOL VAR:v boo0
          ;
 
-   boo0 ::= ;
-          | = expresion_booleana;
-          ;
-
-
+   boo0 ::= expresion_booleana;
+*/
+    //TODO: Extender las expresiones booleanas
+    //expresion_booleana ::= VERDADERO
+    //                    | FALSO
+                  //      ;
 /* La gramatica de nuestro analizador.
    
    expr_list ::=   expr_list expr_part
@@ -276,9 +314,9 @@ non terminal    ciclo_para, ciclo_mientras, condicion;
 
 
 
-    //lista_expresiones ::= expresion lista_expresiones      //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
-      //            | expresion             //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
-        //          ;
+    lista_expresiones ::= expresion lista_expresiones      //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
+                  | expresion             //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
+                  ;
 
     expresion ::= Y                 {: System.out.println("Y");:}
                 | O                 {: System.out.println("O");:}

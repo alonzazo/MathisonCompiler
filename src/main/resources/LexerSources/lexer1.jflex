@@ -384,7 +384,7 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
 
 {EJECUTAR}
 		{
-			return symbol(sym.EJECUTAR;
+			return symbol(sym.EJECUTAR);
         }
 
 {EN}    {
@@ -452,6 +452,11 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
 ":"
     {
     return symbol(sym.DOSPUNTOS);
+    }
+
+","
+    {
+    return symbol(sym.COMA);
     }
 
 
