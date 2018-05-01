@@ -140,7 +140,7 @@ terminal    String CADENA;
 non terminal    programa, lista_clases, clase, cuerpo_clase, sentencia, lista_sentencias;
 non terminal    lista_metodos, metodo, lista_expresiones, expresion, lista_parametros, expresion_booleana, variable_arreglo;
 non terminal    ciclo_para, ciclo_mientras, condicion, condicion_si, sino; //condicion_revisar, expresion_numerica, revisar0, asignacion;
-non terminal    visibilidad, tipo_dato;
+non terminal    visibilidad, tipo_dato, tipo_metodo;
 
 /* -------------Seccion de predencia y asociacion de los terminales----------- */
    
@@ -173,15 +173,15 @@ non terminal    visibilidad, tipo_dato;
                     | clase
                     ;
 */
-   clase ::= visibilidad CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO
+   clase ::= visibilidad CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: System.out.println("CLASE " + v);:}
            ;
 /*
    lista_metodos ::= metodo lista_metodos
                  |  metodo
    	             ;
 */
-   metodo ::= visibilidad PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO
-            | visibilidad PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO
+   metodo ::= visibilidad tipo_metodo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO     {: System.out.println("METODO " + v);:}
+            | visibilidad tipo_metodo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO                      {: System.out.println("METODO " + v);:}
             ;
 
     visibilidad ::= PUBLICO
@@ -199,25 +199,36 @@ non terminal    visibilidad, tipo_dato;
 
    tipo_dato ::=    CAD
                |    NUM
-               |    VAR:tipo_no_primitivo
+               |    BOOL
+               |    VAR:tipo_no_primitivo           //Una clase
                ;
-/*
+
+   tipo_metodo ::= PROC
+                | tipo_dato
+                ;
+
    cuerpo_clase ::= cuerpo_clase expresion
                     | cuerpo_clase metodo
                     |
                     ;
-*/
-   cuerpo_clase ::= lista_expresiones
-                    ;
-/*
+
+   /*cuerpo_clase ::= lista_expresiones
+                    ;*/
+
    lista_sentencias ::= lista_sentencias ciclo_para
                         | lista_sentencias ciclo_mientras
                         | lista_sentencias condicion
                         | lista_sentencias expresion
                         |
                         ;
-*/
-   lista_sentencias ::= lista_expresiones;
+
+
+
+
+    //TODO: Especificar más
+ /*  lista_sentencias ::= lista_expresiones
+                        ;
+                        */
 
 
 
@@ -324,8 +335,9 @@ non terminal    visibilidad, tipo_dato;
                 | SINO              {: System.out.println("SINO");:}
                 | DEVOLVER          {: System.out.println("DEVOLVER");:}
                 | REC               {: System.out.println("REC");:}
-                | CAD               {: System.out.println("CAD");:}
-                | BOOL              {: System.out.println("BOOL");:}
+                //| CAD               {: System.out.println("CAD");:}
+                //| BOOL              {: System.out.println("BOOL");:}
+
                 | IMPRIMIR          {: System.out.println("IMPRIMIR");:}
                 | LEER              {: System.out.println("LEER");:}
                 | FIN               {: System.out.println("FIN");:}
@@ -345,7 +357,7 @@ non terminal    visibilidad, tipo_dato;
                 | EXCEPTO           {: System.out.println("EXCEPTO");:}
                 | MOSTRAR           {: System.out.println("MOSTRAR");:}
                 | EJECUTAR          {: System.out.println("EJECUTAR");:}
-                | NUM               {: System.out.println("NUM");:}
+                //| NUM               {: System.out.println("NUM");:}
                 | EN                {: System.out.println("EN");:}
                 | CONTINUAR         {: System.out.println("CONTINUAR");:}
                 | FINALMENTE        {: System.out.println("FINALMENTE");:}
@@ -371,7 +383,7 @@ non terminal    visibilidad, tipo_dato;
                 | PARENTESISCERRADO {: System.out.println("PARENTESISCERRADO");:}
                 | DOSPUNTOS         {: System.out.println("DOSPUNTOS");:}
                 | NUMERO:e          {: System.out.println("NUMERO " + e);:}
-                | VAR:e             {: System.out.println("VAR " + e);:}
+                //| VAR:e             {: System.out.println("VAR " + e);:}
                 | DELIMITADOR:e     {: System.out.println("DELIMITADOR " + e);:}
                 | CADENA:e          {: System.out.println("CADENA" + e);:}
                 ;
