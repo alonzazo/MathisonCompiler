@@ -116,7 +116,7 @@ terminal    EN, CONTINUAR, FINALMENTE;
 terminal    MEI, MAI, II, MENORQUE, MAYORQUE, MENOROIGUAL,MAYOROIGUAL,DISTINTO;
 
 //ARITMETICA
-terminal    SUMA, RESTA, MULTIPLICACION, DIVISION, MOD, POTENCIA, ASIGNACION, IGUAL;
+terminal    SUMA, RESTA, MULTIPLICACION, DIVISION, MOD, POTENCIA, IGUAL;
 
 //DELIMITADOR
 terminal    CORCHETEABIERTO,CORCHETECERRADO,LLAVEABIERTO,LLAVECERRADO,PARENTESISABIERTO,PARENTESISCERRADO, DOSPUNTOS, COMA;
@@ -137,10 +137,12 @@ terminal    String CADENA;
 //non terminal Object     expr_list, expr_part;
 //non terminal Integer    expr, factor, termino;
 
-non terminal    programa, lista_clases, clase, cuerpo_clase, sentencia, lista_sentencias;
-non terminal    lista_metodos, metodo, lista_expresiones, expresion, lista_parametros, expresion_booleana, variable_arreglo;
-non terminal    ciclo_para, ciclo_mientras, condicion, condicion_si, sino; //condicion_revisar, expresion_numerica, revisar0, asignacion;
+non terminal    programa, lista_clases, clase, cuerpo_clase, lista_sentencias;
+non terminal    lista_metodos, metodo, lista_expresiones, expresion, lista_parametros, variable_arreglo;
+non terminal    ciclo_para, ciclo_mientras, condicion_si;
+non terminal    condicion_revisar, revisar0, sino, num, num0, cad, cad0, boo, boo0, declaracion;
 non terminal    visibilidad, tipo_dato, tipo_metodo;
+non terminal    expresion_numerica, expresion_cadena, expresion_booleana;
 
 /* -------------Seccion de predencia y asociacion de los terminales----------- */
    
@@ -174,160 +176,106 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
                     ;
 */
    clase ::= visibilidad CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: System.out.println("CLASE " + v);:}
-           ;
-/*
-   lista_metodos ::= metodo lista_metodos
-                 |  metodo
-   	             ;
-*/
+             ;
+
+   cuerpo_clase ::= expresion cuerpo_clase
+                    | metodo cuerpo_clase
+                    //| tipo_dato VAR:v cuerpo_clase
+                    |
+                    ;
+
    metodo ::= visibilidad tipo_metodo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO     {: System.out.println("METODO " + v);:}
             | visibilidad tipo_metodo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO                      {: System.out.println("METODO " + v);:}
             ;
 
     visibilidad ::= PUBLICO
-                       | PRIVADO
-                       |
-                       ;
+                    | PRIVADO
+                    |
+                    ;
 
    lista_parametros ::= tipo_dato variable_arreglo COMA lista_parametros
-                    |   tipo_dato variable_arreglo
-                    ;
+                        | tipo_dato variable_arreglo
+                        ;
 
    variable_arreglo ::= VAR:v
-                    | VAR:v CORCHETEABIERTO CORCHETECERRADO
-                    ;
+                        | VAR:v CORCHETEABIERTO CORCHETECERRADO
+                        ;
 
-   tipo_dato ::=    CAD
-               |    NUM
-               |    BOOL
-               |    VAR:tipo_no_primitivo           //Una clase
+   tipo_dato ::= CAD
+               | NUM
+               | BOOL
+               | VAR:tipo_no_primitivo           //Una clase
                ;
 
    tipo_metodo ::= PROC
                 | tipo_dato
                 ;
 
-   cuerpo_clase ::= cuerpo_clase expresion
-                    | cuerpo_clase metodo
-                    |
-                    ;
+//TODO: Especificar más
+//   lista_sentencias ::= lista_expresiones
+//                        ;
 
-   /*cuerpo_clase ::= lista_expresiones
-                    ;*/
-
-   lista_sentencias ::= lista_sentencias ciclo_para
-                        | lista_sentencias ciclo_mientras
-                        | lista_sentencias condicion
-                        | lista_sentencias expresion
+   lista_sentencias ::= ciclo_mientras lista_sentencias
+                        | ciclo_para lista_sentencias
+                        | condicion_si lista_sentencias
+                        | condicion_revisar lista_sentencias
+                        | declaracion lista_sentencias
                         |
                         ;
 
 
+   ciclo_para ::= PARA VAR:v DESDE expresion HASTA expresion AVANCE NUMERO:n LLAVEABIERTO lista_sentencias LLAVECERRADO;
 
-
-    //TODO: Especificar más
- /*  lista_sentencias ::= lista_expresiones
-                        ;
-                        */
-
-
-
-   /*sentencia ::= ciclo_para
-                 | ciclo_mientras
-                 | condicion_si
-                 | condicion_revisar
-                 | asignacion
-                 |
-                 ;*/
-/*
-   ciclo_para ::= PARA VAR:v DESDE expresion HASTA expresion_booleana AVANCE NUMERO:n LLAVEABIERTO lista_sentencias LLAVECERRADO;
-
-   ciclo_mientras ::= MIENTRAS PARENTESISABIERTO expresion_booleana PARENTESISCERRADO HACER LLAVEABIERTO lista_sentencias LLAVECERRADO
+   ciclo_mientras ::= MIENTRAS PARENTESISABIERTO expresion PARENTESISCERRADO HACER LLAVEABIERTO lista_sentencias LLAVECERRADO
                     | HACER LLAVEABIERTO lista_sentencias LLAVECERRADO MIENTRAS PARENTESISABIERTO expresion PARENTESISCERRADO DELIMITADOR
                     ;
 
-   condicion_si ::= SI PARENTESISABIERTO expresion_booleana PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO sino
-                  ;
+   condicion_si ::= SI PARENTESISABIERTO expresion PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO sino
+                    ;
 
-   sino ::= SINO LLAVEABIERTO lista_sentencias LLAVECERRADO
-         ;
+   sino ::= SINO LLAVEABIERTO lista_sentencias LLAVECERRADO sino
+           |
+           ;
 
-   condicion_revisar ::= REVISAR PARENTESISABIERTO expresion_numerica PARENTESISCERRADO LLAVEABIERTO revisar0 LLAVECERRADO
-                       ;
+   condicion_revisar ::= REVISAR PARENTESISABIERTO expresion PARENTESISCERRADO LLAVEABIERTO revisar0 LLAVECERRADO
+                         ;
 
-   revisar0 ::= CASO expresion_numerica: lista_sentencias SALIR
-               | DEFECTO: lista_sentencias SALIR
-               ;*/
-
-/*
-   asignacion ::= NUM asignacion
-                | CAD asignacion
-                | BOOL asignacion
+   revisar0 ::= CASO expresion DOSPUNTOS lista_sentencias SALIR
+                | DEFECTO DOSPUNTOS lista_sentencias SALIR
                 ;
 
+   declaracion ::= num
+                 | cad
+                 | boo
+                 ;
 
-   num ::= NUMERO VAR:v num0
-         ;
+   num ::= NUM VAR:v num0
+           ;
 
-   num0 ::= expresion_numerica;
+   num0 ::= IGUAL NUMERO:n
+            |
+            ;
 
+   cad ::= CAD VAR:v cad0
+           ;
 
-
-   cad ::= CADENA VAR:v cad0
-         ;
-
-   cad0 ::= expresion_cadena;
-
-
+   cad0 ::= IGUAL CADENA:c
+            |
+            ;
 
    boo ::= BOOL VAR:v boo0
-         ;
+           ;
 
-   boo0 ::= expresion_booleana;
-*/
-    //TODO: Extender las expresiones booleanas
-    //expresion_booleana ::= VERDADERO
-    //                    | FALSO
-                  //      ;
-/* La gramatica de nuestro analizador.
-   
-   expr_list ::=   expr_list expr_part
-                                {: System.out.println();:}
-                 | expr_part
-   expr_part ::=   expr SEMI
-   expr      ::=   expr PLUS factor
-                                {: System.out.println();:}
-                 | expr MINUS factor
-                                {: System.out.println();:}
-                 | factor
-   factor    ::=   factor TIMES term
-                                {: System.out.println();:}
-                 | factor DIVIDE term
-                                {: System.out.println();:}
-                 | term
-   term     ::=    LPAREN expr RPAREN
-                                {: System.out.println();:}
-                 | NUMBER
-                                {: System.out.println();:}
-                 | ID
-*/
-   
-/* 'expr_list' es la raiz de la gramatica. Una 'expr_list' puede ser una 'expr_list'
-   seguida de una expr_part, o puede ser una expr_part.
-   Un terminal o no terminal se define <termino> ::= termino1 termino2 ... terminoN.;
-   donde termino puede ser terminal o no terminal, solo se permite un simbolo a la
-   izquierda. La                {: System.out.println();:}
-   | sirve para indicar que es una produccion u otra.
-   Debemos pasar de simbolos no terminales a simbolos terminales. Una gramatica que no
-   termina en simbolos terminales se dice que no reduce, y por lo tanto nunca se finaliza
-   su procesado.
-*/
+   boo0 ::= IGUAL VERDADERO
+            | IGUAL FALSO
+            |
+            ;
 
 
-
-    lista_expresiones ::= expresion lista_expresiones      //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
-                  | expresion             //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
-                  ;
+    /*lista_expresiones ::= expresion lista_expresiones
+                  | tipo_dato lista_expresiones
+                  |
+                  ;*/
 
     expresion ::= Y                 {: System.out.println("Y");:}
                 | O                 {: System.out.println("O");:}
@@ -335,9 +283,6 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
                 | SINO              {: System.out.println("SINO");:}
                 | DEVOLVER          {: System.out.println("DEVOLVER");:}
                 | REC               {: System.out.println("REC");:}
-                //| CAD               {: System.out.println("CAD");:}
-                //| BOOL              {: System.out.println("BOOL");:}
-
                 | IMPRIMIR          {: System.out.println("IMPRIMIR");:}
                 | LEER              {: System.out.println("LEER");:}
                 | FIN               {: System.out.println("FIN");:}
@@ -357,7 +302,6 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
                 | EXCEPTO           {: System.out.println("EXCEPTO");:}
                 | MOSTRAR           {: System.out.println("MOSTRAR");:}
                 | EJECUTAR          {: System.out.println("EJECUTAR");:}
-                //| NUM               {: System.out.println("NUM");:}
                 | EN                {: System.out.println("EN");:}
                 | CONTINUAR         {: System.out.println("CONTINUAR");:}
                 | FINALMENTE        {: System.out.println("FINALMENTE");:}
@@ -375,15 +319,14 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
                 | DIVISION          {: System.out.println("DIVISION");:}
                 | MOD               {: System.out.println("MOD");:}
                 | POTENCIA          {: System.out.println("POTENCIA");:}
-                | ASIGNACION        {: System.out.println("ASIGNACION");:}
                 | IGUAL             {: System.out.println("IGUAL");:}
                 | CORCHETEABIERTO   {: System.out.println("CORCHETEABIERTO");:}
                 | CORCHETECERRADO   {: System.out.println("CORCHETECERRADO");:}
                 | PARENTESISABIERTO {: System.out.println("PARENTESISABIERTO");:}
                 | PARENTESISCERRADO {: System.out.println("PARENTESISCERRADO");:}
                 | DOSPUNTOS         {: System.out.println("DOSPUNTOS");:}
+                | SALIR             {: System.out.println("SALIR");:}
                 | NUMERO:e          {: System.out.println("NUMERO " + e);:}
-                //| VAR:e             {: System.out.println("VAR " + e);:}
                 | DELIMITADOR:e     {: System.out.println("DELIMITADOR " + e);:}
                 | CADENA:e          {: System.out.println("CADENA" + e);:}
                 ;
