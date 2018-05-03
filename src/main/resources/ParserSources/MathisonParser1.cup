@@ -137,10 +137,10 @@ terminal    String CADENA;
 //non terminal Object     expr_list, expr_part;
 //non terminal Integer    expr, factor, termino;
 
-non terminal    programa, lista_clases, clase, cuerpo_clase, sentencia, lista_sentencias;
+non terminal    programa, lista_clases, clase, cuerpo_clase, sentencia, cuerpo_metodo;
 non terminal    lista_metodos, metodo, lista_expresiones, expresion, lista_parametros, expresion_booleana, variable_arreglo;
 non terminal    ciclo_para, ciclo_mientras, condicion, condicion_si, sino; //condicion_revisar, expresion_numerica, revisar0, asignacion;
-non terminal    visibilidad, tipo_dato, tipo_metodo;
+non terminal    visibilidad, tipo, tipo_metodo;
 
 /* -------------Seccion de predencia y asociacion de los terminales----------- */
    
@@ -173,6 +173,7 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
                     | clase
                     ;
 */
+
    clase ::= visibilidad CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: System.out.println("CLASE " + v);:}
            ;
 /*
@@ -180,49 +181,55 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
                  |  metodo
    	             ;
 */
-   metodo ::= visibilidad tipo_metodo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO     {: System.out.println("METODO " + v);:}
-            | visibilidad tipo_metodo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+
+
+   metodo ::= visibilidad tipo_metodo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+            | visibilidad tipo_metodo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+            | tipo_metodo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+            | tipo_metodo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
             ;
 
-    visibilidad ::= PUBLICO
-                       | PRIVADO
-                       |
-                       ;
+    visibilidad     ::= PUBLICO
+                      | PRIVADO
+                      ;
 
-   lista_parametros ::= tipo_dato variable_arreglo COMA lista_parametros
-                    |   tipo_dato variable_arreglo
+   lista_parametros ::= tipo variable_arreglo COMA lista_parametros
+                    |   tipo variable_arreglo
                     ;
 
    variable_arreglo ::= VAR:v
                     | VAR:v CORCHETEABIERTO CORCHETECERRADO
                     ;
 
-   tipo_dato ::=    CAD
+   tipo      ::=    CAD
                |    NUM
                |    BOOL
                |    VAR:tipo_no_primitivo           //Una clase
                ;
 
    tipo_metodo ::= PROC
-                | tipo_dato
+                | tipo
                 ;
 
    cuerpo_clase ::= cuerpo_clase expresion
-                    | cuerpo_clase metodo
-                    |
-                    ;
+                 | cuerpo_clase metodo
+                 |
+                 ;
+
 
    /*cuerpo_clase ::= lista_expresiones
                     ;*/
+/*
+   cuerpo_metodo    ::= cuerpo_metodo ciclo_para
+                      | cuerpo_metodo ciclo_mientras
+                      | cuerpo_metodo condicion
+                      | cuerpo_metodo expresion
+                      |
+                      ;
 
-   lista_sentencias ::= lista_sentencias ciclo_para
-                        | lista_sentencias ciclo_mientras
-                        | lista_sentencias condicion
-                        | lista_sentencias expresion
-                        |
-                        ;
-
-
+*/
+    cuerpo_metodo ::= expresion cuerpo_metodo
+                    | expresion;
 
 
     //TODO: Especificar más
@@ -325,9 +332,9 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
 
 
 
-    lista_expresiones ::= expresion lista_expresiones      //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
+    /*lista_expresiones ::= expresion lista_expresiones      //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
                   | expresion             //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
-                  ;
+                  ;*/
 
     expresion ::= Y                 {: System.out.println("Y");:}
                 | O                 {: System.out.println("O");:}
@@ -386,6 +393,7 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
                 //| VAR:e             {: System.out.println("VAR " + e);:}
                 | DELIMITADOR:e     {: System.out.println("DELIMITADOR " + e);:}
                 | CADENA:e          {: System.out.println("CADENA" + e);:}
+                |tipo
                 ;
     /*
     expr_list ::= expr_list expr_part
