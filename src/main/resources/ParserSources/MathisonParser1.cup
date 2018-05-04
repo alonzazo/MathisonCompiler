@@ -142,6 +142,7 @@ non terminal    lista_metodos, metodo, lista_expresiones, expresion, lista_param
 non terminal    ciclo_para, ciclo_mientras, condicion, condicion_si, sino; //condicion_revisar, expresion_numerica, revisar0, asignacion;
 non terminal    visibilidad, tipo_dato, tipo_metodo;
 
+non terminal    C_Expresion_booleana, C_Expresion_booleana2, C_Expresion_booleana3, C_Expresion_boolnum, C_Expresion_numerica, C_Termino_booleano;
 /* -------------Seccion de predencia y asociacion de los terminales----------- */
    
 /*
@@ -163,68 +164,36 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
 //ntrolador estático) dentro de un objeto nunca tu
 //vo sentido.
 
-   programa ::= clase programa
-                | metodo programa
-                | clase
-                | metodo
-                ;
-/*
-   lista_clases ::= clase lista_clases
-                    | clase
-                    ;
-*/
-   clase ::= visibilidad CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: System.out.println("CLASE " + v);:}
-           ;
-/*
-   lista_metodos ::= metodo lista_metodos
-                 |  metodo
-   	             ;
-*/
-   metodo ::= visibilidad tipo_metodo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO     {: System.out.println("METODO " + v);:}
-            | visibilidad tipo_metodo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO lista_sentencias LLAVECERRADO                      {: System.out.println("METODO " + v);:}
-            ;
 
-    visibilidad ::= PUBLICO
-                       | PRIVADO
-                       |
-                       ;
-
-   lista_parametros ::= tipo_dato variable_arreglo COMA lista_parametros
-                    |   tipo_dato variable_arreglo
-                    ;
-
-   variable_arreglo ::= VAR:v
-                    | VAR:v CORCHETEABIERTO CORCHETECERRADO
-                    ;
-
-   tipo_dato ::=    CAD
-               |    NUM
-               |    BOOL
-               |    VAR:tipo_no_primitivo           //Una clase
-               ;
-
-   tipo_metodo ::= PROC
-                | tipo_dato
-                ;
-
-   cuerpo_clase ::= cuerpo_clase expresion
-                    | cuerpo_clase metodo
-                    |
-                    ;
-
-   /*cuerpo_clase ::= lista_expresiones
-                    ;*/
-
-   lista_sentencias ::= lista_sentencias ciclo_para
-                        | lista_sentencias ciclo_mientras
-                        | lista_sentencias condicion
-                        | lista_sentencias expresion
-                        |
+C_Expresion_booleana ::=    C_Expresion_booleana DISTINTO C_Expresion_boolnum
+                        |   C_Expresion_booleana IGUAL C_Expresion_boolnum
+                        |   C_Expresion_boolnum
+                        |   C_Expresion_booleana DISTINTO C_Expresion_booleana2
+                        |   C_Expresion_booleana IGUAL C_Expresion_booleana2
+                        |   C_Expresion_booleana2
+                        ;
+C_Expresion_boolnum ::=     C_Expresion_boolnum DISTINTO C_Expresion_numerica
+                        |   C_Expresion_boolnum MENORQUE C_Expresion_numerica
+                        |   C_Expresion_boolnum MAYORQUE C_Expresion_numerica
+                        |   C_Expresion_boolnum IGUAL C_Expresion_numerica
+                        |   C_Expresion_boolnum MENOROIGUAL C_Expresion_numerica
+                        |   C_Expresion_boolnum MAYOROIGUAL C_Expresion_numerica
+                        |   C_Expresion_numerica
                         ;
 
+C_Expresion_booleana2 ::=   C_Expresion_booleana2 Y C_Expresion_booleana3
+                        |   C_Expresion_booleana2 O C_Expresion_booleana3
+                        |   C_Expresion_booleana3
+                        ;
 
-
-
+C_Expresion_booleana3 ::=   C_Termino_booleano
+                        |   DISTINTO C_Termino_booleano
+                        ;
+C_Termino_booleano ::=      PARENTESISABIERTO C_Expresion_booleana PARENTESISCERRADO
+                        |   VERDADERO    | FALSO
+                        |   VAR
+                        |   VAR PARENTESISABIERTO PARENTESISCERRADO
+                        ;
     //TODO: Especificar más
  /*  lista_sentencias ::= lista_expresiones
                         ;
@@ -324,7 +293,7 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
 */
 
 
-
+/*
     lista_expresiones ::= expresion lista_expresiones      //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
                   | expresion             //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
                   ;
@@ -387,6 +356,7 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
                 | DELIMITADOR:e     {: System.out.println("DELIMITADOR " + e);:}
                 | CADENA:e          {: System.out.println("CADENA" + e);:}
                 ;
+                */
     /*
     expr_list ::= expr_list expr_part
                   |
