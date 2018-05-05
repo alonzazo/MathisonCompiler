@@ -146,12 +146,36 @@ non terminal    lista_metodos, metodo, lista_expresiones, expresion, lista_param
 non terminal    ciclo_para, ciclo_mientras, condicion, condicion_si, sino; //condicion_revisar, expresion_numerica, revisar0, asignacion;
 non terminal    visibilidad,  tipo_metodo;
 non terminal    c_declaracion,c_tipo;
-non terminal c_asignacion;
-non terminal c_asignacion_numerica,c_expresion_numerica;
-non terminal c_asignacion_cadena, c_expresion_cadena;
-non terminal c_asignacion_booleana, c_expresion_booleana,c_expresion_booleana_numerica;
-non terminal c_definicion;
 
+non terminal c_expresion_variable,c_expresion_variable_suma;
+non terminal c_expresion_variable_resta,c_expresion_variable_multiplicacion,c_expresion_variable_division;
+
+
+non terminal c_expresion_variable_y,c_expresion_variable_o;
+non terminal c_expresion_variable_mayorque, c_expresion_variable_mayoroigual, c_expresion_variable_menorque,c_expresion_variable_menoroigual;
+non terminal c_expresion_variable_igual, c_expresion_variable_distinto;
+
+non terminal c_expresion_variable_op_numero; //Cuando son solamente variables o una variable
+non terminal c_expresion_numerica;  //El resto de operaciones Numericas
+non terminal c_asignacion_expresion_Numerica_Total; //El total
+
+non terminal c_expresion_variable_comparacion;
+non terminal c_expresion_variable_booleanos; //Cuando son solamente variables o una variable
+non terminal  c_expresion_booleana; //El resto de operaciones booleanas
+non terminal c_asignacion_expresion_Booleana_Total;
+
+non terminal c_expresion_cadena; //Cuando al menos una no es una variable
+non terminal c_asignacion_expresion_Cadena_total; //Suma de variables o una variable + c_expresion_cadena
+
+non terminal c_asignacion;
+non terminal c_asignacion_numerica;
+non terminal c_asignacion_cadena;
+non terminal c_asignacion_booleana;
+
+non terminal c_nombre_metodo, c_lleno_parametros, c_hay_parametro; //Estan en trabajo
+
+/*Inicio de las precedence, se guian en base a la documentacion de java
+Entre más abajo esten tienen más prioridad*/
 
 precedence nonassoc DISTINTO,IGUAL,MENORQUE,MENOROIGUAL,MAYORQUE,MAYOROIGUAL;
 
@@ -160,143 +184,272 @@ precedence left Y,O;
 precedence left SUMA, RESTA;
 precedence left MULTIPLICACION, DIVISION, MOD;
 
+precedence left COMA;
 
 precedence left PARENTESISABIERTO,PARENTESISCERRADO;
 
 
-
 start with programa;
-
-
-/* -------------Seccion de predencia y asociacion de los terminales----------- */
-   
-/*
-  Precedencia de los no terminales, no sirve con simbolos terminales.
-  Por eso no la usamos. Además indica si se asocia a izquierda o derecha.
-*/
-  /*precedence left OP_SUMA, OP_RESTA;
-  precedence left OP_MULT;*/
-
-
-/* ------------------------- Seccion de la gramatica ------------------------- */
-
-
-
-////--------------------------------------------------------Estructura general
-//Un programa será un conjunto de clases y métodos
-//. Sí, debido a que se enseñará a niños, se permite
-//tener métodos sueltos. Además, tener un main (co
-//ntrolador estático) dentro de un objeto nunca tu
-//vo sentido.
-
-
-               // c_tipo VAR:v
 
    programa ::= c_asignacion
                 ;
 
-
+/*Declaracion Basica */
   c_declaracion::= c_tipo VAR:v
   ;
 
-
-  c_tipo ::= CAD
+/*Primitivas de tipo de datos*/
+  c_tipo ::=                CAD
                            | NUM
                            | BOOL
                            | VAR:tipo_no_primitivo           //Una clase
                            ;
 
-  c_asignacion::=c_asignacion_numerica c_asignacion
-                |c_asignacion_cadena c_asignacion
-                |c_asignacion_booleana c_asignacion
-                |
-  ;
+/*-----Syntaxis de las variables y operaciones con variables*/
 
-c_asignacion_numerica::= NUM VAR:v ASIGNACION c_expresion_numerica
-                        ;
+c_expresion_variable::=VAR:v
+| PARENTESISABIERTO VAR:v PARENTESISCERRADO
+;
 
- c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica
-                           |c_expresion_numerica RESTA c_expresion_numerica
-                           |c_expresion_numerica MULTIPLICACION c_expresion_numerica
-                           |c_expresion_numerica DIVISION c_expresion_numerica
-                           |NUMERO:v
-                           |VAR:v
-                           |PARENTESISABIERTO c_expresion_numerica PARENTESISCERRADO
-                           ;
+c_expresion_variable_suma::= c_expresion_variable SUMA c_expresion_variable_suma
+                            |c_expresion_variable SUMA c_expresion_variable
+                            |PARENTESISABIERTO c_expresion_variable_suma PARENTESISCERRADO
+                            ;
+
+c_expresion_variable_resta::= c_expresion_variable RESTA c_expresion_variable_resta
+                            |c_expresion_variable RESTA c_expresion_variable
+                            |PARENTESISABIERTO c_expresion_variable_resta PARENTESISCERRADO
+                            ;
+
+c_expresion_variable_multiplicacion::= c_expresion_variable MULTIPLICACION c_expresion_variable_multiplicacion
+                            |c_expresion_variable MULTIPLICACION c_expresion_variable
+                            |PARENTESISABIERTO c_expresion_variable_multiplicacion PARENTESISCERRADO
+                            ;
+
+c_expresion_variable_division::= c_expresion_variable DIVISION c_expresion_variable_division
+                            |c_expresion_variable DIVISION c_expresion_variable
+                            |PARENTESISABIERTO c_expresion_variable_division PARENTESISCERRADO
+                            ;
+
+c_expresion_variable_igual::= c_asignacion_expresion_Numerica_Total IGUAL c_asignacion_expresion_Numerica_Total
+
+                            |PARENTESISABIERTO c_expresion_variable_igual PARENTESISCERRADO
+                            ;
+
+c_expresion_variable_distinto::= c_asignacion_expresion_Numerica_Total DISTINTO c_asignacion_expresion_Numerica_Total
+                            |PARENTESISABIERTO c_expresion_variable_distinto PARENTESISCERRADO
+                            ;
+
+c_expresion_variable_mayorque::= c_asignacion_expresion_Numerica_Total MAYORQUE c_asignacion_expresion_Numerica_Total
+                            |PARENTESISABIERTO c_expresion_variable_mayorque PARENTESISCERRADO
+                            ;
 
 
-/*
+c_expresion_variable_mayoroigual::=   c_asignacion_expresion_Numerica_Total MAYOROIGUAL c_asignacion_expresion_Numerica_Total
+                            |PARENTESISABIERTO c_expresion_variable_mayoroigual MAYOROIGUAL
+                            ;
+
+c_expresion_variable_menorque::=  c_asignacion_expresion_Numerica_Total MENORQUE c_asignacion_expresion_Numerica_Total
+                            |PARENTESISABIERTO c_expresion_variable_menorque PARENTESISCERRADO
+                            ;
 
 
+c_expresion_variable_menoroigual::= c_asignacion_expresion_Numerica_Total MENOROIGUAL c_asignacion_expresion_Numerica_Total
+                            |PARENTESISABIERTO c_expresion_variable_menoroigual PARENTESISCERRADO
+                            ;
 
-
- c_expresion_numerica2 ::= c_expresion_numerica2 MULTIPLICACION c_expresion_numerica3
-                           |c_expresion_numerica2 DIVISION c_expresion_numerica3
-                           |c_expresion_numerica3
-                           ;
-
-c_expresion_numerica3 ::=   NUMERO:v
-                           |VAR:v
-                           |PARENTESISABIERTO c_expresion_numerica PARENTESISCERRADO
-                           ;
-
-*/
-
-c_asignacion_cadena::=CAD VAR:v ASIGNACION c_expresion_cadena
+c_expresion_variable_comparacion::= c_expresion_variable_igual
+                            |c_expresion_variable_distinto
+                            | c_expresion_variable_mayorque
+                            | c_expresion_variable_mayoroigual
+                            | c_expresion_variable_menorque
+                            | c_expresion_variable_menoroigual
 ;
 
 
+c_expresion_variable_y::= c_expresion_variable Y c_expresion_variable_y
+                            |c_expresion_variable Y c_expresion_variable
+
+                            |PARENTESISABIERTO c_expresion_variable_y PARENTESISCERRADO
+                            ;
+
+c_expresion_variable_o::= c_expresion_variable O c_expresion_variable_o
+                            |c_expresion_variable O c_expresion_variable
+
+                            |PARENTESISABIERTO c_expresion_variable_o PARENTESISCERRADO
+                            ;
+
+
+ /*Operaciones numericas solo con variables o una variable*/
+c_expresion_variable_op_numero::=c_expresion_variable_suma SUMA c_expresion_variable_op_numero
+|c_expresion_variable_suma RESTA c_expresion_variable_op_numero
+|c_expresion_variable_suma MULTIPLICACION c_expresion_variable_op_numero
+|c_expresion_variable_suma DIVISION c_expresion_variable_op_numero
+
+|c_expresion_variable_resta SUMA c_expresion_variable_op_numero
+|c_expresion_variable_resta RESTA c_expresion_variable_op_numero
+|c_expresion_variable_resta MULTIPLICACION c_expresion_variable_op_numero
+|c_expresion_variable_resta DIVISION c_expresion_variable_op_numero
+
+|c_expresion_variable_multiplicacion SUMA c_expresion_variable_op_numero
+|c_expresion_variable_multiplicacion RESTA c_expresion_variable_op_numero
+|c_expresion_variable_multiplicacion MULTIPLICACION c_expresion_variable_op_numero
+|c_expresion_variable_multiplicacion DIVISION c_expresion_variable_op_numero
+
+|c_expresion_variable_division SUMA c_expresion_variable_op_numero
+|c_expresion_variable_division RESTA c_expresion_variable_op_numero
+|c_expresion_variable_division MULTIPLICACION c_expresion_variable_op_numero
+|c_expresion_variable_division DIVISION c_expresion_variable_op_numero
+
+|c_expresion_variable_suma
+|c_expresion_variable_resta
+|c_expresion_variable_division
+|c_expresion_variable_multiplicacion
+
+|c_expresion_variable
+|PARENTESISABIERTO c_expresion_variable_op_numero PARENTESISCERRADO
+;
+
+ /*Operaciones numericas solo con variables o una variable*/
+
+c_expresion_variable_booleanos::= |c_expresion_variable_y Y c_expresion_variable_booleanos
+                                 |c_expresion_variable_y O c_expresion_variable_booleanos
+
+                                 |c_expresion_variable_o Y c_expresion_variable_booleanos
+                                 |c_expresion_variable_o O c_expresion_variable_booleanos
+
+                                 |c_expresion_variable_y
+                                 |c_expresion_variable_o
+                                 |c_expresion_variable
+;
+
+
+
+/*Declaracion de las asinaciones*/
+  c_asignacion::=c_asignacion_numerica
+                |c_asignacion_cadena
+                |c_asignacion_booleana
+
+  ;
+
+
+/*Syntaxis asiganacion de tipo numericas*/
+
+c_asignacion_numerica::= NUM VAR:v ASIGNACION c_asignacion_expresion_Numerica_Total
+;
+
+c_asignacion_expresion_Numerica_Total::= c_expresion_numerica //Corresponde a todas aquellas menos las que tienen solo variables
+                                         |c_expresion_variable_op_numero;
+
+
+ c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica
+                            |c_expresion_numerica RESTA c_expresion_numerica
+                            |c_expresion_numerica MULTIPLICACION c_expresion_numerica
+                            |c_expresion_numerica DIVISION c_expresion_numerica
+
+    //Una variable + otra cosa
+                           |c_expresion_variable SUMA c_expresion_numerica
+                           |c_expresion_numerica SUMA c_expresion_variable
+
+                           |c_expresion_variable RESTA c_expresion_numerica
+                           |c_expresion_numerica RESTA c_expresion_variable
+
+                           |c_expresion_variable MULTIPLICACION c_expresion_numerica
+                           |c_expresion_numerica MULTIPLICACION c_expresion_variable
+
+                           |c_expresion_variable DIVISION c_expresion_numerica
+                           |c_expresion_numerica DIVISION c_expresion_variable
+
+       //Dos variables o más + otra cosa
+                           |c_expresion_variable_suma SUMA c_expresion_numerica
+                           |c_expresion_numerica SUMA c_expresion_variable_suma
+
+                            |c_expresion_variable_resta RESTA c_expresion_numerica
+                           |c_expresion_numerica RESTA c_expresion_variable_resta
+
+                           |c_expresion_variable_resta MULTIPLICACION c_expresion_numerica
+                           |c_expresion_numerica MULTIPLICACION c_expresion_variable_resta
+
+                           |c_expresion_variable_multiplicacion DIVISION c_expresion_numerica
+                           |c_expresion_numerica DIVISION c_expresion_variable_multiplicacion
+
+       //Terminos
+                           |NUMERO:v
+                           //|c_nombre_metodo
+                           |PARENTESISABIERTO c_expresion_numerica PARENTESISCERRADO
+
+                           ;
+
+c_asignacion_expresion_Cadena_total::=c_expresion_cadena  //Cuando al menos una no es una variable
+|c_expresion_variable //Cuando es solamente una
+|c_expresion_variable_suma //Cuando es una suma de variables
+;
+/*Syntaxis de tipo cadena tipo numericas*/
+
+c_asignacion_cadena::=CAD VAR:v ASIGNACION c_asignacion_expresion_Cadena_total
+;
+
 c_expresion_cadena  ::= c_expresion_cadena SUMA c_expresion_cadena
-                           | CADENA:v
-                           |VAR:v
+                            //Una variable + otra cosa
+                          |c_expresion_variable SUMA c_expresion_cadena
+                          |c_expresion_cadena SUMA c_expresion_variable
+                            //Dos variables o más + otra cosa
+                          |c_expresion_variable_suma SUMA c_expresion_cadena
+                          |c_expresion_cadena SUMA c_expresion_variable_suma
+                          | CADENA:v
+                           //|c_nombre_metodo
                           |PARENTESISABIERTO c_expresion_cadena PARENTESISCERRADO
   ;
 
-/*
 
-c_expresion_cadena  ::= c_expresion_cadena SUMA c_expresion_cadena2
-                           | c_expresion_cadena2
-                           ;
+/*Syntaxis de tipo cadena tipo booleana*/
 
-c_expresion_cadena2  ::= CADENA:v
-                     |VAR:v
-                     |PARENTESISABIERTO c_expresion_cadena PARENTESISCERRADO
+c_asignacion_expresion_Booleana_Total::= c_expresion_booleana //Corresponde a todas las operaciones excpeto cuando todas son variables
+                                        |c_expresion_variable_booleanos
+                                        ;
 
-                     ;
-*/
-
-c_asignacion_booleana ::= BOOL VAR:V ASIGNACION c_expresion_booleana
+c_asignacion_booleana ::= BOOL VAR:V ASIGNACION c_asignacion_expresion_Booleana_Total
                         ;
 
-
-/*---FIJARSE SI BOOL DEVUELVE BIEN*/
 
 c_expresion_booleana::=  c_expresion_booleana  Y c_expresion_booleana
                         |c_expresion_booleana O c_expresion_booleana
-                        |BOOL:v
 
-                        |VAR:v
-                        |c_expresion_booleana_numerica //Si lo meto entre parentesis no funciona
+//Una variables o más + otra cosa
+                          |c_expresion_variable Y c_expresion_booleana
+                          |c_expresion_booleana Y c_expresion_variable
+
+                          |c_expresion_variable O c_expresion_booleana
+                          |c_expresion_booleana O c_expresion_variable
+
+//Dos variables o más + otra cosa
+                          |c_expresion_variable_y Y c_expresion_booleana
+                          |c_expresion_booleana Y c_expresion_variable_y
+
+                          |c_expresion_variable_o O c_expresion_booleana
+                          |c_expresion_booleana O c_expresion_variable_o
+
+                        |c_expresion_variable_comparacion
                         |VERDADERO
                         |FALSO
+                        |PARENTESISABIERTO c_expresion_booleana PARENTESISCERRADO
 
-                        |PARENTESISABIERTO VAR:v PARENTESISCERRADO
-                        |PARENTESISABIERTO c_expresion_booleana  Y c_expresion_booleana PARENTESISCERRADO
-                        |PARENTESISABIERTO c_expresion_booleana O c_expresion_booleana PARENTESISCERRADO
-                        |PARENTESISABIERTO VERDADERO PARENTESISCERRADO
-                        |PARENTESISABIERTO FALSO PARENTESISCERRADO
                         ;
 
 
-c_expresion_booleana_numerica::= c_expresion_numerica MAYORQUE c_expresion_numerica
-|c_expresion_numerica MAYOROIGUAL c_expresion_numerica
-|c_expresion_numerica MENORQUE c_expresion_numerica
-|c_expresion_numerica MENOROIGUAL c_expresion_numerica
-|c_expresion_numerica DISTINTO c_expresion_numerica
-|c_expresion_numerica IGUAL c_expresion_numerica
-|PARENTESISABIERTO c_expresion_booleana_numerica PARENTESISCERRADO
+/*Sintaxis de los metodos*/
+ c_nombre_metodo::= VAR:v PARENTESISABIERTO c_lleno_parametros PARENTESISCERRADO
+                ;
 
- ;
+ c_lleno_parametros::=c_hay_parametro
+                       |
+                        ;
+c_hay_parametro ::= c_hay_parametro COMA c_hay_parametro
+
+|c_expresion_numerica
+| c_expresion_cadena
+| c_expresion_booleana
+;
 
 //c_definicion::= NUM c_asignacion_numerica
 //|CAD c_asignacion_cadena
