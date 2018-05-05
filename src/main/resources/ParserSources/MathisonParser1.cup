@@ -106,17 +106,17 @@ parser code {:
 
 //PALABRAS RESERVADAS
 terminal    Y, O, PARA, DESDE, HASTA, AVANCE, MIENTRAS, HACER, SI;
-terminal    SINO, DEVOLVER, PROC, CLASE, REC, CAD, BOOL, PUBLICO;
+//terminal    SINO, DEVOLVER, PROC, CLASE, REC, CAD, BOOL, PUBLICO;
 terminal    PRIVADO, IMPRIMIR, LEER, FIN, VERDADERO, FALSO, IMPORTAR;
-terminal    INTENTAR, ATRAPAR, LANZAR, CONSTANTE, REVISAR, CASO;
-terminal    COMO, DEFECTO, CON, TERMINAR, EXCEPTO, MOSTRAR, EJECUTAR, NUM;
-terminal    EN, CONTINUAR, FINALMENTE;
+//terminal    INTENTAR, ATRAPAR, LANZAR, CONSTANTE, REVISAR, CASO;
+//terminal    COMO, DEFECTO, CON, TERMINAR, EXCEPTO, MOSTRAR, EJECUTAR, NUM;
+terminal    EN, CONTINUAR, FINALMENTE, NEGACION;
 
 //COMPARACION
-terminal    MEI, MAI, II, MENORQUE, MAYORQUE, MENOROIGUAL,MAYOROIGUAL,DISTINTO;
+terminal    MEI, MAI, II, MENORQUE, MAYORQUE, MENOROIGUAL, MAYOROIGUAL, DISTINTO;
 
 //ARITMETICA
-terminal    SUMA, RESTA, MULTIPLICACION, DIVISION, MOD, POTENCIA, ASIGNACION, IGUAL;
+terminal    SUMA, RESTA, MULTIPLICACION, DIVISION, MOD, POTENCIA, ASIGNACION, IGUAL, NEGATIVO;
 
 //DELIMITADOR
 terminal    CORCHETEABIERTO,CORCHETECERRADO,LLAVEABIERTO,LLAVECERRADO,PARENTESISABIERTO,PARENTESISCERRADO, DOSPUNTOS, COMA;
@@ -133,25 +133,22 @@ terminal    String CADENA;
 
    Primero se lista los no terminales que tienen un valor Object y despues
    se lista los no terminales que tienen un entero. Un Object se refiere a que
-   no tienen tipo, pudiendo ser entero o String. */
-//non terminal Object     expr_list, expr_part;
-//non terminal Integer    expr, factor, termino;
+   no tienen tipo, pudiendo ser entero o String.
+*/
 
 non terminal    programa, lista_clases, clase, cuerpo_clase, sentencia, lista_sentencias;
-non terminal    lista_metodos, metodo, lista_expresiones, expresion, lista_parametros, expresion_booleana, variable_arreglo;
-non terminal    ciclo_para, ciclo_mientras, condicion, condicion_si, sino; //condicion_revisar, expresion_numerica, revisar0, asignacion;
-non terminal    visibilidad, tipo_dato, tipo_metodo;
+//non terminal    lista_metodos, metodo, lista_expresiones, expresion, lista_parametros, expresion_booleana, variable_arreglo;
+//non terminal    ciclo_para, ciclo_mientras, condicion, condicion_si, sino; //condicion_revisar, expresion_numerica, revisar0, asignacion;
+//non terminal    visibilidad, tipo_dato, tipo_metodo;
+non terminal    negacion, C_Expresion_booleana, C_Expresion_numerica;
 
-non terminal    C_Expresion_booleana, C_Expresion_booleana2, C_Expresion_booleana3, C_Expresion_boolnum, C_Expresion_numerica, C_Termino_booleano;
+//non terminal    C_Expresion_booleana, C_Expresion_booleana2, C_Expresion_booleana3, C_Expresion_boolnum, C_Expresion_numerica, C_Termino_booleano;
 /* -------------Seccion de predencia y asociacion de los terminales----------- */
    
-/*
-  Precedencia de los no terminales, no sirve con simbolos terminales.
-  Por eso no la usamos. Además indica si se asocia a izquierda o derecha.
-*/
-  /*precedence left OP_SUMA, OP_RESTA;
-  precedence left OP_MULT;*/
-
+//PRECEDENCIAS
+precedence left DISTINTO, IGUAL, MAYORQUE, MENORQUE, MAYOROIGUAL, MENOROIGUAL;
+precedence left Y, O;
+precedence left NEGACION;
 
 /* ------------------------- Seccion de la gramatica ------------------------- */
 
@@ -165,35 +162,28 @@ non terminal    C_Expresion_booleana, C_Expresion_booleana2, C_Expresion_boolean
 //vo sentido.
 
 
-C_Expresion_booleana ::=    C_Expresion_booleana DISTINTO C_Expresion_boolnum
-                        |   C_Expresion_booleana IGUAL C_Expresion_boolnum
-                        |   C_Expresion_boolnum
-                        |   C_Expresion_booleana DISTINTO C_Expresion_booleana2
-                        |   C_Expresion_booleana IGUAL C_Expresion_booleana2
-                        |   C_Expresion_booleana2
-                        ;
-C_Expresion_boolnum ::=     C_Expresion_boolnum DISTINTO C_Expresion_numerica
-                        |   C_Expresion_boolnum MENORQUE C_Expresion_numerica
-                        |   C_Expresion_boolnum MAYORQUE C_Expresion_numerica
-                        |   C_Expresion_boolnum IGUAL C_Expresion_numerica
-                        |   C_Expresion_boolnum MENOROIGUAL C_Expresion_numerica
-                        |   C_Expresion_boolnum MAYOROIGUAL C_Expresion_numerica
-                        |   C_Expresion_numerica
-                        ;
+C_Expresion_numerica ::= NUMERO:v
+                       | VAR:v
+                       ;
 
-C_Expresion_booleana2 ::=   C_Expresion_booleana2 Y C_Expresion_booleana3
-                        |   C_Expresion_booleana2 O C_Expresion_booleana3
-                        |   C_Expresion_booleana3
-                        ;
+C_Expresion_booleana ::= C_Expresion_booleana Y C_Expresion_booleana
+                       | C_Expresion_booleana O C_Expresion_booleana
+                       | C_Expresion_booleana IGUAL C_Expresion_booleana
+                       | C_Expresion_booleana DISTINTO C_Expresion_booleana
+                       | C_Expresion_numerica DISTINTO C_Expresion_numerica
+                       | C_Expresion_numerica MENORQUE C_Expresion_numerica
+                       | C_Expresion_numerica MAYORQUE C_Expresion_numerica
+                       | C_Expresion_numerica IGUAL C_Expresion_numerica
+                       | C_Expresion_numerica MENOROIGUAL C_Expresion_numerica
+                       | C_Expresion_numerica MAYOROIGUAL C_Expresion_numerica
+                       | DISTINTO C_Expresion_booleana %prec NEGACION
+                       | PARENTESISABIERTO C_Expresion_booleana PARENTESISCERRADO
+                       | VERDADERO
+                       | FALSO
+                       | VAR:v
+                       //| VAR PARENTESISABIERTO PARENTESISCERRADO
+                       ;
 
-C_Expresion_booleana3 ::=   C_Termino_booleano
-                        |   DISTINTO C_Termino_booleano
-                        ;
-C_Termino_booleano ::=      PARENTESISABIERTO C_Expresion_booleana PARENTESISCERRADO
-                        |   VERDADERO    | FALSO
-                        |   VAR
-                        |   VAR PARENTESISABIERTO PARENTESISCERRADO
-                        ;
     //TODO: Especificar más
  /*  lista_sentencias ::= lista_expresiones
                         ;
@@ -253,43 +243,6 @@ C_Termino_booleano ::=      PARENTESISABIERTO C_Expresion_booleana PARENTESISCER
          ;
 
    boo0 ::= expresion_booleana;
-*/
-    //TODO: Extender las expresiones booleanas
-    //expresion_booleana ::= VERDADERO
-    //                    | FALSO
-                  //      ;
-/* La gramatica de nuestro analizador.
-   
-   expr_list ::=   expr_list expr_part
-                                {: System.out.println();:}
-                 | expr_part
-   expr_part ::=   expr SEMI
-   expr      ::=   expr PLUS factor
-                                {: System.out.println();:}
-                 | expr MINUS factor
-                                {: System.out.println();:}
-                 | factor
-   factor    ::=   factor TIMES term
-                                {: System.out.println();:}
-                 | factor DIVIDE term
-                                {: System.out.println();:}
-                 | term
-   term     ::=    LPAREN expr RPAREN
-                                {: System.out.println();:}
-                 | NUMBER
-                                {: System.out.println();:}
-                 | ID
-*/
-   
-/* 'expr_list' es la raiz de la gramatica. Una 'expr_list' puede ser una 'expr_list'
-   seguida de una expr_part, o puede ser una expr_part.
-   Un terminal o no terminal se define <termino> ::= termino1 termino2 ... terminoN.;
-   donde termino puede ser terminal o no terminal, solo se permite un simbolo a la
-   izquierda. La                {: System.out.println();:}
-   | sirve para indicar que es una produccion u otra.
-   Debemos pasar de simbolos no terminales a simbolos terminales. Una gramatica que no
-   termina en simbolos terminales se dice que no reduce, y por lo tanto nunca se finaliza
-   su procesado.
 */
 
 
@@ -356,67 +309,4 @@ C_Termino_booleano ::=      PARENTESISABIERTO C_Expresion_booleana PARENTESISCER
                 | DELIMITADOR:e     {: System.out.println("DELIMITADOR " + e);:}
                 | CADENA:e          {: System.out.println("CADENA" + e);:}
                 ;
-                */
-    /*
-    expr_list ::= expr_list expr_part
-                  |
-                  expr_part
-                  ;
-    */
-/* 'expr_part' se compone de una expr seguida de SEMI, o de una asign seguida de SEMI.
-   asign:a esta estableciendo que a representa al objeto asociado a asign               {: System.out.println();:}
-   | entre {: :}
-   se coloca el sodigo en java para las acciones a tomar al cumplirse una produccion.
-*/
-/*
-   expr_part ::= expr:e
-                  {:
-                    System.out.println(" = " + e); 
-                  :} 
-                  SEMI
-                 ;
-*/
-/* 'expr' puede ser una expresion que inicia por numero entero op_suma expr,
-  de esa forma se realiza una suma. Tambien puede ser un numero entero, con esto
-  se devuelve el valor del entero. En RESULT se almacena el valor de las acciones,
-  y se pasa al siguiente nivel de la gramatica.
-*/              
-
-/*   expr      ::=  expr:e OP_SUMA factor:f
-                  {:
-                    RESULT = new Integer(e.intValue() + f.intValue());
-                  :}
-                  |
-                  expr:e OP_RESTA factor:f
-                  {:
-                    RESULT = new Integer(e.intValue() - f.intValue());
-                  :}
-                  |
-                  factor:n
-                  {:
-                    RESULT = n; 
-                  :}
-                  ;
-*/
-/*factor        ::=  factor:f OP_MULT termino:e
-                  {:
-                    RESULT = new Integer(f.intValue() * e.intValue());
-                  :}
-                  |
-                  termino:t
-                  {:
-                    RESULT = t;
-                  :}
-                  ;
-*/
-/*termino       ::=  PARENIZQ expr:e PARENDER
-                  {:
-                    RESULT = e;
-                  :}
-                  |
-                  ENTERO:e
-                  {:
-                    RESULT = e;
-                  :}
-                  ;
 */
