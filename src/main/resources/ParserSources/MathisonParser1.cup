@@ -106,11 +106,11 @@ parser code {:
 
 //PALABRAS RESERVADAS
 terminal    Y, O, PARA, DESDE, HASTA, AVANCE, MIENTRAS, HACER, SI;
-//terminal    SINO, DEVOLVER, PROC, CLASE, REC, CAD, BOOL, PUBLICO;
+terminal    SINO, DEVOLVER, PROC, CLASE, REC, CAD, BOOL, PUBLICO;
 terminal    PRIVADO, IMPRIMIR, LEER, FIN, VERDADERO, FALSO, IMPORTAR;
-//terminal    INTENTAR, ATRAPAR, LANZAR, CONSTANTE, REVISAR, CASO;
-//terminal    COMO, DEFECTO, CON, TERMINAR, EXCEPTO, MOSTRAR, EJECUTAR, NUM;
-terminal    EN, CONTINUAR, FINALMENTE, NEGACION;
+terminal    INTENTAR, ATRAPAR, LANZAR, CONSTANTE, REVISAR, CASO;
+terminal    COMO, DEFECTO, CON, TERMINAR, EXCEPTO, MOSTRAR, EJECUTAR, NUM;
+terminal    EN, CONTINUAR, FINALMENTE, NEGACION, DNUM, INUM;
 
 //COMPARACION
 terminal    MEI, MAI, II, MENORQUE, MAYORQUE, MENOROIGUAL, MAYOROIGUAL, DISTINTO;
@@ -138,15 +138,16 @@ terminal    String CADENA;
 
 non terminal    programa, lista_clases, clase, cuerpo_clase, sentencia, lista_sentencias;
 non terminal    lista_metodos, metodo, lista_expresiones, expresion, lista_parametros, expresion_booleana, variable_arreglo;
-non terminal    ciclo_para, ciclo_mientras, condicion, condicion_si, sino; //condicion_revisar, expresion_numerica, revisar0, asignacion;
+non terminal    ciclo_para, ciclo_mientras, condicion, condicion_si, sino;
 non terminal    visibilidad, tipo_dato, tipo_metodo;
-non terminal    negacion, C_Expresion_booleana, C_Expresion_numerica;
+non terminal    C_Expresion_booleana, C_Expresion_numerica;
 
-non terminal    C_Expresion_booleana, C_Expresion_booleana2, C_Expresion_booleana3, C_Expresion_boolnum, C_Expresion_numerica, C_Termino_booleano;
 /* -------------Seccion de predencia y asociacion de los terminales----------- */
    
 //PRECEDENCIAS
-precedence nonassoc DISTINTO, IGUAL, MAYORQUE, MENORQUE, MAYOROIGUAL, MENOROIGUAL;
+precedence nonassoc DISTINTO, IGUAL;
+precedence nonassoc DNUM, INUM;
+precedence nonassoc MAYORQUE, MENORQUE, MAYOROIGUAL, MENOROIGUAL;
 precedence left Y, O;
 precedence left NEGACION;
 
@@ -162,26 +163,27 @@ precedence left NEGACION;
 //vo sentido.
 
 
-C_Expresion_numerica ::= NUMERO:v
-                       | VAR:v
-                       ;
+
 
 C_Expresion_booleana ::= C_Expresion_booleana Y C_Expresion_booleana
                        | C_Expresion_booleana O C_Expresion_booleana
                        | C_Expresion_booleana IGUAL C_Expresion_booleana
                        | C_Expresion_booleana DISTINTO C_Expresion_booleana
-                       | C_Expresion_numerica DISTINTO C_Expresion_numerica
+                       | C_Expresion_numerica DISTINTO C_Expresion_numerica %prec DNUM
                        | C_Expresion_numerica MENORQUE C_Expresion_numerica
                        | C_Expresion_numerica MAYORQUE C_Expresion_numerica
-                       | C_Expresion_numerica IGUAL C_Expresion_numerica
+                       | C_Expresion_numerica IGUAL C_Expresion_numerica %prec INUM
                        | C_Expresion_numerica MENOROIGUAL C_Expresion_numerica
                        | C_Expresion_numerica MAYOROIGUAL C_Expresion_numerica
                        | DISTINTO C_Expresion_booleana %prec NEGACION
                        | PARENTESISABIERTO C_Expresion_booleana PARENTESISCERRADO
                        | VERDADERO
                        | FALSO
-                       | VAR:v
+                       | VAR:b
                        //| VAR PARENTESISABIERTO PARENTESISCERRADO
+                       ;
+
+C_Expresion_numerica ::= NUMERO:n
                        ;
 
 
