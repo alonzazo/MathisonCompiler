@@ -137,16 +137,16 @@ terminal    String CADENA;
 */
 
 non terminal    programa, lista_clases, clase, cuerpo_clase, sentencia, lista_sentencias;
-//non terminal    lista_metodos, metodo, lista_expresiones, expresion, lista_parametros, expresion_booleana, variable_arreglo;
-//non terminal    ciclo_para, ciclo_mientras, condicion, condicion_si, sino; //condicion_revisar, expresion_numerica, revisar0, asignacion;
-//non terminal    visibilidad, tipo_dato, tipo_metodo;
+non terminal    lista_metodos, metodo, lista_expresiones, expresion, lista_parametros, expresion_booleana, variable_arreglo;
+non terminal    ciclo_para, ciclo_mientras, condicion, condicion_si, sino; //condicion_revisar, expresion_numerica, revisar0, asignacion;
+non terminal    visibilidad, tipo_dato, tipo_metodo;
 non terminal    negacion, C_Expresion_booleana, C_Expresion_numerica;
 
-//non terminal    C_Expresion_booleana, C_Expresion_booleana2, C_Expresion_booleana3, C_Expresion_boolnum, C_Expresion_numerica, C_Termino_booleano;
+non terminal    C_Expresion_booleana, C_Expresion_booleana2, C_Expresion_booleana3, C_Expresion_boolnum, C_Expresion_numerica, C_Termino_booleano;
 /* -------------Seccion de predencia y asociacion de los terminales----------- */
    
 //PRECEDENCIAS
-precedence left DISTINTO, IGUAL, MAYORQUE, MENORQUE, MAYOROIGUAL, MENOROIGUAL;
+precedence nonassoc DISTINTO, IGUAL, MAYORQUE, MENORQUE, MAYOROIGUAL, MENOROIGUAL;
 precedence left Y, O;
 precedence left NEGACION;
 
@@ -184,8 +184,9 @@ C_Expresion_booleana ::= C_Expresion_booleana Y C_Expresion_booleana
                        //| VAR PARENTESISABIERTO PARENTESISCERRADO
                        ;
 
-    //TODO: Especificar más
+
  /*  lista_sentencias ::= lista_expresiones
+                        | C_Expresion_booleana
                         ;
                         */
 
