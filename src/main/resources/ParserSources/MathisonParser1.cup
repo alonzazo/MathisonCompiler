@@ -218,7 +218,8 @@ c_expresion_variable::= VAR:v
 | PARENTESISABIERTO c_expresion_variable PARENTESISCERRADO
 ;
 
-c_expresion_variable_concatena::= c_variable_o_llamadoMetodo SUMA c_expresion_variable_concatena
+c_expresion_variable_concatena::=  c_variable_o_llamadoMetodo SUMA c_expresion_variable_concatena
+                            |c_variable_o_llamadoMetodo SUMA c_variable_o_llamadoMetodo
                             |PARENTESISABIERTO c_expresion_variable_concatena PARENTESISCERRADO
 
 ;
@@ -298,7 +299,8 @@ c_asignacion_expresion_Numerica_Total::= c_expresion_numerica //Corresponde a to
                            |c_expresion_numerica DIVISION c_variable_o_llamadoMetodo
 
                            //Dos variables
-                             |c_variable_o_llamadoMetodo SUMA c_variable_o_llamadoMetodo
+
+                           |c_variable_o_llamadoMetodo SUMA c_variable_o_llamadoMetodo
 
                             |c_variable_o_llamadoMetodo RESTA c_variable_o_llamadoMetodo
 
@@ -375,7 +377,7 @@ c_expresion_booleana::=  c_expresion_booleana  Y c_expresion_booleana
 
 c_hay_parametro ::=  c_hay_parametro COMA c_hay_parametro
                 |c_variable_o_llamadoMetodo
-                |c_expresion_variable_concatena
+                //| c_expresion_variable_concatena
                  /*Demás expresiones sin variable*/
                    | c_expresion_numerica
                     | c_expresion_cadena
