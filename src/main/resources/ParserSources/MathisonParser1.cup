@@ -113,10 +113,14 @@ terminal    COMO, DEFECTO, CON, TERMINAR, EXCEPTO, MOSTRAR, EJECUTAR, NUM;
 terminal    EN, CONTINUAR, FINALMENTE;
 
 //COMPARACION
-terminal    MEI, MAI, II, MENORQUE, MAYORQUE, MENOROIGUAL,MAYOROIGUAL,DISTINTO;
+terminal    MEI, MAI, II, MENORQUE, MAYORQUE, MENOROIGUAL,MAYOROIGUAL,DISTINTO,IGUAL;
+
+//ASGNACION
+terminal ASIGNACION;
+
 
 //ARITMETICA
-terminal    SUMA, RESTA, MULTIPLICACION, DIVISION, MOD, POTENCIA, ASIGNACION, IGUAL;
+terminal    SUMA, RESTA, MULTIPLICACION, DIVISION, MOD;
 
 //DELIMITADOR
 terminal    CORCHETEABIERTO,CORCHETECERRADO,LLAVEABIERTO,LLAVECERRADO,PARENTESISABIERTO,PARENTESISCERRADO, DOSPUNTOS, COMA;
@@ -140,7 +144,29 @@ terminal    String CADENA;
 non terminal    programa, lista_clases, clase, cuerpo_clase, sentencia, lista_sentencias;
 non terminal    lista_metodos, metodo, lista_expresiones, expresion, lista_parametros, expresion_booleana, variable_arreglo;
 non terminal    ciclo_para, ciclo_mientras, condicion, condicion_si, sino; //condicion_revisar, expresion_numerica, revisar0, asignacion;
-non terminal    visibilidad, tipo_dato, tipo_metodo;
+non terminal    visibilidad,  tipo_metodo;
+non terminal    c_declaracion,c_tipo;
+non terminal c_asignacion;
+non terminal c_asignacion_numerica,c_expresion_numerica;
+non terminal c_asignacion_cadena, c_expresion_cadena;
+non terminal c_asignacion_booleana, c_expresion_booleana,c_expresion_booleana_numerica;
+non terminal c_definicion;
+
+
+precedence nonassoc DISTINTO,IGUAL,MENORQUE,MENOROIGUAL,MAYORQUE,MAYOROIGUAL;
+
+precedence left Y,O;
+
+precedence left SUMA, RESTA;
+precedence left MULTIPLICACION, DIVISION, MOD;
+
+
+precedence left PARENTESISABIERTO,PARENTESISCERRADO;
+
+
+
+start with programa;
+
 
 /* -------------Seccion de predencia y asociacion de los terminales----------- */
    
@@ -163,11 +189,128 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
 //ntrolador estático) dentro de un objeto nunca tu
 //vo sentido.
 
-   programa ::= clase programa
+
+               // c_tipo VAR:v
+
+   programa ::= c_asignacion
+                ;
+
+
+  c_declaracion::= c_tipo VAR:v
+  ;
+
+
+  c_tipo ::= CAD
+                           | NUM
+                           | BOOL
+                           | VAR:tipo_no_primitivo           //Una clase
+                           ;
+
+  c_asignacion::=c_asignacion_numerica c_asignacion
+                |c_asignacion_cadena c_asignacion
+                |c_asignacion_booleana c_asignacion
+                |
+  ;
+
+c_asignacion_numerica::= NUM VAR:v ASIGNACION c_expresion_numerica
+                        ;
+
+ c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica
+                           |c_expresion_numerica RESTA c_expresion_numerica
+                           |c_expresion_numerica MULTIPLICACION c_expresion_numerica
+                           |c_expresion_numerica DIVISION c_expresion_numerica
+                           |NUMERO:v
+                           |VAR:v
+                           |PARENTESISABIERTO c_expresion_numerica PARENTESISCERRADO
+                           ;
+
+
+/*
+
+
+
+
+ c_expresion_numerica2 ::= c_expresion_numerica2 MULTIPLICACION c_expresion_numerica3
+                           |c_expresion_numerica2 DIVISION c_expresion_numerica3
+                           |c_expresion_numerica3
+                           ;
+
+c_expresion_numerica3 ::=   NUMERO:v
+                           |VAR:v
+                           |PARENTESISABIERTO c_expresion_numerica PARENTESISCERRADO
+                           ;
+
+*/
+
+c_asignacion_cadena::=CAD VAR:v ASIGNACION c_expresion_cadena
+;
+
+
+c_expresion_cadena  ::= c_expresion_cadena SUMA c_expresion_cadena
+                           | CADENA:v
+                           |VAR:v
+                          |PARENTESISABIERTO c_expresion_cadena PARENTESISCERRADO
+  ;
+
+/*
+
+c_expresion_cadena  ::= c_expresion_cadena SUMA c_expresion_cadena2
+                           | c_expresion_cadena2
+                           ;
+
+c_expresion_cadena2  ::= CADENA:v
+                     |VAR:v
+                     |PARENTESISABIERTO c_expresion_cadena PARENTESISCERRADO
+
+                     ;
+*/
+
+c_asignacion_booleana ::= BOOL VAR:V ASIGNACION c_expresion_booleana
+                        ;
+
+
+/*---FIJARSE SI BOOL DEVUELVE BIEN*/
+
+c_expresion_booleana::=  c_expresion_booleana  Y c_expresion_booleana
+                        |c_expresion_booleana O c_expresion_booleana
+                        |BOOL:v
+
+                        |VAR:v
+                        |c_expresion_booleana_numerica //Si lo meto entre parentesis no funciona
+                        |VERDADERO
+                        |FALSO
+
+                        |PARENTESISABIERTO VAR:v PARENTESISCERRADO
+                        |PARENTESISABIERTO c_expresion_booleana  Y c_expresion_booleana PARENTESISCERRADO
+                        |PARENTESISABIERTO c_expresion_booleana O c_expresion_booleana PARENTESISCERRADO
+                        |PARENTESISABIERTO VERDADERO PARENTESISCERRADO
+                        |PARENTESISABIERTO FALSO PARENTESISCERRADO
+                        ;
+
+
+c_expresion_booleana_numerica::= c_expresion_numerica MAYORQUE c_expresion_numerica
+|c_expresion_numerica MAYOROIGUAL c_expresion_numerica
+|c_expresion_numerica MENORQUE c_expresion_numerica
+|c_expresion_numerica MENOROIGUAL c_expresion_numerica
+|c_expresion_numerica DISTINTO c_expresion_numerica
+|c_expresion_numerica IGUAL c_expresion_numerica
+|PARENTESISABIERTO c_expresion_booleana_numerica PARENTESISCERRADO
+
+ ;
+
+//c_definicion::= NUM c_asignacion_numerica
+//|CAD c_asignacion_cadena
+//|BOOL c_asignacion_booleana
+  //;
+
+
+
+
+   /*   programa ::= clase programa
                 | metodo programa
                 | clase
                 | metodo
-                ;
+                ;*/
 /*
    lista_clases ::= clase lista_clases
                     | clase
@@ -189,22 +332,16 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
                        |
                        ;
 
-   lista_parametros ::= tipo_dato variable_arreglo COMA lista_parametros
-                    |   tipo_dato variable_arreglo
+   lista_parametros ::= c_tipo variable_arreglo COMA lista_parametros
+                    |   c_tipo variable_arreglo
                     ;
 
    variable_arreglo ::= VAR:v
                     | VAR:v CORCHETEABIERTO CORCHETECERRADO
                     ;
 
-   tipo_dato ::=    CAD
-               |    NUM
-               |    BOOL
-               |    VAR:tipo_no_primitivo           //Una clase
-               ;
-
    tipo_metodo ::= PROC
-                | tipo_dato
+                | c_tipo
                 ;
 
    cuerpo_clase ::= cuerpo_clase expresion
@@ -215,10 +352,10 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
    /*cuerpo_clase ::= lista_expresiones
                     ;*/
 
-   lista_sentencias ::= lista_sentencias ciclo_para
-                        | lista_sentencias ciclo_mientras
-                        | lista_sentencias condicion
-                        | lista_sentencias expresion
+   lista_sentencias ::=  ciclo_para lista_sentencias
+                        | ciclo_mientras lista_sentencias
+                        | condicion lista_sentencias
+                        | expresion lista_sentencias
                         |
                         ;
 
@@ -374,7 +511,6 @@ non terminal    visibilidad, tipo_dato, tipo_metodo;
                 | MULTIPLICACION    {: System.out.println("MUTIPLICACION");:}
                 | DIVISION          {: System.out.println("DIVISION");:}
                 | MOD               {: System.out.println("MOD");:}
-                | POTENCIA          {: System.out.println("POTENCIA");:}
                 | ASIGNACION        {: System.out.println("ASIGNACION");:}
                 | IGUAL             {: System.out.println("IGUAL");:}
                 | CORCHETEABIERTO   {: System.out.println("CORCHETEABIERTO");:}
