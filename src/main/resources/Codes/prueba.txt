@@ -1,0 +1,13 @@
+publico clase clase1 {
+
+	publico proc principal(num a) {
+		imprimir hola mundo
+		para cont desde y hasta y avance 1 {
+		    num x = a
+		}
+	}
+
+	publico proc saludar(){
+		saludo = "hola"
+	}
+}

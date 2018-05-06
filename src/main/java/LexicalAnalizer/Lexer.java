@@ -894,9 +894,6 @@ public class Lexer implements java_cup.runtime.Scanner {
             { return symbol(sym.MULTIPLICACION);
             }
           case 77: break;
-          case 12: 
-            { return symbol(sym.POTENCIA);
-            }
           case 78: break;
           case 13: 
             { return symbol(sym.RESTA);
