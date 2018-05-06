@@ -193,7 +193,7 @@ non terminal    visibilidad, tipo, tipo_metodo;
             | PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
             ;
 
-    visibilidad     ::= PUBLICO                                 {: System.out.println("Visibilidad Publica " + v);:}
+    visibilidad     ::= PUBLICO                                 {: System.out.println("Visibilidad Publica ");:}
                       | PRIVADO                                 {: System.out.println("Visibilidad Privada");:}
                       ;
 

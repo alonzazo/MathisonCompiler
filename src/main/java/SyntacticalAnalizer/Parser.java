@@ -1157,7 +1157,7 @@ class CUP$Parser$actions {
           case 14: // visibilidad ::= PUBLICO 
             {
               Object RESULT =null;
-		 System.out.println("Visibilidad Publica " + v);
+		 System.out.println("Visibilidad Publica ");
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("visibilidad",18, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
