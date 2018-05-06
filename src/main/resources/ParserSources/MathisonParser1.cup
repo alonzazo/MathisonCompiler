@@ -183,22 +183,26 @@ non terminal    visibilidad, tipo, tipo_metodo;
 */
 
 
-   metodo ::= visibilidad tipo_metodo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
-            | visibilidad tipo_metodo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
-            | tipo_metodo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
-            | tipo_metodo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+   metodo ::= visibilidad tipo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+            | visibilidad tipo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+            | visibilidad PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+            | visibilidad PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+            | tipo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+            | tipo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+            | PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+            | PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
             ;
 
-    visibilidad     ::= PUBLICO
-                      | PRIVADO
+    visibilidad     ::= PUBLICO                                 {: System.out.println("Visibilidad Publica " + v);:}
+                      | PRIVADO                                 {: System.out.println("Visibilidad Privada");:}
                       ;
 
-   lista_parametros ::= tipo variable_arreglo COMA lista_parametros
-                    |   tipo variable_arreglo
+   lista_parametros ::= tipo variable_arreglo:v COMA lista_parametros   {: System.out.println("Parámetro"); :}
+                    |   tipo variable_arreglo:v                         {: System.out.println("Parámetro"); :}
                     ;
 
    variable_arreglo ::= VAR:v
-                    | VAR:v CORCHETEABIERTO CORCHETECERRADO
+                    | VAR:v CORCHETEABIERTO CORCHETECERRADO             //TODO Especificar más los arreglos
                     ;
 
    tipo      ::=    CAD
@@ -207,9 +211,6 @@ non terminal    visibilidad, tipo, tipo_metodo;
                |    VAR:tipo_no_primitivo           //Una clase
                ;
 
-   tipo_metodo ::= PROC
-                | tipo
-                ;
 
    cuerpo_clase ::= cuerpo_clase expresion
                  | cuerpo_clase metodo
@@ -393,7 +394,7 @@ non terminal    visibilidad, tipo, tipo_metodo;
                 //| VAR:e             {: System.out.println("VAR " + e);:}
                 | DELIMITADOR:e     {: System.out.println("DELIMITADOR " + e);:}
                 | CADENA:e          {: System.out.println("CADENA" + e);:}
-                |tipo
+                //|tipo
                 ;
     /*
     expr_list ::= expr_list expr_part
