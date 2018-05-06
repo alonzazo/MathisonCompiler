@@ -181,6 +181,10 @@ non terminal c_revisar, c_revisar_casos;
 /* Lineas validas */
 non terminal c_lista_sentencias;
 
+
+
+nonterminal cuerpo_metodo;
+
 /*Inicio de las precedence, se guian en base a la documentacion de java
 Entre más abajo esten tienen más prioridad*/
 
@@ -200,7 +204,7 @@ start with programa;
 
 programa ::= clase programa
            //| c_asignacion programa
-           |
+           | clase
            ;
 
 /*------------------------------Declaracion Basica ------------------------------*/
@@ -444,32 +448,36 @@ c_lista_sentencias ::= c_estructuras c_lista_sentencias
 clase ::= c_vista CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: System.out.println("CLASE " + v);:}
         ;
 
-c_metodo ::= c_vista c_tipo_metodo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias LLAVECERRADO     {: System.out.println("METODO " + v);:}
-         | c_vista c_tipo_metodo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias LLAVECERRADO                      {: System.out.println("METODO " + v);:}
-         ;
+c_metodo ::= c_vista c_tipo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+            | c_vista c_tipo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+            | c_vista PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+            | c_vista PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+            | c_tipo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+            | c_tipo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+            | PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+            | PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+            ;
 
 c_vista ::= PUBLICO
           | PRIVADO
-          |
           ;
 
-lista_parametros ::= c_tipo variable_arreglo COMA lista_parametros
-                   | c_tipo variable_arreglo
+lista_parametros ::= c_tipo variable_arreglo COMA lista_parametros      {: System.out.println("Parámetro"); :}
+                   | c_tipo variable_arreglo                            {: System.out.println("Parámetro"); :}
                    ;
 
 variable_arreglo ::= VAR:v
                    | VAR:v CORCHETEABIERTO CORCHETECERRADO
                    ;
 
-c_tipo_metodo ::= PROC
-              | c_tipo
-              ;
-
 cuerpo_clase ::= c_metodo cuerpo_clase
                //| c_asignacion cuerpo_clase
                |
                ;
 
+cuerpo_metodo ::= variable_arreglo cuerpo_metodo
+                    | variable_arreglo
+                    ;
 
 /* La gramatica de nuestro analizador.
    
