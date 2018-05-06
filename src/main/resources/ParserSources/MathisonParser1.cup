@@ -98,7 +98,7 @@ parser code {:
 :};
    
 /* ------------Declaracion de simbolos terminales y no terminales---------- */
-   
+
 /* Terminales (tokens obtenidos por el analizador lexico).  
 
    Terminales que no tienen un valor son listados primero, los terminales que
@@ -218,7 +218,8 @@ c_expresion_variable::= VAR:v
 | PARENTESISABIERTO c_expresion_variable PARENTESISCERRADO
 ;
 
-c_expresion_variable_concatena::=  c_variable_o_llamadoMetodo SUMA c_expresion_variable_concatena
+
+c_expresion_variable_concatena::=  c_variable_o_llamadoMetodo SUMA c_expresion_variable_concatena   //
                             |c_variable_o_llamadoMetodo SUMA c_variable_o_llamadoMetodo
                             |PARENTESISABIERTO c_expresion_variable_concatena PARENTESISCERRADO
 
@@ -260,7 +261,7 @@ c_expresion_variable_comparacion::= c_expresion_variable_igual
 ;
 
 
-
+/* ------------Gramática de Asignaciones------------ */
 
 /*Declaracion de las asinaciones*/
   c_asignacion::=c_asignacion_numerica
@@ -275,7 +276,7 @@ c_expresion_variable_comparacion::= c_expresion_variable_igual
 c_asignacion_numerica::= NUM VAR:v ASIGNACION c_asignacion_expresion_Numerica_Total
 ;
 
-c_asignacion_expresion_Numerica_Total::= c_expresion_numerica //Corresponde a todas aquellas menos las que tienen solo variables
+c_asignacion_expresion_Numerica_Total::= c_expresion_numerica //Corresponde a todas aquellas menos las que tienen solo variables TODO Cambiar el nombre del no terminal
                                         |c_variable_o_llamadoMetodo
                                         ;
 
@@ -314,13 +315,13 @@ c_asignacion_expresion_Numerica_Total::= c_expresion_numerica //Corresponde a to
                            ;
 
 c_asignacion_expresion_Cadena_total::=c_expresion_cadena  //Cuando al menos una no es una variable
-|c_variable_o_llamadoMetodo
-|c_expresion_variable_concatena //Concatenacion (Al menos dos) de puras variables o llamado a metodos
-;
-/*Syntaxis de tipo cadena tipo numericas*/
+                                    |c_variable_o_llamadoMetodo
+                                    |c_expresion_variable_concatena //Concatenacion (Al menos dos) de puras variables o llamado a metodos
+                                    ;
 
-c_asignacion_cadena::=CAD VAR:v ASIGNACION c_asignacion_expresion_Cadena_total
-;
+/*Syntaxis de tipo cadena tipo numericas*/
+c_asignacion_cadena ::=CAD VAR:v ASIGNACION c_asignacion_expresion_Cadena_total
+                    ;
 
 c_expresion_cadena  ::= c_expresion_cadena SUMA c_expresion_cadena
                             //Una variable + otra cosa
@@ -341,6 +342,9 @@ c_asignacion_expresion_Booleana_Total::= c_expresion_booleana //Corresponde a to
 
 c_asignacion_booleana ::= BOOL VAR:V ASIGNACION c_asignacion_expresion_Booleana_Total
                         ;
+
+
+/* ------------Expresiones booleanas y numéricas------------ */
 
 
 c_expresion_booleana::=  c_expresion_booleana  Y c_expresion_booleana
