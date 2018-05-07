@@ -208,7 +208,7 @@ programa ::= clase programa
            ;
 
 /*------------------------------Declaracion Basica ------------------------------*/
-c_declaracion ::= c_tipo VAR:v
+c_declaracion ::= c_tipo VAR:v                              {:System.out.println("Declaracion " + v);:}
                 ;
 
 /*------------------------------Primitivas de tipo de datos------------------------------*/
@@ -279,7 +279,8 @@ c_expresion_variable_comparacion ::= c_expresion_variable_igual
 
 /*------------------------------Declaracion de las asignaciones------------------------------*/
 
-c_asignacion ::= c_tipo VAR:v c_asignacion_prima              //num pi = 3.14
+c_asignacion ::=    c_tipo VAR:v c_asignacion_prima             {:System.out.println("Asignación sobre variable " + v);:}    //num pi = 3.14
+                |   VAR:v c_asignacion_prima                    {:System.out.println("Asignación sobre variable " + v);:}
                ;
 
 /*c_asignacion ::= c_asignacion_numerica              //num pi = 3.14
@@ -377,8 +378,8 @@ c_expresion_booleana::= c_expresion_booleana  Y c_expresion_booleana
                       | c_variable_o_llamadoMetodo O c_variable_o_llamadoMetodo
 
                       | c_expresion_variable_comparacion
-                      | VERDADERO
-                      | FALSO
+                      | VERDADERO:v                               {:System.out.println("VERDADERO");:}
+                      | FALSO:v                                   {:System.out.println("FALSO");:}
                       | PARENTESISABIERTO c_expresion_booleana PARENTESISCERRADO
 
                         ;
@@ -442,6 +443,7 @@ c_revisar_casos ::= CASO c_expresion_numerica DOSPUNTOS c_lista_sentencias SALIR
                   ;
 
 c_lista_sentencias ::= c_asignacion c_lista_sentencias
+                     | c_declaracion c_lista_sentencias
                      //| c_estructuras c_lista_sentencias
                      | c_expresion_llamado_metodo c_lista_sentencias
                      | //c_asignacion
@@ -484,6 +486,7 @@ variable_arreglo ::= VAR:v
 
 cuerpo_clase ::= c_metodo cuerpo_clase
                | c_asignacion cuerpo_clase
+               | c_declaracion cuerpo_clase
                |
                ;
 
