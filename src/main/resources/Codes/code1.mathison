@@ -1,9 +1,10 @@
 publico clase Dani{
+    num hola = 5
     publico num enfiestarACharly(num birras, cad alcohol){
-        caca
+        cad miercoles = "curveolas"
+        num numerito = 4
     }
 }
-
 
 
 

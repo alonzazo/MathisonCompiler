@@ -150,7 +150,7 @@ non terminal c_expresion_variable;
 non terminal c_expresion_variable_mayorque, c_expresion_variable_mayoroigual, c_expresion_variable_menorque,c_expresion_variable_menoroigual;
 non terminal c_expresion_variable_igual, c_expresion_variable_distinto;
 non terminal c_expresion_variable_comparacion;
-non terminal c_expresion_variable_concatena;
+non terminal c_expresion_variable_concatena, c_expresion_variable_concatena_prima;
 
 non terminal c_expresion_numerica;  //Todas las operaciones excepto solamente el nombre e la variable
 non terminal c_asignacion_expresion_Numerica_Total; //El total
@@ -161,7 +161,7 @@ non terminal c_asignacion_expresion_Booleana_Total;
 non terminal c_expresion_cadena; //Todas las operaciones excepto solamente el nombre e la variable
 non terminal c_asignacion_expresion_Cadena_total; //El totall
 
-non terminal c_asignacion;
+non terminal c_asignacion, c_asignacion_prima;
 non terminal c_asignacion_numerica;
 non terminal c_asignacion_cadena;
 non terminal c_asignacion_booleana;
@@ -234,9 +234,14 @@ c_expresion_variable ::= VAR:v
                        ;
 
 c_expresion_variable_concatena ::= c_variable_o_llamadoMetodo SUMA c_expresion_variable_concatena
-                                 | c_variable_o_llamadoMetodo SUMA c_variable_o_llamadoMetodo
+
+                                 //| c_variable_o_llamadoMetodo SUMA c_variable_o_llamadoMetodo
+                                 | c_expresion_variable SUMA c_variable_o_llamadoMetodo
+                                 | c_llamadoMetodo SUMA c_variable_o_llamadoMetodo
+
                                  | PARENTESISABIERTO c_expresion_variable_concatena PARENTESISCERRADO
                                  ;
+
 
 c_expresion_variable_igual ::= c_asignacion_expresion_Numerica_Total IGUAL c_asignacion_expresion_Numerica_Total
                              | PARENTESISABIERTO c_expresion_variable_igual PARENTESISCERRADO
@@ -274,18 +279,26 @@ c_expresion_variable_comparacion ::= c_expresion_variable_igual
 
 /*------------------------------Declaracion de las asignaciones------------------------------*/
 
-c_asignacion ::= c_asignacion_numerica
-               | c_asignacion_cadena
-               | c_asignacion_booleana
+c_asignacion ::= c_tipo VAR:v c_asignacion_prima              //num pi = 3.14
                ;
 
+/*c_asignacion ::= c_asignacion_numerica              //num pi = 3.14
+               | c_asignacion_cadena                //cad mensaje = "Me llamo viernes"
+               | c_asignacion_booleana              //bool mentiroso = (true == false) == true
+               ;
+*/
 /*------------------------------Sintaxis asignacion de tipo numericas------------------------------*/
 
-c_asignacion_numerica ::= NUM VAR:v ASIGNACION c_asignacion_expresion_Numerica_Total
-                        ;
+c_asignacion_prima ::=  ASIGNACION c_asignacion_expresion_Numerica_Total        //Asignacion numerica
+                    |   ASIGNACION c_asignacion_expresion_Cadena_total
+                    |   ASIGNACION c_asignacion_expresion_Booleana_Total
+                    |   ASIGNACION c_variable_o_llamadoMetodo
+                    ;
+/*c_asignacion_numerica ::= NUM VAR:v ASIGNACION c_asignacion_expresion_Numerica_Total
+                        ;*/
+
 
 c_asignacion_expresion_Numerica_Total ::= c_expresion_numerica //Corresponde a todas aquellas menos las que tienen solo variables
-                                        | c_variable_o_llamadoMetodo
                                         ;
 
 
@@ -310,32 +323,30 @@ c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica
 
                         //Dos variables
 
-                        | c_variable_o_llamadoMetodo SUMA c_variable_o_llamadoMetodo
+                        | c_variable_o_llamadoMetodo SUMA c_variable_o_llamadoMetodo//Todo Marcador
                         | c_variable_o_llamadoMetodo RESTA c_variable_o_llamadoMetodo
                         | c_variable_o_llamadoMetodo MULTIPLICACION c_variable_o_llamadoMetodo
                         | c_variable_o_llamadoMetodo DIVISION c_variable_o_llamadoMetodo
 
                         //Terminos
-
-                        | NUMERO:v
+                        | NUMERO:v                                                  {:System.out.println("Numero " + v);:}
                         | PARENTESISABIERTO c_expresion_numerica PARENTESISCERRADO
                         ;
 
 c_asignacion_expresion_Cadena_total ::= c_expresion_cadena  //Cuando al menos una no es una variable
-                                      | c_variable_o_llamadoMetodo
                                       | c_expresion_variable_concatena //Concatenacion (Al menos dos) de puras variables o llamado a metodos
                                       ;
 
 /*------------------------------Sintaxis de tipo cadena tipo numericas------------------------------*/
 
-c_asignacion_cadena ::= CAD VAR:v ASIGNACION c_asignacion_expresion_Cadena_total
-                      ;
+/*c_asignacion_cadena ::= CAD VAR:v ASIGNACION c_asignacion_expresion_Cadena_total
+                      ;*/
 
 c_expresion_cadena ::= c_expresion_cadena SUMA c_expresion_cadena
                      //Una variable + otra cosa
                      | c_variable_o_llamadoMetodo SUMA c_expresion_cadena
                      | c_expresion_cadena SUMA c_variable_o_llamadoMetodo
-                     | CADENA:v
+                     | CADENA:v                                             {:System.out.println("Cadena " + v);:}
                      //|c_nombre_metodo
                      | PARENTESISABIERTO c_expresion_cadena PARENTESISCERRADO
                      ;
@@ -343,12 +354,11 @@ c_expresion_cadena ::= c_expresion_cadena SUMA c_expresion_cadena
 /*------------------------------ Sintaxis de tipo cadena tipo booleana------------------------------*/
 
 c_asignacion_expresion_Booleana_Total ::= c_expresion_booleana //Corresponde a todas las operaciones excpeto cuando todas son variables
-                                        | c_variable_o_llamadoMetodo
                                         ;
 
-c_asignacion_booleana ::= BOOL VAR:V ASIGNACION c_asignacion_expresion_Booleana_Total
+/*c_asignacion_booleana ::= BOOL VAR:V ASIGNACION c_asignacion_expresion_Booleana_Total
                         ;
-
+*/
 
 c_expresion_booleana::= c_expresion_booleana  Y c_expresion_booleana
                       | c_expresion_booleana O c_expresion_booleana
@@ -431,10 +441,12 @@ c_revisar_casos ::= CASO c_expresion_numerica DOSPUNTOS c_lista_sentencias SALIR
                   | DEFECTO DOSPUNTOS c_lista_sentencias SALIR
                   ;
 
-c_lista_sentencias ::= c_estructuras c_lista_sentencias
-                     | c_asignacion c_lista_sentencias
+c_lista_sentencias ::= c_asignacion c_lista_sentencias
+                     //| c_estructuras c_lista_sentencias
                      | c_expresion_llamado_metodo c_lista_sentencias
-                     |
+                     | //c_asignacion
+                     //| c_expresion_llamado_metodo
+                     //| c_estructuras
                      ;
 
    /*   programa ::= clase programa
@@ -471,12 +483,13 @@ variable_arreglo ::= VAR:v
                    ;
 
 cuerpo_clase ::= c_metodo cuerpo_clase
-               //| c_asignacion cuerpo_clase
+               | c_asignacion cuerpo_clase
                |
                ;
 
-cuerpo_metodo ::= variable_arreglo cuerpo_metodo
-                    | variable_arreglo
+cuerpo_metodo ::= c_lista_sentencias //cuerpo_metodo
+                    //| variable_arreglo
+                    //|
                     ;
 
 /* La gramatica de nuestro analizador.
