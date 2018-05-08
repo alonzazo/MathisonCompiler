@@ -107,20 +107,18 @@ parser code {:
 //PALABRAS RESERVADAS
 terminal    Y, O, PARA, DESDE, HASTA, AVANCE, MIENTRAS, HACER, SI;
 terminal    SINO, DEVOLVER, PROC, CLASE, REC, CAD, BOOL, PUBLICO;
-terminal    PRIVADO, IMPRIMIR, LEER, FIN, VERDADERO, FALSO, IMPORTAR;
-terminal    INTENTAR, ATRAPAR, LANZAR, CONSTANTE, REVISAR, CASO;
-terminal    COMO, DEFECTO, CON, TERMINAR, EXCEPTO, MOSTRAR, EJECUTAR, NUM;
-terminal    EN, CONTINUAR, FINALMENTE;
+terminal    PRIVADO, IMPRIMIR, LEER, VERDADERO, FALSO;
+terminal    REVISAR, CASO, DEFECTO, NUM, NEGACION;
 
 //COMPARACION
-terminal    MEI, MAI, II, MENORQUE, MAYORQUE, MENOROIGUAL,MAYOROIGUAL,DISTINTO,IGUAL;
+terminal    MENORQUE, MAYORQUE, MENOROIGUAL, MAYOROIGUAL, DISTINTO, IGUAL;
 
 //ASGNACION
-terminal ASIGNACION;
+terminal    ASIGNACION;
 
 
 //ARITMETICA
-terminal    SUMA, RESTA, MULTIPLICACION, DIVISION, MOD;
+terminal    SUMA, RESTA, MULTIPLICACION, DIVISION, NEGATIVO;
 
 //DELIMITADOR
 terminal    CORCHETEABIERTO,CORCHETECERRADO,LLAVEABIERTO,LLAVECERRADO,PARENTESISABIERTO,PARENTESISCERRADO, DOSPUNTOS, COMA;
@@ -141,9 +139,9 @@ terminal    String CADENA;
 //non terminal Object     expr_list, expr_part;
 //non terminal Integer    expr, factor, termino;
 
-non terminal    programa, lista_clases, clase, cuerpo_clase, c_metodo;
-non terminal    lista_expresiones, expresion, lista_parametros, expresion_booleana, variable_arreglo;
-non terminal    c_vista,  c_tipo_metodo, lista_metodos, c_declaracion_metodo;
+non terminal    programa, clase, cuerpo_clase, c_metodo;
+non terminal    lista_parametros, variable_arreglo;
+non terminal    c_vista,  c_tipo_metodo, c_declaracion_metodo;
 non terminal    c_declaracion,c_tipo;
 
 non terminal c_expresion_variable;
@@ -193,7 +191,8 @@ precedence nonassoc DISTINTO,IGUAL,MENORQUE,MENOROIGUAL,MAYORQUE,MAYOROIGUAL;
 precedence left Y,O;
 
 precedence left SUMA, RESTA;
-precedence left MULTIPLICACION, DIVISION, MOD;
+precedence left MULTIPLICACION, DIVISION;
+precedence left NEGATIVO, NEGACION;
 
 precedence left COMA;
 
@@ -307,6 +306,8 @@ c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica
                         | c_expresion_numerica RESTA c_expresion_numerica
                         | c_expresion_numerica MULTIPLICACION c_expresion_numerica
                         | c_expresion_numerica DIVISION c_expresion_numerica
+                        | RESTA c_expresion_numerica %prec NEGATIVO
+                        | RESTA c_variable_o_llamadoMetodo %prec NEGATIVO
 
                         //Una variable + otra cosa
 
@@ -330,7 +331,7 @@ c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica
                         | c_variable_o_llamadoMetodo DIVISION c_variable_o_llamadoMetodo
 
                         //Terminos
-                        | NUMERO:v                                                  {:System.out.println("Numero " + v);:}
+                        | NUMERO:v                                                  //{:System.out.println("Numero " + v);:}
                         | PARENTESISABIERTO c_expresion_numerica PARENTESISCERRADO
                         ;
 
@@ -363,6 +364,8 @@ c_asignacion_expresion_Booleana_Total ::= c_expresion_booleana //Corresponde a t
 
 c_expresion_booleana::= c_expresion_booleana  Y c_expresion_booleana
                       | c_expresion_booleana O c_expresion_booleana
+                      | DISTINTO c_expresion_booleana %prec NEGACION
+                      | DISTINTO c_variable_o_llamadoMetodo %prec NEGACION
 
                       //Una variables o más + otra cosa
 
@@ -446,7 +449,7 @@ c_lista_sentencias ::= c_asignacion c_lista_sentencias
                      | c_declaracion c_lista_sentencias
                      //| c_estructuras c_lista_sentencias
                      | c_expresion_llamado_metodo c_lista_sentencias
-                     | //c_asignacion
+                     | c_asignacion
                      //| c_expresion_llamado_metodo
                      //| c_estructuras
                      ;

@@ -8,77 +8,60 @@ package SyntacticalAnalizer;
 /** CUP generated interface containing symbol constants. */
 public interface sym {
   /* terminals */
-  public static final int NUMERO = 67;
-  public static final int DOSPUNTOS = 64;
-  public static final int DISTINTO = 50;
+  public static final int NUMERO = 50;
+  public static final int DOSPUNTOS = 47;
+  public static final int DISTINTO = 33;
   public static final int AVANCE = 7;
-  public static final int EXCEPTO = 36;
-  public static final int CASO = 31;
+  public static final int CASO = 25;
   public static final int PUBLICO = 18;
   public static final int Y = 2;
-  public static final int MAI = 44;
   public static final int DEVOLVER = 12;
-  public static final int LLAVECERRADO = 61;
+  public static final int LLAVECERRADO = 44;
   public static final int IMPRIMIR = 20;
-  public static final int DELIMITADOR = 69;
-  public static final int MOSTRAR = 37;
+  public static final int DELIMITADOR = 52;
   public static final int SI = 10;
   public static final int O = 3;
-  public static final int RESTA = 54;
+  public static final int RESTA = 37;
   public static final int DESDE = 5;
-  public static final int FINALMENTE = 42;
-  public static final int FIN = 22;
+  public static final int NEGATIVO = 40;
   public static final int HASTA = 6;
   public static final int REC = 15;
-  public static final int CONSTANTE = 29;
   public static final int PRIVADO = 19;
-  public static final int IGUAL = 51;
-  public static final int MAYORQUE = 47;
   public static final int CAD = 16;
-  public static final int PARENTESISCERRADO = 63;
+  public static final int MAYORQUE = 30;
+  public static final int IGUAL = 34;
+  public static final int PARENTESISCERRADO = 46;
   public static final int SINO = 11;
   public static final int MIENTRAS = 8;
   public static final int BOOL = 17;
-  public static final int COMO = 32;
-  public static final int II = 45;
-  public static final int CONTINUAR = 41;
-  public static final int SUMA = 53;
-  public static final int NUM = 39;
-  public static final int ATRAPAR = 27;
-  public static final int IMPORTAR = 25;
-  public static final int SALIR = 66;
+  public static final int SUMA = 36;
+  public static final int NUM = 27;
+  public static final int SALIR = 49;
   public static final int EOF = 0;
-  public static final int LLAVEABIERTO = 60;
-  public static final int MAYOROIGUAL = 49;
+  public static final int LLAVEABIERTO = 43;
+  public static final int MAYOROIGUAL = 32;
   public static final int CLASE = 14;
   public static final int error = 1;
-  public static final int COMA = 65;
-  public static final int REVISAR = 30;
-  public static final int CADENA = 70;
-  public static final int CORCHETECERRADO = 59;
-  public static final int MOD = 57;
-  public static final int INTENTAR = 26;
-  public static final int CON = 34;
-  public static final int ASIGNACION = 52;
-  public static final int MENOROIGUAL = 48;
-  public static final int MENORQUE = 46;
-  public static final int EN = 40;
-  public static final int PARENTESISABIERTO = 62;
-  public static final int MEI = 43;
-  public static final int FALSO = 24;
+  public static final int COMA = 48;
+  public static final int REVISAR = 24;
+  public static final int CADENA = 53;
+  public static final int NEGACION = 28;
+  public static final int CORCHETECERRADO = 42;
+  public static final int ASIGNACION = 35;
+  public static final int MENOROIGUAL = 31;
+  public static final int MENORQUE = 29;
+  public static final int PARENTESISABIERTO = 45;
+  public static final int FALSO = 23;
   public static final int LEER = 21;
-  public static final int TERMINAR = 35;
   public static final int HACER = 9;
   public static final int PROC = 13;
   public static final int PARA = 4;
-  public static final int VERDADERO = 23;
-  public static final int DIVISION = 56;
-  public static final int EJECUTAR = 38;
-  public static final int CORCHETEABIERTO = 58;
-  public static final int DEFECTO = 33;
-  public static final int VAR = 68;
-  public static final int LANZAR = 28;
-  public static final int MULTIPLICACION = 55;
+  public static final int VERDADERO = 22;
+  public static final int DIVISION = 39;
+  public static final int CORCHETEABIERTO = 41;
+  public static final int DEFECTO = 26;
+  public static final int VAR = 51;
+  public static final int MULTIPLICACION = 38;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -102,30 +85,13 @@ public interface sym {
   "PRIVADO",
   "IMPRIMIR",
   "LEER",
-  "FIN",
   "VERDADERO",
   "FALSO",
-  "IMPORTAR",
-  "INTENTAR",
-  "ATRAPAR",
-  "LANZAR",
-  "CONSTANTE",
   "REVISAR",
   "CASO",
-  "COMO",
   "DEFECTO",
-  "CON",
-  "TERMINAR",
-  "EXCEPTO",
-  "MOSTRAR",
-  "EJECUTAR",
   "NUM",
-  "EN",
-  "CONTINUAR",
-  "FINALMENTE",
-  "MEI",
-  "MAI",
-  "II",
+  "NEGACION",
   "MENORQUE",
   "MAYORQUE",
   "MENOROIGUAL",
@@ -137,7 +103,7 @@ public interface sym {
   "RESTA",
   "MULTIPLICACION",
   "DIVISION",
-  "MOD",
+  "NEGATIVO",
   "CORCHETEABIERTO",
   "CORCHETECERRADO",
   "LLAVEABIERTO",
