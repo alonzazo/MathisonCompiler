@@ -1,10 +1,10 @@
 publico clase Dani{
     num de_amor
     bool estaFraseEsUnaMentira
-    cad adri = "el profe más capo"
+    cad ben = "fiestón"
     publico num enfiestarACharly(num birras, cad alcohol){
         cad miercoles = "curveolas"
-        bool otra
+        cad perro = perro + perro
         numeritoNOdeclarado = 4
         otroPeroBooleano = (verdadero Y falso) O falso
     }

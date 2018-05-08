@@ -232,7 +232,7 @@ c_llamadoMetodo ::= c_expresion_llamado_metodo
 c_expresion_variable ::= VAR:v
                        | PARENTESISABIERTO c_expresion_variable PARENTESISCERRADO
                        ;
-
+/*
 c_expresion_variable_concatena ::= c_variable_o_llamadoMetodo SUMA c_expresion_variable_concatena
 
                                  //| c_variable_o_llamadoMetodo SUMA c_variable_o_llamadoMetodo
@@ -241,7 +241,7 @@ c_expresion_variable_concatena ::= c_variable_o_llamadoMetodo SUMA c_expresion_v
 
                                  | PARENTESISABIERTO c_expresion_variable_concatena PARENTESISCERRADO
                                  ;
-
+*/
 
 c_expresion_variable_igual ::= c_asignacion_expresion_Numerica_Total IGUAL c_asignacion_expresion_Numerica_Total
                              | PARENTESISABIERTO c_expresion_variable_igual PARENTESISCERRADO
@@ -324,7 +324,7 @@ c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica
 
                         //Dos variables
 
-                        | c_variable_o_llamadoMetodo SUMA c_variable_o_llamadoMetodo//Todo Marcador
+                        | c_variable_o_llamadoMetodo SUMA c_variable_o_llamadoMetodo    //Esta operación contempla la concatenación de cadenas y la suma de literales numéricos.
                         | c_variable_o_llamadoMetodo RESTA c_variable_o_llamadoMetodo
                         | c_variable_o_llamadoMetodo MULTIPLICACION c_variable_o_llamadoMetodo
                         | c_variable_o_llamadoMetodo DIVISION c_variable_o_llamadoMetodo
@@ -335,7 +335,7 @@ c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica
                         ;
 
 c_asignacion_expresion_Cadena_total ::= c_expresion_cadena  //Cuando al menos una no es una variable
-                                      | c_expresion_variable_concatena //Concatenacion (Al menos dos) de puras variables o llamado a metodos
+                                      //| c_expresion_variable_concatena //Concatenacion (Al menos dos) de puras variables o llamado a metodos
                                       ;
 
 /*------------------------------Sintaxis de tipo cadena tipo numericas------------------------------*/
