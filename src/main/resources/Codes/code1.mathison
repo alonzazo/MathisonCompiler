@@ -1,3 +1,9 @@
+publico clase Carl
+{
+    num x = 7 + -(-metodo())
+    bool lul = !metboo() Y VERDADERO
+}
+/*
 publico clase Dani{
     num de_amor
     bool estaFraseEsUnaMentira
@@ -9,13 +15,4 @@ publico clase Dani{
         otroPeroBooleano = (verdadero Y falso) O falso
     }
 }
-
-
-
-
-
-
-
-
-
-
+*/
