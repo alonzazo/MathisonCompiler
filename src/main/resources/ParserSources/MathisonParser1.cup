@@ -494,48 +494,14 @@ cuerpo_metodo ::= c_lista_sentencias //cuerpo_metodo
                     //| variable_arreglo
                     //|
                     ;
+ 
 
-/* La gramatica de nuestro analizador.
-   
-   expr_list ::=   expr_list expr_part
-                                {: System.out.println();:}
-                 | expr_part
-   expr_part ::=   expr SEMI
-   expr      ::=   expr PLUS factor
-                                {: System.out.println();:}
-                 | expr MINUS factor
-                                {: System.out.println();:}
-                 | factor
-   factor    ::=   factor TIMES term
-                                {: System.out.println();:}
-                 | factor DIVIDE term
-                                {: System.out.println();:}
-                 | term
-   term     ::=    LPAREN expr RPAREN
-                                {: System.out.println();:}
-                 | NUMBER
-                                {: System.out.println();:}
-                 | ID
-*/
-   
-/* 'expr_list' es la raiz de la gramatica. Una 'expr_list' puede ser una 'expr_list'
-   seguida de una expr_part, o puede ser una expr_part.
-   Un terminal o no terminal se define <termino> ::= termino1 termino2 ... terminoN.;
-   donde termino puede ser terminal o no terminal, solo se permite un simbolo a la
-   izquierda. La                {: System.out.println();:}
-   | sirve para indicar que es una produccion u otra.
-   Debemos pasar de simbolos no terminales a simbolos terminales. Una gramatica que no
-   termina en simbolos terminales se dice que no reduce, y por lo tanto nunca se finaliza
-   su procesado.
-*/
-
-
-
-   /* lista_expresiones ::= expresion lista_expresiones      //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
+/*
+   lista_expresiones ::= expresion lista_expresiones      //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
                   | expresion             //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
                   ;
 
-    expresion ::= Y                 {: System.out.println("Y");:}
+   expresion  ::= Y                 {: System.out.println("Y");:}
                 | O                 {: System.out.println("O");:}
                 | SI                {: System.out.println("SI");:}
                 | SINO              {: System.out.println("SINO");:}
@@ -592,66 +558,4 @@ cuerpo_metodo ::= c_lista_sentencias //cuerpo_metodo
                 | DELIMITADOR:e     {: System.out.println("DELIMITADOR " + e);:}
                 | CADENA:e          {: System.out.println("CADENA" + e);:}
                 ;
-    /*
-    expr_list ::= expr_list expr_part
-                  |
-                  expr_part
-                  ;
-    */
-/* 'expr_part' se compone de una expr seguida de SEMI, o de una asign seguida de SEMI.
-   asign:a esta estableciendo que a representa al objeto asociado a asign               {: System.out.println();:}
-   | entre {: :}
-   se coloca el sodigo en java para las acciones a tomar al cumplirse una produccion.
-*/
-/*
-   expr_part ::= expr:e
-                  {:
-                    System.out.println(" = " + e); 
-                  :} 
-                  SEMI
-                 ;
-*/
-/* 'expr' puede ser una expresion que inicia por numero entero op_suma expr,
-  de esa forma se realiza una suma. Tambien puede ser un numero entero, con esto
-  se devuelve el valor del entero. En RESULT se almacena el valor de las acciones,
-  y se pasa al siguiente nivel de la gramatica.
-*/              
-
-/*   expr      ::=  expr:e OP_SUMA factor:f
-                  {:
-                    RESULT = new Integer(e.intValue() + f.intValue());
-                  :}
-                  |
-                  expr:e OP_RESTA factor:f
-                  {:
-                    RESULT = new Integer(e.intValue() - f.intValue());
-                  :}
-                  |
-                  factor:n
-                  {:
-                    RESULT = n; 
-                  :}
-                  ;
-*/
-/*factor        ::=  factor:f OP_MULT termino:e
-                  {:
-                    RESULT = new Integer(f.intValue() * e.intValue());
-                  :}
-                  |
-                  termino:t
-                  {:
-                    RESULT = t;
-                  :}
-                  ;
-*/
-/*termino       ::=  PARENIZQ expr:e PARENDER
-                  {:
-                    RESULT = e;
-                  :}
-                  |
-                  ENTERO:e
-                  {:
-                    RESULT = e;
-                  :}
-                  ;
 */
