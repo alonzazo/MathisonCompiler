@@ -1,8 +1,50 @@
+/*
+privado proc comer(num cantidad)
+{
+    bool lleno = FALSO
+}
+*/
+
+publico num sumar(num n1, num n2)
+{
+    num n4 = 0
+    num n3 = n1 + n2
+    SI(FALSO)
+    {
+        n1 = n2
+    }
+    /*
+    HACER
+    {
+        n1 = n1 + n2
+        n2 = n1 - n2
+        n1 = n1 - n2
+    } MIENTRAS (n4 < n3)
+    */
+    /*
+    mientras(n4 < n3) HACER
+    {
+        n1 = n1 + n2
+        n2 = n1 - n2
+        n1 = n1 - n2
+    }
+    */
+    /*
+    PARA n3 DESDE n1 HASTA n2 AVANCE 1
+    {
+        n4 = n4 + n3
+    }
+    */
+}
+
+/*
 publico clase Carl
 {
     num x = 7 + -(-metodo())
     bool lul = !metboo() Y VERDADERO
 }
+*/
+
 /*
 publico clase Dani{
     num de_amor

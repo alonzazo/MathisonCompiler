@@ -142,7 +142,8 @@ terminal    String CADENA;
 non terminal    programa, clase, cuerpo_clase, c_metodo;
 non terminal    lista_parametros, variable_arreglo;
 non terminal    c_vista,  c_tipo_metodo, c_declaracion_metodo;
-non terminal    c_declaracion,c_tipo;
+non terminal    c_declaracion, c_tipo, retorno;
+non terminal    retorno_numerico, retorno_booleano, retorno_cadena;
 
 non terminal c_expresion_variable;
 non terminal c_expresion_variable_mayorque, c_expresion_variable_mayoroigual, c_expresion_variable_menorque,c_expresion_variable_menoroigual;
@@ -202,8 +203,9 @@ precedence left PARENTESISABIERTO,PARENTESISCERRADO;
 start with programa;
 
 programa ::= clase programa
-           //| c_asignacion programa
            | clase
+           | c_metodo programa
+           | c_metodo
            ;
 
 /*------------------------------Declaracion Basica ------------------------------*/
@@ -364,6 +366,8 @@ c_asignacion_expresion_Booleana_Total ::= c_expresion_booleana //Corresponde a t
 
 c_expresion_booleana::= c_expresion_booleana  Y c_expresion_booleana
                       | c_expresion_booleana O c_expresion_booleana
+                      | c_expresion_booleana DISTINTO c_expresion_booleana
+                      | c_expresion_booleana IGUAL c_expresion_booleana
                       | DISTINTO c_expresion_booleana %prec NEGACION
                       | DISTINTO c_variable_o_llamadoMetodo %prec NEGACION
 
@@ -381,8 +385,8 @@ c_expresion_booleana::= c_expresion_booleana  Y c_expresion_booleana
                       | c_variable_o_llamadoMetodo O c_variable_o_llamadoMetodo
 
                       | c_expresion_variable_comparacion
-                      | VERDADERO:v                               {:System.out.println("VERDADERO");:}
-                      | FALSO:v                                   {:System.out.println("FALSO");:}
+                      | VERDADERO:v                               //{:System.out.println("VERDADERO");:}
+                      | FALSO:v                                   //{:System.out.println("FALSO");:}
                       | PARENTESISABIERTO c_expresion_booleana PARENTESISCERRADO
 
                         ;
@@ -447,18 +451,10 @@ c_revisar_casos ::= CASO c_expresion_numerica DOSPUNTOS c_lista_sentencias SALIR
 
 c_lista_sentencias ::= c_asignacion c_lista_sentencias
                      | c_declaracion c_lista_sentencias
-                     //| c_estructuras c_lista_sentencias
+                     | c_estructuras c_lista_sentencias
                      | c_expresion_llamado_metodo c_lista_sentencias
-                     | c_asignacion
-                     //| c_expresion_llamado_metodo
-                     //| c_estructuras
+                     |
                      ;
-
-   /*   programa ::= clase programa
-                | metodo programa
-                | clase
-                | metodo
-                ;*/
 
 /* ------------------------------ SSintaxis de la estructura de un programa ------------------------------*/
 
@@ -466,21 +462,21 @@ clase ::= c_vista CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: System.o
         ;
 
 c_metodo ::= c_vista c_tipo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
-            | c_vista c_tipo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
-            | c_vista PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
-            | c_vista PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
-            | c_tipo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
-            | c_tipo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
-            | PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
-            | PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
-            ;
+           | c_vista c_tipo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+           | c_vista PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+           | c_vista PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+           | c_tipo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+           | c_tipo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+           | PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+           | PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+           ;
 
 c_vista ::= PUBLICO
           | PRIVADO
           ;
 
-lista_parametros ::= c_tipo variable_arreglo COMA lista_parametros      {: System.out.println("Parámetro"); :}
-                   | c_tipo variable_arreglo                            {: System.out.println("Parámetro"); :}
+lista_parametros ::= c_tipo variable_arreglo COMA lista_parametros      //{: System.out.println("Parámetro"); :}
+                   | c_tipo variable_arreglo                            //{: System.out.println("Parámetro"); :}
                    ;
 
 variable_arreglo ::= VAR:v
@@ -497,7 +493,6 @@ cuerpo_metodo ::= c_lista_sentencias //cuerpo_metodo
                     //| variable_arreglo
                     //|
                     ;
- 
 
 /*
    lista_expresiones ::= expresion lista_expresiones      //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
@@ -527,18 +522,7 @@ cuerpo_metodo ::= c_lista_sentencias //cuerpo_metodo
                 | CASO              {: System.out.println("CASO");:}
                 | COMO              {: System.out.println("COMO");:}
                 | DEFECTO           {: System.out.println("DEFECTO");:}
-                | CON               {: System.out.println("CON");:}
-                | TERMINAR          {: System.out.println("TERMINAR");:}
-                | EXCEPTO           {: System.out.println("EXCEPTO");:}
-                | MOSTRAR           {: System.out.println("MOSTRAR");:}
-                | EJECUTAR          {: System.out.println("EJECUTAR");:}
                 //| NUM               {: System.out.println("NUM");:}
-                | EN                {: System.out.println("EN");:}
-                | CONTINUAR         {: System.out.println("CONTINUAR");:}
-                | FINALMENTE        {: System.out.println("FINALMENTE");:}
-                | MEI               {: System.out.println("MEI");:}
-                | MAI               {: System.out.println("MAI");:}
-                | II                {: System.out.println("II");:}
                 | MENORQUE          {: System.out.println("MENORQUE");:}
                 | MAYORQUE          {: System.out.println("MAYORQUE");:}
                 | MENOROIGUAL       {: System.out.println("MENOROIGUAL");:}
@@ -548,7 +532,6 @@ cuerpo_metodo ::= c_lista_sentencias //cuerpo_metodo
                 | RESTA             {: System.out.println("RESTA");:}
                 | MULTIPLICACION    {: System.out.println("MUTIPLICACION");:}
                 | DIVISION          {: System.out.println("DIVISION");:}
-                | MOD               {: System.out.println("MOD");:}
                 | ASIGNACION        {: System.out.println("ASIGNACION");:}
                 | IGUAL             {: System.out.println("IGUAL");:}
                 | CORCHETEABIERTO   {: System.out.println("CORCHETEABIERTO");:}
