@@ -291,9 +291,9 @@ c_asignacion ::=    c_tipo VAR:v c_asignacion_prima             {:System.out.pri
 */
 /*------------------------------Sintaxis asignacion de tipo numericas------------------------------*/
 
-c_asignacion_prima ::=  ASIGNACION c_asignacion_expresion_Numerica_Total        //Asignacion numerica
-                    |   ASIGNACION c_asignacion_expresion_Cadena_total
-                    |   ASIGNACION c_asignacion_expresion_Booleana_Total
+c_asignacion_prima ::=  ASIGNACION c_expresion_numerica        //Asignacion numerica
+                    |   ASIGNACION c_expresion_cadena
+                    |   ASIGNACION c_expresion_booleana
                     |   ASIGNACION c_variable_o_llamadoMetodo
                     ;
 /*c_asignacion_numerica ::= NUM VAR:v ASIGNACION c_asignacion_expresion_Numerica_Total
@@ -301,6 +301,7 @@ c_asignacion_prima ::=  ASIGNACION c_asignacion_expresion_Numerica_Total        
 
 
 c_asignacion_expresion_Numerica_Total ::= c_expresion_numerica //Corresponde a todas aquellas menos las que tienen solo variables
+                                        | c_variable_o_llamadoMetodo
                                         ;
 
 
@@ -339,6 +340,7 @@ c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica
 
 c_asignacion_expresion_Cadena_total ::= c_expresion_cadena  //Cuando al menos una no es una variable
                                       //| c_expresion_variable_concatena //Concatenacion (Al menos dos) de puras variables o llamado a metodos
+                                      //| c_variable_o_llamadoMetodo
                                       ;
 
 /*------------------------------Sintaxis de tipo cadena tipo numericas------------------------------*/
@@ -358,6 +360,7 @@ c_expresion_cadena ::= c_expresion_cadena SUMA c_expresion_cadena
 /*------------------------------ Sintaxis de tipo cadena tipo booleana------------------------------*/
 
 c_asignacion_expresion_Booleana_Total ::= c_expresion_booleana //Corresponde a todas las operaciones excpeto cuando todas son variables
+                                        | c_variable_o_llamadoMetodo
                                         ;
 
 /*c_asignacion_booleana ::= BOOL VAR:V ASIGNACION c_asignacion_expresion_Booleana_Total
@@ -366,8 +369,8 @@ c_asignacion_expresion_Booleana_Total ::= c_expresion_booleana //Corresponde a t
 
 c_expresion_booleana::= c_expresion_booleana  Y c_expresion_booleana
                       | c_expresion_booleana O c_expresion_booleana
-                      | c_expresion_booleana DISTINTO c_expresion_booleana
-                      | c_expresion_booleana IGUAL c_expresion_booleana
+                      //| c_expresion_booleana DISTINTO c_expresion_booleana
+                      //| c_expresion_booleana IGUAL c_expresion_booleana
                       | DISTINTO c_expresion_booleana %prec NEGACION
                       | DISTINTO c_variable_o_llamadoMetodo %prec NEGACION
 
@@ -385,8 +388,8 @@ c_expresion_booleana::= c_expresion_booleana  Y c_expresion_booleana
                       | c_variable_o_llamadoMetodo O c_variable_o_llamadoMetodo
 
                       | c_expresion_variable_comparacion
-                      | VERDADERO:v                               //{:System.out.println("VERDADERO");:}
-                      | FALSO:v                                   //{:System.out.println("FALSO");:}
+                      | VERDADERO                               //{:System.out.println("VERDADERO");:}
+                      | FALSO                                   //{:System.out.println("FALSO");:}
                       | PARENTESISABIERTO c_expresion_booleana PARENTESISCERRADO
 
                         ;
@@ -424,18 +427,18 @@ c_estructuras ::= c_para
                 | c_revisar
                 ;
 
-c_para ::= PARA VAR:v DESDE c_expresion_numerica HASTA c_expresion_numerica
-           AVANCE c_expresion_numerica LLAVEABIERTO c_lista_sentencias LLAVECERRADO
+c_para ::= PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
+           AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias LLAVECERRADO
          ;
 
 c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
                HACER LLAVEABIERTO c_lista_sentencias LLAVECERRADO
              | HACER LLAVEABIERTO c_lista_sentencias LLAVECERRADO MIENTRAS
-               PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO DELIMITADOR
+               PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
              ;
 
 c_si ::= SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias LLAVECERRADO c_sino
-                 ;
+       ;
 
 c_sino ::= SINO c_si
          | SINO LLAVEABIERTO c_lista_sentencias LLAVECERRADO c_sino
