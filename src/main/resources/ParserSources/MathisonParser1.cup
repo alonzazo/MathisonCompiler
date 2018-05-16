@@ -110,6 +110,7 @@ terminal    SINO, DEVOLVER, PROC, CLASE, REC, CAD, BOOL, PUBLICO;
 terminal    PRIVADO, IMPRIMIR, LEER, VERDADERO, FALSO;
 terminal    REVISAR, CASO, DEFECTO, NUM, NEGACION;
 
+terminal    CON, MOD, FIN, COMO, LANZAR, ATRAPAR, EN, EXCEPTO, MOSTRAR, EJECUTAR, TERMINAR, INTENTAR, IMPORTAR, CONSTANTE, CONTINUAR, FINALMENTE;
 //COMPARACION
 terminal    MENORQUE, MAYORQUE, MENOROIGUAL, MAYOROIGUAL, DISTINTO, IGUAL;
 
@@ -118,7 +119,7 @@ terminal    ASIGNACION;
 
 
 //ARITMETICA
-terminal    SUMA, RESTA, MULTIPLICACION, DIVISION, NEGATIVO;
+terminal    SUMA, RESTA, MULTIPLICACION, DIVISION, NEGATIVO, POTENCIA;
 
 //DELIMITADOR
 terminal    CORCHETEABIERTO,CORCHETECERRADO,LLAVEABIERTO,LLAVECERRADO,PARENTESISABIERTO,PARENTESISCERRADO, DOSPUNTOS, COMA;
@@ -222,8 +223,8 @@ c_tipo ::= CAD
 
 /*-------------------------Sintaxis de las variables y operaciones con variables------------------------*/
 
-c_variable_o_llamadoMetodo ::= c_expresion_variable
-                             | c_llamadoMetodo
+c_variable_o_llamadoMetodo ::= c_expresion_variable     {:System.out.println("Variable de expresion");:}
+                             | c_llamadoMetodo          {:System.out.println("Llamado a metodo en expresion");:}
                              ;
 
 c_llamadoMetodo ::= c_expresion_llamado_metodo
@@ -233,7 +234,7 @@ c_llamadoMetodo ::= c_expresion_llamado_metodo
 c_expresion_variable ::= VAR:v
                        | PARENTESISABIERTO c_expresion_variable PARENTESISCERRADO
                        ;
-/*
+
 c_expresion_variable_concatena ::= c_variable_o_llamadoMetodo SUMA c_expresion_variable_concatena
 
                                  //| c_variable_o_llamadoMetodo SUMA c_variable_o_llamadoMetodo
@@ -242,7 +243,7 @@ c_expresion_variable_concatena ::= c_variable_o_llamadoMetodo SUMA c_expresion_v
 
                                  | PARENTESISABIERTO c_expresion_variable_concatena PARENTESISCERRADO
                                  ;
-*/
+
 
 c_expresion_variable_igual ::= c_asignacion_expresion_Numerica_Total IGUAL c_asignacion_expresion_Numerica_Total
                              | PARENTESISABIERTO c_expresion_variable_igual PARENTESISCERRADO
@@ -280,7 +281,7 @@ c_expresion_variable_comparacion ::= c_expresion_variable_igual
 
 /*------------------------------Declaracion de las asignaciones------------------------------*/
 
-c_asignacion ::=    c_tipo VAR:v c_asignacion_prima             {:System.out.println("Asignación sobre variable " + v);:}    //num pi = 3.14
+c_asignacion ::=    c_tipo VAR:v c_asignacion_prima             {:System.out.println("Definición sobre variable " + v);:}    //num pi = 3.14
                 |   VAR:v c_asignacion_prima                    {:System.out.println("Asignación sobre variable " + v);:}
                ;
 
@@ -304,10 +305,10 @@ c_asignacion_expresion_Numerica_Total ::= c_expresion_numerica //Corresponde a t
                                         ;
 
 
-c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica
-                        | c_expresion_numerica RESTA c_expresion_numerica
-                        | c_expresion_numerica MULTIPLICACION c_expresion_numerica
-                        | c_expresion_numerica DIVISION c_expresion_numerica
+c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica            {:System.out.println("c_expresion_numerica SUMA c_expresion_numerica");:}
+                        | c_expresion_numerica RESTA c_expresion_numerica           {:System.out.println("c_expresion_numerica RESTA c_expresion_numerica");:}
+                        | c_expresion_numerica MULTIPLICACION c_expresion_numerica  {:System.out.println("c_expresion_numerica MULTIPLICACION c_expresion_numerica");:}
+                        | c_expresion_numerica DIVISION c_expresion_numerica        {:System.out.println("c_expresion_numerica DIVISION c_expresion_numerica");:}
                         | RESTA c_expresion_numerica %prec NEGATIVO
                         | RESTA c_variable_o_llamadoMetodo %prec NEGATIVO
 
@@ -338,7 +339,7 @@ c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica
                         ;
 
 c_asignacion_expresion_Cadena_total ::= c_expresion_cadena  //Cuando al menos una no es una variable
-                                      //| c_expresion_variable_concatena //Concatenacion (Al menos dos) de puras variables o llamado a metodos
+                                      | c_expresion_variable_concatena //Concatenacion (Al menos dos) de puras variables o llamado a metodos
                                       ;
 
 /*------------------------------Sintaxis de tipo cadena tipo numericas------------------------------*/
@@ -417,7 +418,6 @@ c_hay_parametro ::= c_hay_parametro COMA c_hay_parametro
   //;
 
 /*-----------------------------Sintaxis de estructuras de control-------------------------- */
-
 c_estructuras ::= c_para
                 | c_mientras
                 | c_si

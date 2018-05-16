@@ -401,17 +401,6 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
 			return symbol(sym.FINALMENTE);
         }
 
-{NUMERO}
-		{
-           return symbol(sym.NUMERO, new Double(yytext()));
-
-        }
-
-{VAR}
-		{
-           return symbol(sym.VAR, new String(yytext()));
-        }
-
 {COMENTARIO}
 	{
 	    /* no haceer nada*/
@@ -465,18 +454,30 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
             /* no hacer nada */
         }
 
+{VERDADERO}
+        {
+           return symbol(sym.VERDADERO);
+        }
+
+{FALSO}
+        {
+            return symbol(sym.FALSO);
+        }
+
 {CADENA}
         {
            return symbol(sym.CADENA,new String(yytext()));
         }
 
-{VERDADERO}
-        {
-           return symbol(sym.VERDADERO);
+{NUMERO}
+		{
+           return symbol(sym.NUMERO, new Double(yytext()));
+
         }
-{FALSO}
-        {
-            return symbol(sym.FALSO);
+
+{VAR}
+		{
+           return symbol(sym.VAR, new String(yytext()));
         }
 
  <<EOF>>

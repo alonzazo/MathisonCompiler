@@ -9,18 +9,18 @@ publico num sumar(num n1, num n2)
 {
     num n4 = 0
     num n3 = n1 + n2
-    SI(FALSO)
+    /*SI (FALSO)
     {
         n1 = n2
-    }
-    /*
+    }*/
+
     HACER
     {
         n1 = n1 + n2
         n2 = n1 - n2
         n1 = n1 - n2
     } MIENTRAS (n4 < n3)
-    */
+
     /*
     mientras(n4 < n3) HACER
     {
