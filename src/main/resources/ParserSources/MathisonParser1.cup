@@ -208,6 +208,108 @@ programa ::= clase programa
            | c_metodo programa
            | c_metodo
            ;
+/* ------------------------------ Sintaxis de la estructura de un programa ------------------------------*/
+
+clase ::= c_vista CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: System.out.println("CLASE " + v);:}
+        ;
+
+c_metodo ::= c_vista c_tipo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+           | c_vista c_tipo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+           | c_vista PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+           | c_vista PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+           | c_tipo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+           | c_tipo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+           | PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+           | PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+           ;
+
+c_vista ::= PUBLICO
+          | PRIVADO
+          ;
+
+lista_parametros ::= c_tipo variable_arreglo COMA lista_parametros      //{: System.out.println("Parámetro"); :}
+                   | c_tipo variable_arreglo                            //{: System.out.println("Parámetro"); :}
+                   ;
+
+variable_arreglo ::= VAR:v
+                   | VAR:v CORCHETEABIERTO CORCHETECERRADO
+                   ;
+
+cuerpo_clase ::= c_metodo cuerpo_clase
+               | c_asignacion cuerpo_clase
+               | c_declaracion cuerpo_clase
+               |
+               ;
+
+cuerpo_metodo ::= c_lista_sentencias //cuerpo_metodo
+                    //| variable_arreglo
+                    //|
+                    ;
+
+/*------------------------------ Sintaxis de los metodos ------------------------------*/
+
+c_expresion_llamado_metodo ::= VAR:v PARENTESISABIERTO c_lleno_parametros PARENTESISCERRADO
+                             ;
+
+c_lleno_parametros ::= c_hay_parametro
+                     | PARENTESISABIERTO c_lleno_parametros PARENTESISCERRADO
+                     |
+                     ;
+
+c_hay_parametro ::= c_hay_parametro COMA c_hay_parametro
+                  | c_variable_o_llamadoMetodo
+                  //| c_expresion_variable_concatena
+                  /*Demás expresiones sin variable*/
+                  | c_expresion_numerica
+                  | c_expresion_cadena
+                  | c_expresion_booleana
+                  | PARENTESISABIERTO c_hay_parametro PARENTESISCERRADO
+                  ;
+
+//c_definicion::= NUM c_asignacion_numerica
+//|CAD c_asignacion_cadena
+//|BOOL c_asignacion_booleana
+  //;
+
+/*-----------------------------Sintaxis de estructuras de control-------------------------- */
+
+c_estructuras ::= c_para
+                | c_mientras
+                | c_si
+                | c_revisar
+                ;
+
+c_para ::= PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
+           AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias LLAVECERRADO
+         ;
+
+c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
+               HACER LLAVEABIERTO c_lista_sentencias LLAVECERRADO
+             | HACER LLAVEABIERTO c_lista_sentencias LLAVECERRADO MIENTRAS
+               PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
+             ;
+
+c_si ::= SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias LLAVECERRADO c_sino
+       ;
+
+c_sino ::= SINO c_si
+         | SINO LLAVEABIERTO c_lista_sentencias LLAVECERRADO c_sino
+         |
+         ;
+
+c_revisar ::= REVISAR PARENTESISABIERTO VAR:v PARENTESISCERRADO LLAVEABIERTO c_revisar_casos LLAVECERRADO
+                       ;
+
+c_revisar_casos ::= CASO c_expresion_numerica DOSPUNTOS c_lista_sentencias SALIR
+                  | DEFECTO DOSPUNTOS c_lista_sentencias SALIR
+                  ;
+
+c_lista_sentencias ::= c_asignacion c_lista_sentencias
+                     | c_declaracion c_lista_sentencias
+                     | c_estructuras c_lista_sentencias
+                     | c_expresion_llamado_metodo c_lista_sentencias
+                     |
+                     ;
 
 /*------------------------------Declaracion Basica ------------------------------*/
 c_declaracion ::= c_tipo VAR:v                              {:System.out.println("Declaracion " + v);:}
@@ -370,8 +472,6 @@ c_asignacion_expresion_Booleana_Total ::= c_expresion_booleana //Corresponde a t
 
 c_expresion_booleana::= c_expresion_booleana  Y c_expresion_booleana
                       | c_expresion_booleana O c_expresion_booleana
-                      | c_expresion_booleana DISTINTO c_expresion_booleana
-                      | c_expresion_booleana IGUAL c_expresion_booleana
                       | DISTINTO c_expresion_booleana %prec NEGACION
                       | DISTINTO c_variable_o_llamadoMetodo %prec NEGACION
 
@@ -395,108 +495,7 @@ c_expresion_booleana::= c_expresion_booleana  Y c_expresion_booleana
 
                         ;
 
-/*------------------------------ Sintaxis de los metodos ------------------------------*/
 
-c_expresion_llamado_metodo ::= VAR:v PARENTESISABIERTO c_lleno_parametros PARENTESISCERRADO
-                             ;
-
-c_lleno_parametros ::= c_hay_parametro
-                     | PARENTESISABIERTO c_lleno_parametros PARENTESISCERRADO
-                     |
-                     ;
-
-c_hay_parametro ::= c_hay_parametro COMA c_hay_parametro
-                  | c_variable_o_llamadoMetodo
-                  //| c_expresion_variable_concatena
-                  /*Demás expresiones sin variable*/
-                  | c_expresion_numerica
-                  | c_expresion_cadena
-                  | c_expresion_booleana
-                  | PARENTESISABIERTO c_hay_parametro PARENTESISCERRADO
-                  ;
-
-//c_definicion::= NUM c_asignacion_numerica
-//|CAD c_asignacion_cadena
-//|BOOL c_asignacion_booleana
-  //;
-
-/*-----------------------------Sintaxis de estructuras de control-------------------------- */
-
-c_estructuras ::= c_para
-                | c_mientras
-                | c_si
-                | c_revisar
-                ;
-
-c_para ::= PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
-           AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias LLAVECERRADO
-         ;
-
-c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
-               HACER LLAVEABIERTO c_lista_sentencias LLAVECERRADO
-             | HACER LLAVEABIERTO c_lista_sentencias LLAVECERRADO MIENTRAS
-               PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
-             ;
-
-c_si ::= SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias LLAVECERRADO c_sino
-       ;
-
-c_sino ::= SINO c_si
-         | SINO LLAVEABIERTO c_lista_sentencias LLAVECERRADO c_sino
-         |
-         ;
-
-c_revisar ::= REVISAR PARENTESISABIERTO VAR:v PARENTESISCERRADO LLAVEABIERTO c_revisar_casos LLAVECERRADO
-                       ;
-
-c_revisar_casos ::= CASO c_expresion_numerica DOSPUNTOS c_lista_sentencias SALIR
-                  | DEFECTO DOSPUNTOS c_lista_sentencias SALIR
-                  ;
-
-c_lista_sentencias ::= c_asignacion c_lista_sentencias
-                     | c_declaracion c_lista_sentencias
-                     | c_estructuras c_lista_sentencias
-                     | c_expresion_llamado_metodo c_lista_sentencias
-                     |
-                     ;
-
-/* ------------------------------ SSintaxis de la estructura de un programa ------------------------------*/
-
-clase ::= c_vista CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: System.out.println("CLASE " + v);:}
-        ;
-
-c_metodo ::= c_vista c_tipo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
-           | c_vista c_tipo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
-           | c_vista PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
-           | c_vista PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
-           | c_tipo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
-           | c_tipo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
-           | PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
-           | PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
-           ;
-
-c_vista ::= PUBLICO
-          | PRIVADO
-          ;
-
-lista_parametros ::= c_tipo variable_arreglo COMA lista_parametros      //{: System.out.println("Parámetro"); :}
-                   | c_tipo variable_arreglo                            //{: System.out.println("Parámetro"); :}
-                   ;
-
-variable_arreglo ::= VAR:v
-                   | VAR:v CORCHETEABIERTO CORCHETECERRADO
-                   ;
-
-cuerpo_clase ::= c_metodo cuerpo_clase
-               | c_asignacion cuerpo_clase
-               | c_declaracion cuerpo_clase
-               |
-               ;
-
-cuerpo_metodo ::= c_lista_sentencias //cuerpo_metodo
-                    //| variable_arreglo
-                    //|
-                    ;
 
 /*
    lista_expresiones ::= expresion lista_expresiones      //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
