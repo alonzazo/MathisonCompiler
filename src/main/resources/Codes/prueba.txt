@@ -1,13 +1,5 @@
-publico clase clase1 {
+publico proc principal(num a) {
+	si( !verdadero ! azul y 3 == 4 ){
 
-	publico proc principal(num a) {
-		imprimir hola mundo
-		para cont desde y hasta y avance 1 {
-		    num x = a
-		}
-	}
-
-	publico proc saludar(){
-		saludo = "hola"
 	}
 }

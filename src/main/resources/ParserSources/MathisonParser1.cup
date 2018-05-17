@@ -111,7 +111,8 @@ terminal    PRIVADO, IMPRIMIR, LEER, VERDADERO, FALSO;
 terminal    REVISAR, CASO, DEFECTO, NUM, NEGACION;
 
 terminal    CON, MOD, FIN, COMO, LANZAR, ATRAPAR, EN, EXCEPTO, MOSTRAR, EJECUTAR, TERMINAR, INTENTAR, IMPORTAR, CONSTANTE, CONTINUAR, FINALMENTE;
-//COMPARACION
+
+
 terminal    MENORQUE, MAYORQUE, MENOROIGUAL, MAYOROIGUAL, DISTINTO, IGUAL;
 
 //ASGNACION
@@ -188,7 +189,11 @@ nonterminal cuerpo_metodo;
 /*Inicio de las precedence, se guian en base a la documentacion de java
 Entre más abajo esten tienen más prioridad*/
 
-precedence nonassoc DISTINTO,IGUAL,MENORQUE,MENOROIGUAL,MAYORQUE,MAYOROIGUAL;
+
+
+precedence left MENORQUE,MENOROIGUAL,MAYORQUE,MAYOROIGUAL;
+
+precedence left DISTINTO,IGUAL;
 
 precedence left Y,O;
 
@@ -347,30 +352,39 @@ c_expresion_variable_concatena ::= c_variable_o_llamadoMetodo SUMA c_expresion_v
                                  ;
 */
 
-c_expresion_variable_igual ::= c_asignacion_expresion_Numerica_Total IGUAL c_asignacion_expresion_Numerica_Total
-                             | PARENTESISABIERTO c_expresion_variable_igual PARENTESISCERRADO
+c_expresion_variable_igual ::= c_expresion_numerica IGUAL c_expresion_numerica
+                             | c_expresion_booleana  IGUAL c_expresion_booleana
+                             | c_expresion_booleana  IGUAL c_variable_o_llamadoMetodo
+                             | c_variable_o_llamadoMetodo  IGUAL c_asignacion_booleana
+
+                             | c_variable_o_llamadoMetodo IGUAL c_expresion_numerica
+                             | c_expresion_numerica IGUAL c_variable_o_llamadoMetodo
+                             | c_variable_o_llamadoMetodo IGUAL c_variable_o_llamadoMetodo
+
                              ;
 
-c_expresion_variable_distinto ::= c_asignacion_expresion_Numerica_Total DISTINTO c_asignacion_expresion_Numerica_Total
-                               | PARENTESISABIERTO c_expresion_variable_distinto PARENTESISCERRADO
+c_expresion_variable_distinto ::=c_expresion_numerica DISTINTO c_expresion_numerica
+                              |  c_expresion_booleana  DISTINTO c_expresion_booleana
+                              | c_expresion_booleana  DISTINTO c_variable_o_llamadoMetodo
+                              | c_variable_o_llamadoMetodo  DISTINTO c_asignacion_booleana
+                              |  c_variable_o_llamadoMetodo DISTINTO c_expresion_numerica
+                               | c_expresion_numerica DISTINTO c_variable_o_llamadoMetodo
+                               | c_variable_o_llamadoMetodo DISTINTO c_variable_o_llamadoMetodo
+
                                ;
 
 c_expresion_variable_mayorque ::= c_asignacion_expresion_Numerica_Total MAYORQUE c_asignacion_expresion_Numerica_Total
-                                | PARENTESISABIERTO c_expresion_variable_mayorque PARENTESISCERRADO
                                 ;
 
 
 c_expresion_variable_mayoroigual ::= c_asignacion_expresion_Numerica_Total MAYOROIGUAL c_asignacion_expresion_Numerica_Total
-                                   | PARENTESISABIERTO c_expresion_variable_mayoroigual MAYOROIGUAL
                                    ;
 
 c_expresion_variable_menorque ::= c_asignacion_expresion_Numerica_Total MENORQUE c_asignacion_expresion_Numerica_Total
-                                | PARENTESISABIERTO c_expresion_variable_menorque PARENTESISCERRADO
                                 ;
 
 
 c_expresion_variable_menoroigual ::= c_asignacion_expresion_Numerica_Total MENOROIGUAL c_asignacion_expresion_Numerica_Total
-                                   | PARENTESISABIERTO c_expresion_variable_menoroigual PARENTESISCERRADO
                                    ;
 
 c_expresion_variable_comparacion ::= c_expresion_variable_igual
