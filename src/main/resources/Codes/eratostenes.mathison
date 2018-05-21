@@ -3,6 +3,7 @@ Este es un comentario soez
 */
 
 publico num[] cribaEratostenes(num n)
+{
 /*
 	si((n mod 1) ! 0 o (n < 0)) //Restricciones
 	{
@@ -10,6 +11,7 @@ publico num[] cribaEratostenes(num n)
     }*/
 	num limite = raiz(n)
 	num[n] numeros 	//vector de num de tamaño n
+	numeros[i] = 0
 	num[] resultado	//vector de num sin tamaño definido
 	para num i desde 0 hasta n avance 1		//un ciclo for
 	{
