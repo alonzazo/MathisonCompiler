@@ -182,7 +182,7 @@ non terminal c_revisar, c_revisar_casos;
 /* Lineas validas */
 non terminal c_lista_sentencias;
 
-non terminal c_funciones_reservadas, c_imprimir, c_leer, c_devolver;
+
 
 nonterminal cuerpo_metodo;
 
@@ -313,7 +313,6 @@ c_lista_sentencias ::= c_asignacion c_lista_sentencias
                      | c_declaracion c_lista_sentencias
                      | c_estructuras c_lista_sentencias
                      | c_expresion_llamado_metodo c_lista_sentencias
-                     | c_funciones_reservadas c_lista_sentencias
                      |
                      ;
 
@@ -507,29 +506,9 @@ c_expresion_booleana::= c_expresion_booleana  Y c_expresion_booleana
                       | VERDADERO                               //{:System.out.println("VERDADERO");:}
                       | FALSO                                   //{:System.out.println("FALSO");:}
                       | PARENTESISABIERTO c_expresion_booleana PARENTESISCERRADO
-                      ;
 
+                        ;
 
-/*------------------------------ Sintaxis de otras funciones reservadas ------------------------------*/
-
-c_imprimir ::= IMPRIMIR c_expresion_cadena
-             | IMPRIMIR c_variable_o_llamadoMetodo
-             | IMPRIMIR NUMERO:n
-             ;
-
-c_leer ::= LEER VAR:v
-         ;
-
-c_devolver ::= DEVOLVER c_variable_o_llamadoMetodo
-             | DEVOLVER c_expresion_numerica
-             | DEVOLVER c_expresion_cadena
-             | DEVOLVER c_expresion_booleana
-             ;
-
-c_funciones_reservadas ::= c_imprimir
-                         | c_leer
-                         | c_devolver
-                         ;
 
 
 /*
