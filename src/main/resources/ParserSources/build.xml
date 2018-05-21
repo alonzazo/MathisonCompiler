@@ -1,0 +1,11 @@
+<project name="CupCompile Task" basedir=".">
+    <description>
+        Compile the cup file
+    </description>
+    <property name="source">MathisonParser1.cup</property>
+    <!-- set global properties for this build -->
+    <target name="Compile CupFile">
+        <java jar="java-cup-11b.jar" args="-interface -parser Parser ${source}" fork="true"/>
+    </target>
+
+</project>

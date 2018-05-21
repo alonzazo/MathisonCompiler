@@ -1,0 +1,5 @@
+publico proc principal(num a) {
+	si( !verdadero ! azul y 3 == 4 ){
+
+	}
+}

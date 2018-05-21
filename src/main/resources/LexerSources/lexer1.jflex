@@ -109,7 +109,7 @@ II			=		\=\=
 
 //Otras declaraciones
 
-NUMERO 		=    		\-?[0-9]+(\.[0-9]+)?
+NUMERO 		=    	[0-9]+(\.[0-9]+)?
 VAR 		= 		([a-z]|[A-Z])([a-z]|[A-Z]|_|[0-9])*
 
 FIN_LINEA	=		(\r|\n)
@@ -384,7 +384,7 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
 
 {EJECUTAR}
 		{
-			return symbol(sym.EJECUTAR;
+			return symbol(sym.EJECUTAR);
         }
 
 {EN}    {
@@ -399,17 +399,6 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
 {FINALMENTE}
 		{
 			return symbol(sym.FINALMENTE);
-        }
-
-{NUMERO}
-		{
-           return symbol(sym.NUMERO, new Double(yytext()));
-
-        }
-
-{VAR}
-		{
-           return symbol(sym.VAR, new String(yytext()));
         }
 
 {COMENTARIO}
@@ -454,10 +443,25 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
     return symbol(sym.DOSPUNTOS);
     }
 
+","
+    {
+    return symbol(sym.COMA);
+    }
+
 
 {ESPACIO}
         {
             /* no hacer nada */
+        }
+
+{VERDADERO}
+        {
+           return symbol(sym.VERDADERO);
+        }
+
+{FALSO}
+        {
+            return symbol(sym.FALSO);
         }
 
 {CADENA}
@@ -465,13 +469,15 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
            return symbol(sym.CADENA,new String(yytext()));
         }
 
-{VERDADERO}
-        {
-           return symbol(sym.VERDADERO);
+{NUMERO}
+		{
+           return symbol(sym.NUMERO, new Double(yytext()));
+
         }
-{FALSO}
-        {
-            return symbol(sym.FALSO);
+
+{VAR}
+		{
+           return symbol(sym.VAR, new String(yytext()));
         }
 
  <<EOF>>

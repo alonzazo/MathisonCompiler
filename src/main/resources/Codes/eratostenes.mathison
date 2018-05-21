@@ -2,14 +2,16 @@
 Este es un comentario soez
 */
 
-num[] cribaEratostenes(num n)
-{
+publico num[] cribaEratostenes(num n)
+
+/*
 	si((n mod 1) ! 0 o (n < 0)) //Restricciones
 	{
         devolver 1
-    }
+    }*/
 	num limite = raiz(n)
 	num[n] numeros 	//vector de num de tamaño n
+	numeros[i] = 0
 	num[] resultado	//vector de num sin tamaño definido
 	para num i desde 0 hasta n avance 1		//un ciclo for
 	{
@@ -18,10 +20,10 @@ num[] cribaEratostenes(num n)
 	num marcado = 0
 	para num i desde 2 hasta n avance 1
 	{
-		si(numeros[i] = 0) 			//revisa si está marcado
+		si (numeros[i] == 0) 			//revisa si está marcado
         {
 			resultado[marcado] = i  	//está sin marcar
-			marcado+			//aumente en uno este num
+		    marcado = marcado + 1			//aumente en uno este num
 		}					//marcar múltiplos
         si(i < limite)
 		{
