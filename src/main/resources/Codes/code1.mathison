@@ -6,7 +6,7 @@ privado proc comer(num cantidad)
 */
 
 publico num sumar(num n1, num n2)
-{
+
     num n4 = 0
     num n3 = n1 + n2
     /*SI (FALSO)

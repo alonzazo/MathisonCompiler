@@ -3,11 +3,11 @@ Este es un comentario soez
 */
 
 publico num[] cribaEratostenes(num n)
-{
+/*
 	si((n mod 1) ! 0 o (n < 0)) //Restricciones
 	{
         devolver 1
-    }
+    }*/
 	num limite = raiz(n)
 	num[n] numeros 	//vector de num de tamaño n
 	num[] resultado	//vector de num sin tamaño definido
