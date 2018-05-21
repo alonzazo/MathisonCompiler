@@ -259,7 +259,7 @@ c_vista ::= PUBLICO
           | PRIVADO
           ;
 
-lista_parametros ::= c_tipo_primitivo COMA lista_parametros      //{: System.out.println("Parámetro"); :}
+lista_parametros ::= c_tipo_primitivo variable_arreglo COMA lista_parametros      //{: System.out.println("Parámetro"); :}
                    | VAR:w variable_arreglo COMA lista_parametros      //{: System.out.println("Parámetro"); :}
                    | c_tipo_primitivo variable_arreglo                            //{: System.out.println("Parámetro"); :}
                    | VAR:w variable_arreglo                            //{: System.out.println("Parámetro"); :}
@@ -386,7 +386,7 @@ c_llamadoMetodo ::= c_expresion_llamado_metodo
                   | PARENTESISABIERTO c_llamadoMetodo PARENTESISCERRADO
                   ;
 
-c_expresion_variable ::= VAR:v
+c_expresion_variable ::= variable_arreglo
                        | PARENTESISABIERTO c_expresion_variable PARENTESISCERRADO
                        ;
 /*
