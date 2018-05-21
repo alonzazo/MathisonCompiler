@@ -216,6 +216,10 @@ programa ::= clase programa
 /* ------------------------------ Sintaxis de la estructura de un programa ------------------------------*/
 
 clase ::= c_vista CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: System.out.println("CLASE " + v);:}
+
+        //--------------------------------------------------------Gramáticas erróneas
+        //ERROR: LLave inicial faltante
+        | c_vista CLASE VAR:v cuerpo_clase LLAVECERRADO {: System.out.println("CLASE " + v); report_error("Llave de apertura faltante (\" { \") en declaración de clase:\t" + v, null);:}
         ;
 
 c_metodo ::= c_vista c_tipo_arreglo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
@@ -263,11 +267,20 @@ lista_parametros ::= c_tipo_primitivo variable_arreglo COMA lista_parametros    
                    | VAR:w variable_arreglo COMA lista_parametros      //{: System.out.println("Parámetro"); :}
                    | c_tipo_primitivo variable_arreglo                            //{: System.out.println("Parámetro"); :}
                    | VAR:w variable_arreglo                            //{: System.out.println("Parámetro"); :}
+
+                    //--------------------------------------------------------Gramáticas erróneas
+                    //ERROR: FALTAN COMAS
+                   | c_tipo_primitivo variable_arreglo lista_parametros         {: report_error("Coma faltante (\" , \") en separación de parametros", null);:}
+                   | VAR:w variable_arreglo lista_parametros                    {: report_error("Coma faltante (\" , \") en separación de parametros", null);:}
                    ;
 
 variable_arreglo ::= VAR:v
                    | VAR:v CORCHETEABIERTO CORCHETECERRADO
                    | VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO
+
+                   //--------------------------------------------------------Gramáticas erróneas
+                   //ERROR: FALTA DE CORCHETES
+                   //| VAR:v CORCHETECERRADO                                          {: report_fatal_error("Corchete abierto faltante (\" [ \") en referencia a arreglo " + v, null);:}
                    ;
 
 cuerpo_clase ::= c_metodo cuerpo_clase
@@ -284,6 +297,10 @@ cuerpo_metodo ::= c_lista_sentencias //cuerpo_metodo
 /*------------------------------ Sintaxis de los metodos ------------------------------*/
 
 c_expresion_llamado_metodo ::= VAR:v PARENTESISABIERTO c_lleno_parametros PARENTESISCERRADO
+                            //--------------------------------------------------------Gramáticas erróneas
+                            //ERROR FATAL: FALTAN COMAS
+                            //|  VAR:v c_lleno_parametros PARENTESISABIERTO {: report_error("FATAL: Falta apertura de paréntesis (\" ( \") en llamada a método:\t" + v, null);:}
+                            //|  VAR:v PARENTESISABIERTO c_lleno_parametros   {: report_error("FATAL: Falta apertura de paréntesis (\" ( \") en llamada a método:\t" + v, null);:}
                              ;
 
 c_lleno_parametros ::= c_hay_parametro
@@ -299,6 +316,9 @@ c_hay_parametro ::= c_hay_parametro COMA c_hay_parametro
                   | c_expresion_cadena
                   | c_expresion_booleana
                   | PARENTESISABIERTO c_hay_parametro PARENTESISCERRADO
+                  //--------------------------------------------------------Gramáticas erróneas
+                  //ERROR FATAL: FALTAN COMAS
+                  c_hay_parametro c_hay_parametro       {: report_fatal_error("Coma faltante (\" , \") en separación de parametros", null);:}
                   ;
 
 //c_definicion::= NUM c_asignacion_numerica
@@ -467,6 +487,10 @@ c_asignacion_prima ::=  ASIGNACION c_expresion_numerica        //Asignacion nume
                     |   ASIGNACION c_expresion_cadena
                     |   ASIGNACION c_expresion_booleana
                     |   ASIGNACION c_variable_o_llamadoMetodo
+
+                    //--------------------------------------------------------Gramáticas erróneas
+                    //ERROR FATAL: Asignación vana
+                    //|   ASIGNACION {:report_fatal_error("Falta valor en asignación");:}
                     ;
 /*c_asignacion_numerica ::= NUM VAR:v ASIGNACION c_asignacion_expresion_Numerica_Total
                         ;*/

@@ -3,7 +3,7 @@ Este es un comentario soez
 */
 
 publico num[] cribaEratostenes(num n)
-{
+
 /*
 	si((n mod 1) ! 0 o (n < 0)) //Restricciones
 	{
