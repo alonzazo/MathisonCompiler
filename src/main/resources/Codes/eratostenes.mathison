@@ -23,7 +23,7 @@ publico num[] cribaEratostenes(num n)
 		si (numeros[i] == 0) 			//revisa si está marcado
         {
 			resultado[marcado] = i  	//está sin marcar
-			marcado++			//aumente en uno este num
+		    marcado = marcado + 1			//aumente en uno este num
 		}					//marcar múltiplos
         si(i < limite)
 		{
