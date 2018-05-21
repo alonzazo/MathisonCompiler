@@ -144,7 +144,7 @@ terminal    String CADENA;
 non terminal    programa, clase, cuerpo_clase, c_metodo;
 non terminal    lista_parametros, variable_arreglo;
 non terminal    c_vista,  c_tipo_metodo, c_declaracion_metodo;
-non terminal    c_declaracion, c_tipo, retorno;
+non terminal    c_declaracion, c_tipo, c_tipo_arreglo, retorno;
 non terminal    retorno_numerico, retorno_booleano, retorno_cadena;
 
 non terminal c_expresion_variable;
@@ -218,10 +218,14 @@ programa ::= clase programa
 clase ::= c_vista CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: System.out.println("CLASE " + v);:}
         ;
 
-c_metodo ::= c_vista c_tipo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+c_metodo ::= c_vista c_tipo_arreglo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+           | c_vista c_tipo_arreglo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+           | c_vista c_tipo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
            | c_vista c_tipo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
            | c_vista PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
            | c_vista PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
+           | c_tipo_arreglo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
+           | c_tipo_arreglo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
            | c_tipo VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
            | c_tipo VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                      {: System.out.println("METODO " + v);:}
            | PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO     {: System.out.println("METODO " + v);:}
@@ -328,6 +332,9 @@ c_tipo ::= CAD
          | BOOL
          | VAR:tipo_no_primitivo  //Una clase
          ;
+
+c_tipo_arreglo ::=  c_tipo CORCHETEABIERTO CORCHETECERRADO
+                ;
 
 /*-------------------------Sintaxis de las variables y operaciones con variables------------------------*/
 
