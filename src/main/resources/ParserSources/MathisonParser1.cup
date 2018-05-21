@@ -314,8 +314,10 @@ c_estructuras ::= c_para
                 | c_revisar
                 ;
 
-c_para ::= PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
-           AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias LLAVECERRADO
+c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
+            AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias LLAVECERRADO
+         |  PARA NUM VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
+            AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias LLAVECERRADO
          ;
 
 c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO

@@ -20,7 +20,7 @@ publico num[] cribaEratostenes(num n)
 	num marcado = 0
 	para num i desde 2 hasta n avance 1
 	{
-		si(numeros[i] = 0) 			//revisa si está marcado
+		si (numeros[i] == 0) 			//revisa si está marcado
         {
 			resultado[marcado] = i  	//está sin marcar
 			marcado+			//aumente en uno este num
