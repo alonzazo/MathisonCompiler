@@ -1,4 +1,4 @@
-publico proc imprimirTriangulo(num n, cad hola, num bitch)
+publico proc imprimirTriangulo(num n)
 {
 	imprimir("Digite el caracter que desea imprimir en un triangulo")
 	cad c
@@ -7,9 +7,14 @@ publico proc imprimirTriangulo(num n, cad hola, num bitch)
 	num n
 	leer(n)
 	cad fila = ""
-	/*para num i desde 1 hasta n avance 1
+	para num i desde 1 hasta n avance 1
     {
-		fila = fila + c
-		imprimir(fila)
-	}*/
+        para num j desde 1 hasta i avance 1
+        {
+            fila = fila + c
+            imprimir(fila)
+        }
+        imprimir("\n")
+
+
 }

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="1041.25" y="11.0">Nombre</node>
+    <node x="178.5" y="189.0">Estructura</node>
+    <node x="1231.5" y="145.0">Variable</node>
+    <node x="0.0" y="541.0">SemanticAnalizer</node>
+    <node x="472.0" y="445.0">Para</node>
+    <node x="529.5" y="200.5">Clase</node>
+    <node x="214.0" y="541.0">resources</node>
+    <node x="446.75" y="0.0">Componente</node>
+    <node x="236.0" y="445.0">Mientras</node>
+    <node x="880.5" y="167.0">Metodo</node>
+    <node x="0.0" y="445.0">Si</node>
+    <node x="388.0" y="541.0">SemanticError</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="Metodo" target="Nombre">
+      <point x="82.75" y="-103.0" />
+      <point x="0.0" y="36.5" />
+    </edge>
+    <edge source="Clase" target="Nombre">
+      <point x="82.75" y="-69.5" />
+      <point x="777.75" y="125.0" />
+      <point x="1070.4166666666665" y="125.0" />
+      <point x="-58.33333333333334" y="36.5" />
+    </edge>
+    <edge source="Clase" target="Componente">
+      <point x="-82.75" y="-69.5" />
+      <point x="0.0" y="47.5" />
+    </edge>
+    <edge source="Para" target="Estructura">
+      <point x="0.0" y="-25.5" />
+      <point x="580.0" y="420.0" />
+      <point x="454.33333333333326" y="420.0" />
+      <point x="110.33333333333326" y="81.0" />
+    </edge>
+    <edge source="Metodo" target="Componente">
+      <point x="-82.75" y="-103.0" />
+      <point x="963.25" y="115.0" />
+      <point x="722.5833333333333" y="115.0" />
+      <point x="110.33333333333326" y="47.5" />
+    </edge>
+    <edge source="Si" target="Estructura">
+      <point x="0.0" y="-25.5" />
+      <point x="108.0" y="420.0" />
+      <point x="233.66666666666663" y="420.0" />
+      <point x="-110.33333333333337" y="81.0" />
+    </edge>
+    <edge source="Estructura" target="Componente">
+      <point x="0.0" y="-81.0" />
+      <point x="344.0" y="125.0" />
+      <point x="501.91666666666663" y="125.0" />
+      <point x="-110.33333333333337" y="47.5" />
+    </edge>
+    <edge source="Variable" target="Nombre">
+      <point x="0.0" y="-125.0" />
+      <point x="1329.5" y="125.0" />
+      <point x="1187.0833333333335" y="125.0" />
+      <point x="58.33333333333337" y="36.5" />
+    </edge>
+    <edge source="Mientras" target="Estructura">
+      <point x="0.0" y="-25.5" />
+      <point x="0.0" y="81.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.7000000000000001" x="902.5000000000001" y="322.125" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
