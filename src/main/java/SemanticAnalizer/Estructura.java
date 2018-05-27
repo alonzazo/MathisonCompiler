@@ -1,17 +1,18 @@
 package SemanticAnalizer;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public abstract class Estructura implements Componente {
 
-    public enum Tipo {
+    public enum TipoEstructura {
         SI,
         SINO,
         MIENTRAS,
         PARA
     }
 
-    private Tipo _tipo;
+    private TipoEstructura _tipoEstructura;
     private String _condicion;
 
     @Override
@@ -28,7 +29,12 @@ public abstract class Estructura implements Componente {
     }
 
     @Override
-    public HashMap<String, Nombre> getVariablesLocales() {
+    public HashMap<String, Nombre> getTblSimbolosLocales() {
+        return null;
+    }
+
+    @Override
+    public LinkedList<HashMap> getTblSimbolosPadres() {
         return null;
     }
 }

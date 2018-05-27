@@ -1,6 +1,7 @@
 package SemanticAnalizer;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Clase implements Componente, Nombre {
     @Override
@@ -14,7 +15,12 @@ public class Clase implements Componente, Nombre {
     }
 
     @Override
-    public HashMap<String, Nombre> getVariablesLocales() {
+    public LinkedList<HashMap> getTblSimbolosPadres() {
+        return null;
+    }
+
+    @Override
+    public HashMap<String, Nombre> getTblSimbolosLocales() {
         return null;
     }
 

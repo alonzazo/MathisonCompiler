@@ -5,14 +5,14 @@ public class Variable implements Nombre{
 
 
     private String _nombre;
-    private Componente.Tipo _tipo;
+    private Tipo _tipo;
     private Object _valor;
 
     public String getNombre(){
         return _nombre;
     }
 
-    public Componente.Tipo get_tipo(){
+    public Tipo get_tipo(){
         return  _tipo;
     }
 
@@ -28,7 +28,7 @@ public class Variable implements Nombre{
         this._nombre = _nombre;
     }
 
-    public void set_tipo(Componente.Tipo _tipo) {
+    public void set_tipo(Tipo _tipo) {
         this._tipo = _tipo;
     }
 

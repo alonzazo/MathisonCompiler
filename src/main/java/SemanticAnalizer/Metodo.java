@@ -7,7 +7,7 @@ import java.util.List;
 public class Metodo implements Componente, Nombre {
 
     private String _nombre;
-    private Componente.Tipo _tipo;
+    private Tipo _tipo;
 
     @Override
     public Componente getHermanoDerecho() {
@@ -20,7 +20,12 @@ public class Metodo implements Componente, Nombre {
     }
 
     @Override
-    public HashMap<String, Nombre> getVariablesLocales() {
+    public HashMap<String, Nombre> getTblSimbolosLocales() {
+        return null;
+    }
+
+    @Override
+    public LinkedList<HashMap> getTblSimbolosPadres() {
         return null;
     }
 
@@ -30,7 +35,7 @@ public class Metodo implements Componente, Nombre {
     }
 
     @Override
-    public Componente.Tipo get_tipo() {
+    public Tipo get_tipo() {
         return null;
     }
 

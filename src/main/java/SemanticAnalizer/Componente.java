@@ -1,17 +1,13 @@
 package SemanticAnalizer;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public interface Componente {
 
-    public enum Tipo{   CADENA,
-        NUMERICO,
-        BOOLEANO,
-        NO_PRIMITIVO
-    };
-
     public  Componente getHermanoDerecho();
     public  Componente getHijoMasIzq();
-    public HashMap< String, Nombre > getVariablesLocales();
+    public HashMap< String, Nombre > getTblSimbolosLocales();
+    public LinkedList< HashMap > getTblSimbolosPadres();
 
 }

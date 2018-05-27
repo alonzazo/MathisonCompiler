@@ -1,9 +1,15 @@
 package SemanticAnalizer;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Asignacion extends Sentencia {
     public Componente getHermanoDerecho() {
+        return null;
+    }
+
+    @Override
+    public LinkedList<HashMap> getTblSimbolosPadres() {
         return null;
     }
 
@@ -11,7 +17,7 @@ public class Asignacion extends Sentencia {
         return null;
     }
 
-    public HashMap<String, Nombre> getVariablesLocales() {
+    public HashMap<String, Nombre> getTblSimbolosLocales() {
         return null;
     }
 }
