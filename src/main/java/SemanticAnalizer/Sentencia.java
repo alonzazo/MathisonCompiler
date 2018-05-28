@@ -24,4 +24,6 @@ public abstract class Sentencia implements Componente {
     public LinkedList<HashMap> getTblSimbolosPadres() {
         return null;
     }
+
+    public abstract boolean evaluarSemantica();
 }

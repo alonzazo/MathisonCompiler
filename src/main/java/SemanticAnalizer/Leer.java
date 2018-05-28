@@ -1,9 +1,6 @@
 package SemanticAnalizer;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-
-public class Asignacion extends Sentencia {
+public class Leer extends Sentencia {
     @Override
     public boolean evaluarSemantica() {
         return false;
