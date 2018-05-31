@@ -20,10 +20,10 @@ public abstract class Sentencia implements Componente {
         return null;
     }
 
+    public abstract boolean evaluarSemantica();
+
     @Override
-    public LinkedList<HashMap> getTblSimbolosPadres() {
+    public Componente getPadre() {
         return null;
     }
-
-    public abstract boolean evaluarSemantica();
 }

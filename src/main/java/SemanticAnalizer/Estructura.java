@@ -34,7 +34,7 @@ public abstract class Estructura implements Componente {
     }
 
     @Override
-    public LinkedList<HashMap> getTblSimbolosPadres() {
+    public Componente getPadre() {
         return null;
     }
 }

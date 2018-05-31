@@ -3,124 +3,134 @@
   <ID>JAVA</ID>
   <OriginalElement />
   <nodes>
-    <node x="1730.0" y="167.0">SemanticAnalizer.Variable</node>
-    <node x="1041.0" y="467.0">SemanticAnalizer.Si</node>
-    <node x="423.9372413793103" y="379.4610344827587">SemanticAnalizer.Devolver</node>
-    <node x="761.25" y="0.0">SemanticAnalizer.Componente</node>
-    <node x="-13.148275862068964" y="422.07000000000005">SemanticAnalizer.Imprimir</node>
-    <node x="333.0" y="467.0">SemanticAnalizer.Revisar</node>
-    <node x="51.0" y="478.0">SemanticAnalizer.Asignacion</node>
-    <node x="0.0" y="563.0">SemanticAnalizer.TblDeclaracionesPendientes</node>
-    <node x="377.0" y="563.0">SemanticAnalizer.Tipo</node>
-    <node x="569.0" y="467.0">SemanticAnalizer.Mientras</node>
-    <node x="805.0" y="467.0">SemanticAnalizer.Para</node>
-    <node x="990.0" y="178.0">SemanticAnalizer.Metodo</node>
-    <node x="178.0" y="478.0">SemanticAnalizer.LlamadaMetodo</node>
-    <node x="0.0" y="233.5">SemanticAnalizer.Sentencia</node>
-    <node x="754.0" y="563.0">SemanticAnalizer.SemanticError</node>
-    <node x="1360.0" y="211.5">SemanticAnalizer.Clase</node>
-    <node x="540.0" y="563.0">SemanticAnalizer.SemanticAnalizer</node>
-    <node x="620.0" y="200.0">SemanticAnalizer.Estructura</node>
-    <node x="139.41931034482758" y="406.9506896551725">SemanticAnalizer.Leer</node>
-    <node x="1535.0" y="22.0">SemanticAnalizer.Nombre</node>
+    <node x="754.0" y="585.0">netscape</node>
+    <node x="0.0" y="489.0">SemanticAnalizer.Revisar</node>
+    <node x="377.0" y="585.0">SemanticAnalizer.Tipo</node>
+    <node x="1719.0" y="255.5">SemanticAnalizer.Programa</node>
+    <node x="236.0" y="489.0">SemanticAnalizer.Mientras</node>
+    <node x="2089.0" y="200.0">SemanticAnalizer.Metodo</node>
+    <node x="1349.0" y="244.5">SemanticAnalizer.Sentencia</node>
+    <node x="2829.0" y="189.0">SemanticAnalizer.Variable</node>
+    <node x="472.0" y="489.0">SemanticAnalizer.Si</node>
+    <node x="1416.0" y="489.0">SemanticAnalizer.Devolver</node>
+    <node x="1719.0" y="0.0">SemanticAnalizer.Componente</node>
+    <node x="1180.0" y="489.0">SemanticAnalizer.Imprimir</node>
+    <node x="0.0" y="585.0">SemanticAnalizer.TblDeclaracionesPendientes</node>
+    <node x="1652.0" y="489.0">SemanticAnalizer.Asignacion</node>
+    <node x="708.0000000000001" y="489.0">SemanticAnalizer.Para</node>
+    <node x="1888.0" y="489.0">SemanticAnalizer.LlamadaMetodo</node>
+    <node x="925.0" y="585.0">SemanticAnalizer.SemanticError</node>
+    <node x="2459.0" y="233.5">SemanticAnalizer.Clase</node>
+    <node x="540.0" y="585.0">SemanticAnalizer.SemanticAnalizer</node>
+    <node x="311.5514705882356" y="222.0">SemanticAnalizer.Estructura</node>
+    <node x="944.0000000000001" y="489.0">SemanticAnalizer.Leer</node>
+    <node x="2634.0" y="33.0">SemanticAnalizer.Nombre</node>
   </nodes>
   <notes />
   <edges>
     <edge source="SemanticAnalizer.Leer" target="SemanticAnalizer.Sentencia">
-      <point x="0.0" y="0.0" />
-      <point x="0.0" y="0.0" />
+      <point x="0.0" y="-25.5" />
+      <point x="1052.0" y="459.0" />
+      <point x="1384.0" y="459.0" />
+      <point x="-140.0" y="69.5" />
     </edge>
     <edge source="SemanticAnalizer.Metodo" target="SemanticAnalizer.Componente">
       <point x="-87.5" y="-114.0" />
-      <point x="1077.5" y="147.0" />
-      <point x="980.0" y="147.0" />
-      <point x="43.75" y="58.5" />
+      <point x="2176.5" y="169.0" />
+      <point x="1964.0" y="169.0" />
+      <point x="70.0" y="69.5" />
     </edge>
     <edge source="SemanticAnalizer.Asignacion" target="SemanticAnalizer.Sentencia">
-      <point x="0.0" y="-14.5" />
-      <point x="104.5" y="442.0" />
-      <point x="87.5" y="442.0" />
-      <point x="-87.5" y="58.5" />
+      <point x="0.0" y="-25.5" />
+      <point x="1760.0" y="469.0" />
+      <point x="1594.0" y="469.0" />
+      <point x="70.0" y="69.5" />
     </edge>
     <edge source="SemanticAnalizer.Mientras" target="SemanticAnalizer.Estructura">
       <point x="0.0" y="-25.5" />
-      <point x="677.0" y="442.0" />
-      <point x="751.25" y="442.0" />
+      <point x="344.0" y="469.0" />
+      <point x="442.8014705882356" y="469.0" />
       <point x="-43.75" y="92.0" />
-    </edge>
-    <edge source="SemanticAnalizer.Revisar" target="SemanticAnalizer.Estructura">
-      <point x="0.0" y="-25.5" />
-      <point x="441.0" y="442.0" />
-      <point x="663.75" y="442.0" />
-      <point x="-131.25" y="92.0" />
     </edge>
     <edge source="SemanticAnalizer.Clase" target="SemanticAnalizer.Componente">
       <point x="-87.5" y="-80.5" />
-      <point x="1447.5" y="137.0" />
-      <point x="1067.5" y="137.0" />
-      <point x="131.25" y="58.5" />
+      <point x="2546.5" y="159.0" />
+      <point x="2034.0" y="159.0" />
+      <point x="140.0" y="69.5" />
+    </edge>
+    <edge source="SemanticAnalizer.Revisar" target="SemanticAnalizer.Estructura">
+      <point x="0.0" y="-25.5" />
+      <point x="108.0" y="459.0" />
+      <point x="355.3014705882356" y="459.0" />
+      <point x="-131.25" y="92.0" />
+    </edge>
+    <edge source="SemanticAnalizer.Si" target="SemanticAnalizer.Estructura">
+      <point x="0.0" y="-25.5" />
+      <point x="580.0" y="469.0" />
+      <point x="530.3014705882356" y="469.0" />
+      <point x="43.75" y="92.0" />
+    </edge>
+    <edge source="SemanticAnalizer.Estructura" target="SemanticAnalizer.Componente">
+      <point x="0.0" y="-92.0" />
+      <point x="486.5514705882356" y="159.0" />
+      <point x="1754.0" y="159.0" />
+      <point x="-140.0" y="69.5" />
     </edge>
     <edge source="SemanticAnalizer.Clase" target="SemanticAnalizer.Nombre">
       <point x="87.5" y="-80.5" />
       <point x="0.0" y="36.5" />
     </edge>
-    <edge source="SemanticAnalizer.Si" target="SemanticAnalizer.Estructura">
-      <point x="0.0" y="-25.5" />
-      <point x="1149.0" y="442.0" />
-      <point x="926.25" y="442.0" />
-      <point x="131.25" y="92.0" />
-    </edge>
-    <edge source="SemanticAnalizer.Estructura" target="SemanticAnalizer.Componente">
-      <point x="0.0" y="-92.0" />
-      <point x="795.0" y="147.0" />
-      <point x="892.5" y="147.0" />
-      <point x="-43.75" y="58.5" />
-    </edge>
     <edge source="SemanticAnalizer.Devolver" target="SemanticAnalizer.Sentencia">
-      <point x="0.0" y="0.0" />
-      <point x="0.0" y="0.0" />
+      <point x="0.0" y="-25.5" />
+      <point x="0.0" y="69.5" />
+    </edge>
+    <edge source="SemanticAnalizer.Programa" target="SemanticAnalizer.Componente">
+      <point x="0.0" y="-58.5" />
+      <point x="0.0" y="69.5" />
     </edge>
     <edge source="SemanticAnalizer.Variable" target="SemanticAnalizer.Nombre">
       <point x="0.0" y="-125.0" />
-      <point x="1828.0" y="147.0" />
-      <point x="1680.8333333333333" y="147.0" />
-      <point x="58.33333333333326" y="36.5" />
+      <point x="2927.0" y="169.0" />
+      <point x="2779.8333333333335" y="169.0" />
+      <point x="58.33333333333337" y="36.5" />
     </edge>
     <edge source="SemanticAnalizer.LlamadaMetodo" target="SemanticAnalizer.Sentencia">
-      <point x="0.0" y="-14.5" />
-      <point x="245.5" y="442.0" />
-      <point x="262.5" y="442.0" />
-      <point x="87.5" y="58.5" />
-    </edge>
-    <edge source="SemanticAnalizer.Imprimir" target="SemanticAnalizer.Sentencia">
-      <point x="0.0" y="0.0" />
-      <point x="0.0" y="0.0" />
+      <point x="0.0" y="-25.5" />
+      <point x="1996.0" y="459.0" />
+      <point x="1664.0" y="459.0" />
+      <point x="140.0" y="69.5" />
     </edge>
     <edge source="SemanticAnalizer.Para" target="SemanticAnalizer.Estructura">
       <point x="0.0" y="-25.5" />
-      <point x="913.0" y="442.0" />
-      <point x="838.75" y="442.0" />
-      <point x="43.75" y="92.0" />
+      <point x="816.0000000000001" y="469.0" />
+      <point x="617.8014705882356" y="469.0" />
+      <point x="131.25" y="92.0" />
     </edge>
     <edge source="SemanticAnalizer.Sentencia" target="SemanticAnalizer.Componente">
-      <point x="0.0" y="-58.5" />
-      <point x="175.0" y="137.0" />
-      <point x="805.0" y="137.0" />
-      <point x="-131.25" y="58.5" />
+      <point x="0.0" y="-69.5" />
+      <point x="1524.0" y="169.0" />
+      <point x="1824.0" y="169.0" />
+      <point x="-70.0" y="69.5" />
+    </edge>
+    <edge source="SemanticAnalizer.Imprimir" target="SemanticAnalizer.Sentencia">
+      <point x="0.0" y="-25.5" />
+      <point x="1288.0" y="469.0" />
+      <point x="1454.0" y="469.0" />
+      <point x="-70.0" y="69.5" />
     </edge>
     <edge source="SemanticAnalizer.Metodo" target="SemanticAnalizer.Nombre">
       <point x="87.5" y="-114.0" />
-      <point x="1252.5" y="147.0" />
-      <point x="1564.1666666666667" y="147.0" />
-      <point x="-58.33333333333326" y="36.5" />
+      <point x="2351.5" y="169.0" />
+      <point x="2663.166666666667" y="169.0" />
+      <point x="-58.33333333333334" y="36.5" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="0.7275464124435524" x="476.85482758620685" y="442.0" />
+  <settings layout="Hierarchic Group" zoom="0.7275464124435524" x="1159.993448275862" y="422.7189655172414" />
   <SelectedNodes />
   <Categories>
+    <Category>Fields</Category>
     <Category>Constructors</Category>
     <Category>Methods</Category>
-    <Category>Fields</Category>
   </Categories>
   <SCOPE>All</SCOPE>
   <VISIBILITY>private</VISIBILITY>

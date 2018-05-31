@@ -10,6 +10,11 @@ public class Metodo implements Componente, Nombre {
     private Tipo _tipo;
 
     @Override
+    public Componente getPadre() {
+        return null;
+    }
+
+    @Override
     public Componente getHermanoDerecho() {
         return null;
     }
@@ -21,11 +26,6 @@ public class Metodo implements Componente, Nombre {
 
     @Override
     public HashMap<String, Nombre> getTblSimbolosLocales() {
-        return null;
-    }
-
-    @Override
-    public LinkedList<HashMap> getTblSimbolosPadres() {
         return null;
     }
 
