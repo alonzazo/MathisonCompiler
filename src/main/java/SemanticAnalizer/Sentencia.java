@@ -5,6 +5,14 @@ import java.util.LinkedList;
 
 public abstract class Sentencia implements Componente {
 
+    private Componente hijoMasIzq;
+    private Componente hermanoDer;
+    private Componente padre;
+
+    public Sentencia(){
+
+    }
+
     @Override
     public Componente getHermanoDerecho() {
         return null;

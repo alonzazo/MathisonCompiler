@@ -8,20 +8,31 @@ public class Metodo implements Componente, Nombre {
 
     private String _nombre;
     private Tipo _tipo;
+    private Componente _hijoMasIzq;
+    private Componente _hermanoDer;
+    private Componente _padre;
+
+    public Metodo(){
+
+    }
+
+    public Metodo(Componente padre){
+        _padre = padre;
+    }
 
     @Override
     public Componente getPadre() {
-        return null;
+        return _padre;
     }
 
     @Override
     public Componente getHermanoDerecho() {
-        return null;
+        return _hermanoDer;
     }
 
     @Override
     public Componente getHijoMasIzq() {
-        return null;
+        return _hijoMasIzq;
     }
 
     @Override

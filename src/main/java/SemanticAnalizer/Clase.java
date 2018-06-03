@@ -4,6 +4,16 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Clase implements Componente, Nombre {
+
+    private Componente _hijoMasIzq;
+    private Componente _hermanoDer;
+    private Componente _padre;
+    private String identificador;
+
+    public Clase(){
+
+    }
+
     @Override
     public Componente getHermanoDerecho() {
         return null;

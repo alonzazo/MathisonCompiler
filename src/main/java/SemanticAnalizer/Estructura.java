@@ -1,5 +1,6 @@
 package SemanticAnalizer;
 
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -14,10 +15,17 @@ public abstract class Estructura implements Componente {
 
     private TipoEstructura _tipoEstructura;
     private String _condicion;
+    private Componente _hijoMasIzq;
+    private Componente _hermanoDer;
+    private Componente _padre;
+
+    public Estructura(){
+
+    }
 
     @Override
     public Componente getHermanoDerecho() {
-        return null;
+        return _hermanoDer;
     }
 
     //Evalúa semánticamente la condición de la estructura
@@ -25,7 +33,7 @@ public abstract class Estructura implements Componente {
 
     @Override
     public Componente getHijoMasIzq() {
-        return null;
+        return _hijoMasIzq;
     }
 
     @Override
@@ -35,6 +43,6 @@ public abstract class Estructura implements Componente {
 
     @Override
     public Componente getPadre() {
-        return null;
+        return _padre;
     }
 }

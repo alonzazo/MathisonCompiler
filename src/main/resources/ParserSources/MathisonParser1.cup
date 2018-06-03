@@ -8,7 +8,11 @@ import java_cup.runtime.*;
 import java.io.FileReader;
 import LexicalAnalizer.Lexer;
 import java.util.Scanner;
-   
+
+action code {:
+    public HashMap<String, Object> tablaSimbolos = new HashMap<String, Object>();
+:}
+
 /* Codigo del parser, se copia integramente a la clase final.
     Agregamos el manejo de errores. */
 parser code {:
@@ -141,11 +145,14 @@ terminal    String CADENA;
 //non terminal Object     expr_list, expr_part;
 //non terminal Integer    expr, factor, termino;
 
-non terminal    programa, clase, cuerpo_clase, c_metodo;
-non terminal    lista_parametros, variable_arreglo;
+non terminal Programa programa;
+non terminal Componente clase;
+non terminal List<Componente> cuerpo_clase;
+non terminal Componente c_metodo;
+non terminal lista_parametros;
+non terminal Variable variable_arreglo;
 non terminal    c_vista,  c_tipo_metodo, c_declaracion_metodo;
-non terminal    c_declaracion, c_tipo, c_tipo_primitivo, c_tipo_arreglo, retorno;
-non terminal    retorno_numerico, retorno_booleano, retorno_cadena;
+non terminal    c_declaracion, c_tipo, c_tipo_primitivo, c_tipo_arreglo;
 
 non terminal c_expresion_variable;
 non terminal c_expresion_variable_mayorque, c_expresion_variable_mayoroigual, c_expresion_variable_menorque,c_expresion_variable_menoroigual;
@@ -162,29 +169,35 @@ non terminal c_asignacion_expresion_Booleana_Total;
 non terminal c_expresion_cadena; //Todas las operaciones excepto solamente el nombre e la variable
 non terminal c_asignacion_expresion_Cadena_total; //El totall
 
-non terminal c_asignacion, c_asignacion_prima;
+non terminal Asignacion c_asignacion;
+non terminal c_asignacion_prima;
 non terminal c_asignacion_numerica;
 non terminal c_asignacion_cadena;
 non terminal c_asignacion_booleana;
 
 /*Llamado a Metodos*/
 non terminal c_variable_o_llamadoMetodo;
-non terminal c_llamadoMetodo;
+non terminal LlamadaMetodo c_llamadoMetodo;
 non terminal c_expresion_llamado_metodo, c_lleno_parametros, c_hay_parametro; //Estan en trabajo
 
 /*Estructuras de control*/
 non terminal c_estructuras;
-non terminal c_para;
-non terminal c_mientras;
-non terminal c_si, c_sino;
-non terminal c_revisar, c_revisar_casos;
+non terminal Para c_para;
+non terminal Mientras c_mientras;
+non terminal Si c_si;
+non terminal Sino c_sino;
+non terminal Revisar c_revisar;
+non terminal c_revisar_casos;
 
 /* Lineas validas */
-non terminal c_lista_sentencias;
+non terminal List<Componente> c_lista_sentencias;
 
-non terminal c_funciones_reservadas, c_imprimir, c_leer, c_devolver;
+non terminal c_funciones_reservadas;
+non terminal Imprimir c_imprimir;
+non terminal Leer c_leer;
+non terminal Devolver c_devolver;
 
-nonterminal cuerpo_metodo;
+non terminal cuerpo_metodo;
 
 /*Inicio de las precedence, se guian en base a la documentacion de java
 Entre más abajo esten tienen más prioridad*/
@@ -208,14 +221,14 @@ precedence left PARENTESISABIERTO,PARENTESISCERRADO;
 
 start with programa;
 
-programa ::= clase programa
-           | clase
-           | c_metodo programa
-           | c_metodo
+programa ::= clase:c programa:p         {: p.listaClases.add(c); RESULT = p; :}
+           | clase:c                   {: RESULT = new Programa(c); :}
+           | c_metodo:m programa:p          {: p.listaMetodos(m); RESULT = p; :}
+           | c_metodo:m                   {: RESULT = new Programa(m); :}
            ;
 /* ------------------------------ Sintaxis de la estructura de un programa ------------------------------*/
 
-clase ::= c_vista CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: System.out.println("CLASE " + v);:}
+clase ::= c_vista CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: RESULT = new Clase(v);:}
 
         //--------------------------------------------------------Gramáticas erróneas
         //ERROR: LLave inicial faltante
@@ -336,26 +349,34 @@ c_estructuras ::= c_para
 
 c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
             AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias LLAVECERRADO
+            {: RESULT = new Para();:}
          |  PARA NUM VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
             AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias LLAVECERRADO
+            {: RESULT = new Para();:}
          ;
 
 c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
                HACER LLAVEABIERTO c_lista_sentencias LLAVECERRADO
+               {: RESULT = new Mientras();:}
              | HACER LLAVEABIERTO c_lista_sentencias LLAVECERRADO MIENTRAS
                PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
+               {: RESULT = new Mientras();:}
              ;
 
 c_si ::= SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias LLAVECERRADO c_sino
+         {: RESULT = new Si();:}
        ;
 
 c_sino ::= SINO c_si
+           {: RESULT = new Sino();:}
          | SINO LLAVEABIERTO c_lista_sentencias LLAVECERRADO c_sino
+           {: RESULT = new Sino();:}
          |
          ;
 
 c_revisar ::= REVISAR PARENTESISABIERTO VAR:v PARENTESISCERRADO LLAVEABIERTO c_revisar_casos LLAVECERRADO
-                       ;
+              {: RESULT = new Revisar();:}
+            ;
 
 c_revisar_casos ::= CASO c_expresion_numerica DOSPUNTOS c_lista_sentencias SALIR
                   | DEFECTO DOSPUNTOS c_lista_sentencias SALIR
@@ -610,55 +631,3 @@ c_funciones_reservadas ::= c_imprimir
                          | c_devolver
                          ;
 
-
-/*
-   lista_expresiones ::= expresion lista_expresiones      //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
-                  | expresion             //{: System.out.println(e);:}//{: System.out.println(sym.terminalNames[e.sym]);:}
-                  ;
-
-   expresion  ::= Y                 {: System.out.println("Y");:}
-                | O                 {: System.out.println("O");:}
-                | SI                {: System.out.println("SI");:}
-                | SINO              {: System.out.println("SINO");:}
-                | DEVOLVER          {: System.out.println("DEVOLVER");:}
-                | REC               {: System.out.println("REC");:}
-                //| CAD               {: System.out.println("CAD");:}
-                //| BOOL              {: System.out.println("BOOL");:}
-
-                | IMPRIMIR          {: System.out.println("IMPRIMIR");:}
-                | LEER              {: System.out.println("LEER");:}
-                | FIN               {: System.out.println("FIN");:}
-                | VERDADERO         {: System.out.println("VERDADERO");:}
-                | FALSO             {: System.out.println("FALSO");:}
-                | IMPORTAR          {: System.out.println("IMPORTAR");:}
-                | INTENTAR          {: System.out.println("INTENTAR");:}
-                | ATRAPAR           {: System.out.println("ATRAPAR");:}
-                | LANZAR            {: System.out.println("LANZAR");:}
-                | CONSTANTE         {: System.out.println("CONSTANTE");:}
-                | REVISAR           {: System.out.println("REVISAR");:}
-                | CASO              {: System.out.println("CASO");:}
-                | COMO              {: System.out.println("COMO");:}
-                | DEFECTO           {: System.out.println("DEFECTO");:}
-                //| NUM               {: System.out.println("NUM");:}
-                | MENORQUE          {: System.out.println("MENORQUE");:}
-                | MAYORQUE          {: System.out.println("MAYORQUE");:}
-                | MENOROIGUAL       {: System.out.println("MENOROIGUAL");:}
-                | MAYOROIGUAL       {: System.out.println("MAYOROIGUAL");:}
-                | DISTINTO          {: System.out.println("DISTINTO");:}
-                | SUMA              {: System.out.println("SUMA");:}
-                | RESTA             {: System.out.println("RESTA");:}
-                | MULTIPLICACION    {: System.out.println("MUTIPLICACION");:}
-                | DIVISION          {: System.out.println("DIVISION");:}
-                | ASIGNACION        {: System.out.println("ASIGNACION");:}
-                | IGUAL             {: System.out.println("IGUAL");:}
-                | CORCHETEABIERTO   {: System.out.println("CORCHETEABIERTO");:}
-                | CORCHETECERRADO   {: System.out.println("CORCHETECERRADO");:}
-                | PARENTESISABIERTO {: System.out.println("PARENTESISABIERTO");:}
-                | PARENTESISCERRADO {: System.out.println("PARENTESISCERRADO");:}
-                | DOSPUNTOS         {: System.out.println("DOSPUNTOS");:}
-                | NUMERO:e          {: System.out.println("NUMERO " + e);:}
-                //| VAR:e             {: System.out.println("VAR " + e);:}
-                | DELIMITADOR:e     {: System.out.println("DELIMITADOR " + e);:}
-                | CADENA:e          {: System.out.println("CADENA" + e);:}
-                ;
-*/
