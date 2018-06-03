@@ -1,37 +1,15 @@
 package SemanticAnalizer;
 
-import java.util.HashMap;
-import java.util.LinkedList;
+public class Clase extends ComponenteConcreto implements Nombre {
 
-public class Clase implements Componente, Nombre {
-
-    private Componente _hijoMasIzq;
-    private Componente _hermanoDer;
-    private Componente _padre;
-    private String identificador;
+    private String _nombre;
 
     public Clase(){
-
+        _nombre = "";
     }
 
-    @Override
-    public Componente getHermanoDerecho() {
-        return null;
-    }
-
-    @Override
-    public Componente getHijoMasIzq() {
-        return null;
-    }
-
-    @Override
-    public Componente getPadre() {
-        return null;
-    }
-
-    @Override
-    public HashMap<String, Nombre> getTblSimbolosLocales() {
-        return null;
+    public Clase(String nombre){
+        _nombre = nombre;
     }
 
     @Override
@@ -41,6 +19,10 @@ public class Clase implements Componente, Nombre {
 
     @Override
     public Tipo get_tipo() {
-        return null;
+        return Tipo.NO_PRIMITIVO;
+    }
+
+    public void set_nombre(String nombre) {
+        this._nombre = nombre;
     }
 }
