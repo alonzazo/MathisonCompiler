@@ -65,10 +65,4 @@ public class Metodo extends ComponenteConcreto implements Nombre {
         return new LinkedList<Variable>();
     }
 
-    @Override
-    public String toString() {
-        return "Metodo{" +
-                "_nombre='" + _nombre + '\'' +
-                '}';
-    }
 }
