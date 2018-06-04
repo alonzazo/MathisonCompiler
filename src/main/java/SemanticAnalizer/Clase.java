@@ -6,10 +6,12 @@ public class Clase extends ComponenteConcreto implements Nombre {
 
     public Clase(){
         _nombre = "";
+        System.out.println("Clase");
     }
 
     public Clase(String nombre){
         _nombre = nombre;
+        System.out.println("Clase " + nombre);
     }
 
     @Override
@@ -24,5 +26,10 @@ public class Clase extends ComponenteConcreto implements Nombre {
 
     public void set_nombre(String nombre) {
         this._nombre = nombre;
+    }
+
+    @Override
+    public String toString() {
+        return "Clase{" +  _nombre + '}';
     }
 }

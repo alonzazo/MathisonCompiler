@@ -10,6 +10,7 @@ import LexicalAnalizer.Lexer;
 import java.util.Scanner;
 import java.util.HashMap;
 import java.util.List;
+import java.util.LinkedList;
 import SemanticAnalizer.*;
 
 action code {:
@@ -121,8 +122,8 @@ terminal    SINO, DEVOLVER, PROC, CLASE, REC, CAD, BOOL, PUBLICO;
 terminal    PRIVADO, IMPRIMIR, LEER, VERDADERO, FALSO;
 terminal    REVISAR, CASO, DEFECTO, NUM, NEGACION;
 
-terminal    CON, MOD, FIN, COMO, LANZAR, ATRAPAR, EN, EXCEPTO, MOSTRAR, EJECUTAR, TERMINAR, INTENTAR, IMPORTAR, CONSTANTE, CONTINUAR, FINALMENTE;
-
+terminal    MOD, LANZAR, ATRAPAR, EN, EXCEPTO, TERMINAR, INTENTAR, CONSTANTE, CONTINUAR, FINALMENTE;
+terminal    POTENCIA, CON, FIN, COMO, MOSTRAR, EJECUTAR, IMPORTAR;
 
 terminal    MENORQUE, MAYORQUE, MENOROIGUAL, MAYOROIGUAL, DISTINTO, IGUAL;
 
@@ -131,7 +132,7 @@ terminal    ASIGNACION;
 
 
 //ARITMETICA
-terminal    SUMA, RESTA, MULTIPLICACION, DIVISION, NEGATIVO, POTENCIA;
+terminal    SUMA, RESTA, MULTIPLICACION, DIVISION, NEGATIVO;
 
 //DELIMITADOR
 terminal    CORCHETEABIERTO,CORCHETECERRADO,LLAVEABIERTO,LLAVECERRADO,PARENTESISABIERTO,PARENTESISCERRADO, DOSPUNTOS, COMA;
@@ -152,11 +153,11 @@ terminal    String CADENA;
 //non terminal Object     expr_list, expr_part;
 //non terminal Integer    expr, factor, termino;
 
-non terminal Programa programa;//---------------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
+non terminal Programa programa;//--------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal Clase clase;//----------------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal List<Componente> cuerpo_clase;//---------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal Metodo c_metodo;//-------------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
-non terminal lista_parametros;
+non terminal List<Variable> lista_parametros;
 non terminal Variable variable_arreglo;//-------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal    c_vista,  c_tipo_metodo, c_declaracion_metodo;
 non terminal    c_declaracion, c_tipo, c_tipo_primitivo, c_tipo_arreglo;
@@ -165,7 +166,6 @@ non terminal c_expresion_variable;
 non terminal c_expresion_variable_mayorque, c_expresion_variable_mayoroigual, c_expresion_variable_menorque,c_expresion_variable_menoroigual;
 non terminal c_expresion_variable_igual, c_expresion_variable_distinto;
 non terminal c_expresion_variable_comparacion;
-non terminal c_expresion_variable_concatena, c_expresion_variable_concatena_prima;
 
 non terminal c_expresion_numerica;  //Todas las operaciones excepto solamente el nombre e la variable
 non terminal c_asignacion_expresion_Numerica_Total; //El total
@@ -174,21 +174,21 @@ non terminal c_expresion_booleana; //Todas las operaciones excepto solamente el 
 non terminal c_asignacion_expresion_Booleana_Total;
 
 non terminal c_expresion_cadena; //Todas las operaciones excepto solamente el nombre e la variable
-non terminal c_asignacion_expresion_Cadena_total; //El totall
+non terminal c_asignacion_expresion_Cadena_total; //El total
 
 non terminal Asignacion c_asignacion;//---------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
-non terminal c_asignacion_prima;
-non terminal c_asignacion_numerica;
-non terminal c_asignacion_cadena;
+non terminal Object c_asignacion_prima;
 non terminal c_asignacion_booleana;
 
 /*Llamado a Metodos*/
 non terminal c_variable_o_llamadoMetodo;
 non terminal LlamadaMetodo c_llamadoMetodo;//---------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
-non terminal c_expresion_llamado_metodo, c_lleno_parametros, c_hay_parametro; //Estan en trabajo
+non terminal LlamadaMetodo c_expresion_llamado_metodo;
+non terminal List<Object> c_lleno_parametros;
+non terminal c_hay_parametro; //Estan en trabajo
 
 /*Estructuras de control*/
-non terminal c_estructuras;
+non terminal Estructura c_estructuras;
 non terminal Para c_para;//-------------------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal Mientras c_mientras;//-----------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal Si c_si;//-----------------------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
@@ -199,12 +199,12 @@ non terminal c_revisar_casos;
 /* Lineas validas */
 non terminal List<Componente> c_lista_sentencias;//------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 
-non terminal c_funciones_reservadas;
+non terminal Sentencia c_funciones_reservadas;
 non terminal Imprimir c_imprimir;//----------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal Leer c_leer;//------------------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal Devolver c_devolver;//-----------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 
-non terminal cuerpo_metodo;
+non terminal List<Componente> cuerpo_metodo;
 
 /*Inicio de las precedence, se guian en base a la documentacion de java
 Entre más abajo esten tienen más prioridad*/
@@ -228,10 +228,14 @@ precedence left PARENTESISABIERTO,PARENTESISCERRADO;
 
 start with programa;
 
-programa ::= clase:c programa:p             {: arbolSemantico.putAtTheBeginOfContext(c);/*p.listaClases.add(c); RESULT = p;*/ :}
-           | clase:c                        {: arbolSemantico.putAtTheEndOfContext(c); arbolSemantico.setFatherToCurrentContext(new Programa()); /*RESULT = new Programa(c);*/ :}
-           | c_metodo:m programa:p          {: arbolSemantico.putAtTheBeginOfContext(m); /*p.listaMetodos(m); RESULT = p;*/ :}
-           | c_metodo:m                     {: arbolSemantico.putAtTheEndOfContext(m); arbolSemantico.setFatherToCurrentContext(new Programa()); /*RESULT = new Programa(m);*/ :}
+programa ::= clase:c programa:p
+            {: arbolSemantico.putAtTheBeginOfContext(c); p._listaClases.add(c); RESULT = p; :}
+           | clase:c
+           {: arbolSemantico.putAtTheEndOfContext(c); arbolSemantico.setFatherToCurrentContext(new Programa()); RESULT = new Programa(c); :}
+           | c_metodo:m programa:p
+           {: arbolSemantico.putAtTheBeginOfContext(m); p._listaMetodos.add(m); RESULT = p; :}
+           | c_metodo:m
+           {: arbolSemantico.putAtTheEndOfContext(m); arbolSemantico.setFatherToCurrentContext(new Programa()); RESULT = new Programa(m); :}
            ;
 /* ------------------------------ Sintaxis de la estructura de un programa ------------------------------*/
 
@@ -242,22 +246,38 @@ clase ::= c_vista CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: RESULT =
         | c_vista CLASE VAR:v cuerpo_clase LLAVECERRADO {: System.out.println("CLASE " + v); report_error("Llave de apertura faltante (\" { \") en declaración de clase:\t" + v, null);:}
         ;
 
-c_metodo ::= c_vista c_tipo_arreglo:t VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO    {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | c_vista c_tipo_arreglo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                     {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | c_vista c_tipo_primitivo:t VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO  {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | c_vista VAR:w VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO               {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO); System.out.println("METODO " + v);:}
-           | c_vista c_tipo_primitivo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                   {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | c_vista VAR:w VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                                {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO); System.out.println("METODO " + v);:}
-           | c_vista PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                {: RESULT = new Metodo(v, null); System.out.println("METODO " + v);:}
-           | c_vista PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                                 {: RESULT = new Metodo(v, null); System.out.println("METODO " + v);:}
-           | c_tipo_arreglo:t VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO            {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | c_tipo_arreglo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                             {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | c_tipo_primitivo:t VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO          {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | VAR:w VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                       {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO); System.out.println("METODO " + v);:}
-           | c_tipo_primitivo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                           {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | VAR:w VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                                        {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO); System.out.println("METODO " + v);:}
-           | PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                        {: RESULT = new Metodo(v, null); System.out.println("METODO " + v);:}
-           | PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                                         {: RESULT = new Metodo(v, null); System.out.println("METODO " + v);:}
+c_metodo ::= c_vista c_tipo_arreglo:t VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+            {: RESULT = new Metodo(v, (Tipo) t, lp, ls); //System.out.println("METODO " + v);:}
+           | c_vista c_tipo_arreglo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, (Tipo) t, ls); //System.out.println("METODO " + v);:}
+           | c_vista c_tipo_primitivo:t VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, (Tipo) t, lp, ls); //System.out.println("METODO " + v);:}
+           | c_vista VAR:w VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO, lp, ls); //System.out.println("METODO " + v);:}
+           | c_vista c_tipo_primitivo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, (Tipo) t, ls); //System.out.println("METODO " + v);:}
+           | c_vista VAR:w VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO, ls); //System.out.println("METODO " + v);:}
+           | c_vista PROC VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, null, lp, ls); //System.out.println("METODO " + v);:}
+           | c_vista PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, null, ls); //System.out.println("METODO " + v);:}
+           | c_tipo_arreglo:t VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, (Tipo) t, lp, ls); //System.out.println("METODO " + v);:}
+           | c_tipo_arreglo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, (Tipo) t, ls); System.out.println("METODO " + v);:}
+           | c_tipo_primitivo:t VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, (Tipo) t, lp, ls); //System.out.println("METODO " + v);:}
+           | VAR:w VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO, lp, ls); //System.out.println("METODO " + v);:}
+           | c_tipo_primitivo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, (Tipo) t, ls); //System.out.println("METODO " + v);:}
+           | VAR:w VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO, ls); //System.out.println("METODO " + v);:}
+           | PROC VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, null, lp, ls); //System.out.println("METODO " + v);:}
+           | PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
+           {: RESULT = new Metodo(v, null, ls); //System.out.println("METODO " + v);:}
 
            //--------------------------------------------------------Gramáticas erróneas
            // ERROR: Llave inicial faltante
@@ -283,10 +303,14 @@ c_vista ::= PUBLICO
           | PRIVADO
           ;
 
-lista_parametros ::= c_tipo_primitivo variable_arreglo COMA lista_parametros      //{: System.out.println("Parámetro"); :}
-                   | VAR:w variable_arreglo COMA lista_parametros      //{: System.out.println("Parámetro"); :}
-                   | c_tipo_primitivo variable_arreglo                            //{: System.out.println("Parámetro"); :}
-                   | VAR:w variable_arreglo                            //{: System.out.println("Parámetro"); :}
+lista_parametros ::= c_tipo_primitivo variable_arreglo:v COMA lista_parametros:lp
+                    {: lp.add(v); RESULT = lp; :}
+                   | VAR:w variable_arreglo:v COMA lista_parametros:lp
+                    {: lp.add(v); RESULT = lp; :}
+                   | c_tipo_primitivo variable_arreglo:v
+                    {: List<Variable> lp = new LinkedList<Variable>(); lp.add(v); RESULT = lp; :}
+                   | VAR:w variable_arreglo:v
+                    {: List<Variable> lp = new LinkedList<Variable>(); lp.add(v); RESULT = lp; :}
 
                     //--------------------------------------------------------Gramáticas erróneas
                     //ERROR: FALTAN COMAS
@@ -295,37 +319,44 @@ lista_parametros ::= c_tipo_primitivo variable_arreglo COMA lista_parametros    
                    ;
 
 variable_arreglo ::= VAR:v
+                    {: RESULT = new Variable(v); :}
                    | VAR:v CORCHETEABIERTO CORCHETECERRADO
+                   {: RESULT = new Variable(v); :}
                    | VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO
+                   {: RESULT = new Variable(v); :}
 
                    //--------------------------------------------------------Gramáticas erróneas
                    //ERROR: FALTA DE CORCHETES
                    //| VAR:v CORCHETECERRADO                                          {: report_fatal_error("Corchete abierto faltante (\" [ \") en referencia a arreglo " + v, null);:}
                    ;
 
-cuerpo_clase ::= c_metodo cuerpo_clase
-               | c_asignacion cuerpo_clase
-               | c_declaracion cuerpo_clase
+cuerpo_clase ::= c_metodo:m cuerpo_clase:c
+                {: c.add(m); RESULT = c; :}
+               | c_asignacion:a cuerpo_clase:c
+               {: c.add(a); RESULT = c; :}
+               | c_declaracion cuerpo_clase:c
+               {:RESULT = c; :}
                |
+               {: RESULT = new LinkedList<Componente>(); :}
                ;
 
-cuerpo_metodo ::= c_lista_sentencias //cuerpo_metodo
-                    //| variable_arreglo
-                    //|
-                    ;
+cuerpo_metodo ::= c_lista_sentencias:l
+                {:RESULT = l;:}
+                ;
 
 /*------------------------------ Sintaxis de los metodos ------------------------------*/
 
-c_expresion_llamado_metodo ::= VAR:v PARENTESISABIERTO c_lleno_parametros PARENTESISCERRADO
+c_expresion_llamado_metodo ::= VAR:v PARENTESISABIERTO c_lleno_parametros:p PARENTESISCERRADO
+                                {: RESULT = new LlamadaMetodo(p,v); :}
                             //--------------------------------------------------------Gramáticas erróneas
                             //ERROR FATAL: FALTAN COMAS
                             //|  VAR:v c_lleno_parametros PARENTESISABIERTO {: report_error("FATAL: Falta apertura de paréntesis (\" ( \") en llamada a método:\t" + v, null);:}
                             //|  VAR:v PARENTESISABIERTO c_lleno_parametros   {: report_error("FATAL: Falta apertura de paréntesis (\" ( \") en llamada a método:\t" + v, null);:}
                              ;
 
-c_lleno_parametros ::= c_hay_parametro
-                     | PARENTESISABIERTO c_lleno_parametros PARENTESISCERRADO
-                     |
+c_lleno_parametros ::= c_hay_parametro {:RESULT = new LinkedList<Object>();:}
+                     | PARENTESISABIERTO c_lleno_parametros:p PARENTESISCERRADO {:RESULT = p;:}
+                     |  {:RESULT = new LinkedList<Object>(); :}
                      ;
 
 c_hay_parametro ::= c_hay_parametro COMA c_hay_parametro
@@ -338,7 +369,7 @@ c_hay_parametro ::= c_hay_parametro COMA c_hay_parametro
                   | PARENTESISABIERTO c_hay_parametro PARENTESISCERRADO
                   //--------------------------------------------------------Gramáticas erróneas
                   //ERROR FATAL: FALTAN COMAS
-                  c_hay_parametro c_hay_parametro       {: report_fatal_error("Coma faltante (\" , \") en separación de parametros", null);:}
+                   c_hay_parametro c_hay_parametro       {: report_fatal_error("Coma faltante (\" , \") en separación de parametros", null);:}
                   ;
 
 //c_definicion::= NUM c_asignacion_numerica
@@ -348,10 +379,14 @@ c_hay_parametro ::= c_hay_parametro COMA c_hay_parametro
 
 /*-----------------------------Sintaxis de estructuras de control-------------------------- */
 
-c_estructuras ::= c_para
-                | c_mientras
-                | c_si
-                | c_revisar
+c_estructuras ::= c_para:p
+                  {: RESULT = p;:}
+                | c_mientras:m
+                {: RESULT = m;:}
+                | c_si:s
+                {: RESULT = s;:}
+                | c_revisar:r
+                {: RESULT = r;:}
                 ;
 
 c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
@@ -389,22 +424,28 @@ c_revisar_casos ::= CASO c_expresion_numerica DOSPUNTOS c_lista_sentencias SALIR
                   | DEFECTO DOSPUNTOS c_lista_sentencias SALIR
                   ;
 
-c_lista_sentencias ::= c_asignacion c_lista_sentencias
-                     | c_declaracion c_lista_sentencias
-                     | c_estructuras c_lista_sentencias
-                     | c_expresion_llamado_metodo c_lista_sentencias
-                     | c_funciones_reservadas c_lista_sentencias
-                     |
+c_lista_sentencias ::= c_asignacion:a c_lista_sentencias:ls
+                      {: ls.add(a); RESULT = ls; :}
+                     | c_declaracion:d c_lista_sentencias:ls
+                     {: RESULT = ls; :}
+                     | c_estructuras:e c_lista_sentencias:ls
+                     {: ls.add(e); RESULT = ls; :}
+                     | c_expresion_llamado_metodo:m c_lista_sentencias:ls
+                     {: ls.add(m); RESULT = ls; :}
+                     | c_funciones_reservadas:f c_lista_sentencias:ls
+                     {: ls.add(f); RESULT = ls; :}
+                     |  {: RESULT = new LinkedList<Componente>(); :}
                      ;
 
 /*------------------------------Declaracion Basica ------------------------------*/
-c_declaracion ::= c_tipo_primitivo VAR:v                                  {:System.out.println("Declaración " + v);:}
-                | VAR:w VAR:v                                  {:System.out.println("Declaración " + v);:}
-                | c_tipo_primitivo VAR:v CORCHETEABIERTO CORCHETECERRADO  {:System.out.println("Declaración de arreglo" + v);:}
-                | VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO  {:System.out.println("Declaración de arreglo" + v);:}
-                | c_tipo_primitivo VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {:System.out.println("Declaración de arreglo" + v);:}
-                | VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {:System.out.println("Declaración de arreglo" + v);:}
-                | c_tipo_arreglo VAR:v                                  {:System.out.println("Declaración de arreglo" + v);:}
+
+c_declaracion ::= c_tipo_primitivo VAR:v                                  {://System.out.println("Declaración " + v);:}
+                | VAR:w VAR:v                                  {://System.out.println("Declaración " + v);:}
+                | c_tipo_primitivo VAR:v CORCHETEABIERTO CORCHETECERRADO  {://System.out.println("Declaración de arreglo" + v);:}
+                | VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO  {://System.out.println("Declaración de arreglo" + v);:}
+                | c_tipo_primitivo VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {://System.out.println("Declaración de arreglo" + v);:}
+                | VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {://System.out.println("Declaración de arreglo" + v);:}
+                | c_tipo_arreglo VAR:v                                  {://System.out.println("Declaración de arreglo" + v);:}
                 ;
 
 /*------------------------------Primitivas de tipo de datos------------------------------*/
@@ -426,8 +467,8 @@ c_tipo_arreglo ::=  c_tipo_primitivo:t CORCHETEABIERTO CORCHETECERRADO      {: R
 
 /*-------------------------Sintaxis de las variables y operaciones con variables------------------------*/
 
-c_variable_o_llamadoMetodo ::= c_expresion_variable     {:System.out.println("Variable de expresion");:}
-                             | c_llamadoMetodo          {:System.out.println("Llamado a metodo en expresion");:}
+c_variable_o_llamadoMetodo ::= c_expresion_variable     {://System.out.println("Variable de expresion");:}
+                             | c_llamadoMetodo          {://System.out.println("Llamado a metodo en expresion");:}
                              ;
 
 c_llamadoMetodo ::= c_expresion_llamado_metodo
@@ -437,16 +478,6 @@ c_llamadoMetodo ::= c_expresion_llamado_metodo
 c_expresion_variable ::= variable_arreglo
                        | PARENTESISABIERTO c_expresion_variable PARENTESISCERRADO
                        ;
-/*
-c_expresion_variable_concatena ::= c_variable_o_llamadoMetodo SUMA c_expresion_variable_concatena
-
-                                 //| c_variable_o_llamadoMetodo SUMA c_variable_o_llamadoMetodo
-                                 | c_expresion_variable SUMA c_variable_o_llamadoMetodo
-                                 | c_llamadoMetodo SUMA c_variable_o_llamadoMetodo
-
-                                 | PARENTESISABIERTO c_expresion_variable_concatena PARENTESISCERRADO
-                                 ;
-*/
 
 c_expresion_variable_igual ::= c_expresion_numerica IGUAL c_expresion_numerica
                              | c_expresion_booleana  IGUAL c_expresion_booleana
@@ -456,7 +487,6 @@ c_expresion_variable_igual ::= c_expresion_numerica IGUAL c_expresion_numerica
                              | c_variable_o_llamadoMetodo IGUAL c_expresion_numerica
                              | c_expresion_numerica IGUAL c_variable_o_llamadoMetodo
                              | c_variable_o_llamadoMetodo IGUAL c_variable_o_llamadoMetodo
-
                              ;
 
 c_expresion_variable_distinto ::=c_expresion_numerica DISTINTO c_expresion_numerica
@@ -466,7 +496,6 @@ c_expresion_variable_distinto ::=c_expresion_numerica DISTINTO c_expresion_numer
                               |  c_variable_o_llamadoMetodo DISTINTO c_expresion_numerica
                                | c_expresion_numerica DISTINTO c_variable_o_llamadoMetodo
                                | c_variable_o_llamadoMetodo DISTINTO c_variable_o_llamadoMetodo
-
                                ;
 
 c_expresion_variable_mayorque ::= c_asignacion_expresion_Numerica_Total MAYORQUE c_asignacion_expresion_Numerica_Total
@@ -478,7 +507,6 @@ c_expresion_variable_mayoroigual ::= c_asignacion_expresion_Numerica_Total MAYOR
 
 c_expresion_variable_menorque ::= c_asignacion_expresion_Numerica_Total MENORQUE c_asignacion_expresion_Numerica_Total
                                 ;
-
 
 c_expresion_variable_menoroigual ::= c_asignacion_expresion_Numerica_Total MENOROIGUAL c_asignacion_expresion_Numerica_Total
                                    ;
@@ -493,46 +521,50 @@ c_expresion_variable_comparacion ::= c_expresion_variable_igual
 
 /*------------------------------Declaracion de las asignaciones------------------------------*/
 
-c_asignacion ::=    c_tipo_primitivo VAR:v c_asignacion_prima                                                                                     {:System.out.println("Definición sobre variable " + v);:}    //num pi = 3.14
-                |   VAR:v VAR:w c_asignacion_prima                                                                                     {:System.out.println("Definición sobre variable " + v);:}    //num pi = 3.14
-                |   c_tipo_primitivo VAR:v CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima                                                     {:System.out.println("Definición sobre arreglo " + v);:}
-                |   VAR:v VAR:w CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima                                                     {:System.out.println("Definición sobre arreglo " + v);:}
-                |   c_tipo_primitivo VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima               {:System.out.println("Definición sobre arreglo " + v);:}
-                |   VAR:v VAR:w CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima               {:System.out.println("Definición sobre arreglo " + v);:}
-                |   c_tipo_arreglo VAR:v c_asignacion_prima                                                                             {:System.out.println("Definición sobre arreglo " + v);:}
-                |   VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima                      {:System.out.println("Asignación sobre arreglo " + v);:}
-                |   VAR:v c_asignacion_prima                                                                                            {:System.out.println("Asignación sobre variable " + v);:}
+c_asignacion ::=    c_tipo_primitivo VAR:v c_asignacion_prima:o
+                    {: RESULT = new Asignacion(v,o);:}
+                |   VAR:v VAR:w c_asignacion_prima:o
+                    {:RESULT = new Asignacion(w,o);
+                    //System.out.println("Definición sobre variable " + v);:}
+                |   c_tipo_primitivo VAR:v CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:o
+                    {:RESULT = new Asignacion(v,o);
+                    //System.out.println("Definición sobre arreglo " + v);:}
+                |   VAR:v VAR:w CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:o
+                    {:RESULT = new Asignacion(w,o);
+                    //System.out.println("Definición sobre arreglo " + v);:}
+                |   c_tipo_primitivo VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
+                    {:RESULT = new Asignacion(v,o);
+                    //System.out.println("Definición sobre arreglo " + v);:}
+                |   VAR:v VAR:w CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
+                    {:RESULT = new Asignacion(v,o);
+                    //System.out.println("Definición sobre arreglo " + v);:}
+                |   c_tipo_arreglo VAR:v c_asignacion_prima:o
+                    {:RESULT = new Asignacion(v,o);
+                    //System.out.println("Definición sobre arreglo " + v);:}
+                |   VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
+                    {:RESULT = new Asignacion(v,o);
+                    //System.out.println("Asignación sobre arreglo " + v);:}
+                |   VAR:v c_asignacion_prima:o
+                    {:RESULT = new Asignacion(v,o);
+                    //System.out.println("Asignación sobre variable " + v);:}
                ;
 
-/*c_asignacion ::= c_asignacion_numerica              //num pi = 3.14
-               | c_asignacion_cadena                //cad mensaje = "Me llamo viernes"
-               | c_asignacion_booleana              //bool mentiroso = (true == false) == true
-               ;
-*/
 /*------------------------------Sintaxis asignacion de tipo numericas------------------------------*/
 
-c_asignacion_prima ::=  ASIGNACION c_expresion_numerica        //Asignacion numerica
-                    |   ASIGNACION c_expresion_cadena
-                    |   ASIGNACION c_expresion_booleana
-                    |   ASIGNACION c_variable_o_llamadoMetodo
-
-                    //--------------------------------------------------------Gramáticas erróneas
-                    //ERROR FATAL: Asignación vana
-                    //|   ASIGNACION {:report_fatal_error("Falta valor en asignación");:}
+c_asignacion_prima ::=  ASIGNACION c_expresion_numerica    {:RESULT = new Object();:}    //Asignacion numerica
+                    |   ASIGNACION c_expresion_cadena       {:RESULT = new Object();:}
+                    |   ASIGNACION c_expresion_booleana     {:RESULT = new Object();:}
+                    |   ASIGNACION c_variable_o_llamadoMetodo       {:RESULT = new Object();:}
                     ;
-/*c_asignacion_numerica ::= NUM VAR:v ASIGNACION c_asignacion_expresion_Numerica_Total
-                        ;*/
-
-
 c_asignacion_expresion_Numerica_Total ::= c_expresion_numerica //Corresponde a todas aquellas menos las que tienen solo variables
                                         | c_variable_o_llamadoMetodo
                                         ;
 
 
-c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica            {:System.out.println("c_expresion_numerica SUMA c_expresion_numerica");:}
-                        | c_expresion_numerica RESTA c_expresion_numerica           {:System.out.println("c_expresion_numerica RESTA c_expresion_numerica");:}
-                        | c_expresion_numerica MULTIPLICACION c_expresion_numerica  {:System.out.println("c_expresion_numerica MULTIPLICACION c_expresion_numerica");:}
-                        | c_expresion_numerica DIVISION c_expresion_numerica        {:System.out.println("c_expresion_numerica DIVISION c_expresion_numerica");:}
+c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica            {://System.out.println("c_expresion_numerica SUMA c_expresion_numerica");:}
+                        | c_expresion_numerica RESTA c_expresion_numerica           {://System.out.println("c_expresion_numerica RESTA c_expresion_numerica");:}
+                        | c_expresion_numerica MULTIPLICACION c_expresion_numerica  {://System.out.println("c_expresion_numerica MULTIPLICACION c_expresion_numerica");:}
+                        | c_expresion_numerica DIVISION c_expresion_numerica        {://System.out.println("c_expresion_numerica DIVISION c_expresion_numerica");:}
                         | RESTA c_expresion_numerica %prec NEGATIVO
                         | RESTA c_variable_o_llamadoMetodo %prec NEGATIVO
 
@@ -563,20 +595,15 @@ c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica        
                         ;
 
 c_asignacion_expresion_Cadena_total ::= c_expresion_cadena  //Cuando al menos una no es una variable
-                                      //| c_expresion_variable_concatena //Concatenacion (Al menos dos) de puras variables o llamado a metodos
-                                      //| c_variable_o_llamadoMetodo
                                       ;
 
 /*------------------------------Sintaxis de tipo cadena tipo numericas------------------------------*/
-
-/*c_asignacion_cadena ::= CAD VAR:v ASIGNACION c_asignacion_expresion_Cadena_total
-                      ;*/
 
 c_expresion_cadena ::= c_expresion_cadena SUMA c_expresion_cadena
                      //Una variable + otra cosa
                      | c_variable_o_llamadoMetodo SUMA c_expresion_cadena
                      | c_expresion_cadena SUMA c_variable_o_llamadoMetodo
-                     | CADENA:v                                             {:System.out.println("Cadena " + v);:}
+                     | CADENA:v                                             {://System.out.println("Cadena " + v);:}
                      //|c_nombre_metodo
                      | PARENTESISABIERTO c_expresion_cadena PARENTESISCERRADO
                      ;
@@ -611,30 +638,38 @@ c_expresion_booleana::= c_expresion_booleana  Y c_expresion_booleana
                       | c_variable_o_llamadoMetodo O c_variable_o_llamadoMetodo
 
                       | c_expresion_variable_comparacion
-                      | VERDADERO                               //{:System.out.println("VERDADERO");:}
-                      | FALSO                                   //{:System.out.println("FALSO");:}
+                      | VERDADERO
+                      | FALSO
                       | PARENTESISABIERTO c_expresion_booleana PARENTESISCERRADO
                       ;
 
 
 /*------------------------------ Sintaxis de otras funciones reservadas ------------------------------*/
 
-c_imprimir ::= IMPRIMIR PARENTESISABIERTO c_expresion_cadena PARENTESISCERRADO
+c_imprimir ::= IMPRIMIR PARENTESISABIERTO c_expresion_cadena:s PARENTESISCERRADO
+                {: RESULT = new Imprimir(s); :}
              | IMPRIMIR PARENTESISABIERTO c_variable_o_llamadoMetodo PARENTESISCERRADO
+                {: RESULT = new Imprimir(); :}
              | IMPRIMIR PARENTESISABIERTO NUMERO:n PARENTESISCERRADO
+                {: RESULT = new Imprimir(n); :}
              ;
 
 c_leer ::= LEER PARENTESISABIERTO VAR:v PARENTESISCERRADO
+            {: RESULT = new Leer(); :}
          ;
 
-c_devolver ::= DEVOLVER c_variable_o_llamadoMetodo
-             | DEVOLVER c_expresion_numerica
-             | DEVOLVER c_expresion_cadena
-             | DEVOLVER c_expresion_booleana
+c_devolver ::= DEVOLVER c_variable_o_llamadoMetodo:o
+                {: RESULT = new Devolver(o); :}
+             | DEVOLVER c_expresion_numerica:e
+                {: RESULT = new Devolver(e); :}
+             | DEVOLVER c_expresion_cadena:e
+                {: RESULT = new Devolver(e); :}
+             | DEVOLVER c_expresion_booleana:e
+                {: RESULT = new Devolver(e); :}
              ;
 
-c_funciones_reservadas ::= c_imprimir
-                         | c_leer
-                         | c_devolver
+c_funciones_reservadas ::= c_imprimir:i   {: RESULT = i;:}
+                         | c_leer:l       {: RESULT = l;:}
+                         | c_devolver:d   {: RESULT = d;:}
                          ;
 
