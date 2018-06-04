@@ -6,11 +6,11 @@ import java.util.List;
 public class Sino extends Estructura {
 
     public Sino(){
-        _sentencias = new LinkedList<Componente>();
+
     }
 
-    public Sino(List<Componente> sentencias){
-        _sentencias = sentencias;
+    public Sino(Componente sentencias){
+        _hijoMasIzq = sentencias;
     }
 
     @Override

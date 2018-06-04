@@ -16,5 +16,5 @@ publico proc imprimirTriangulo(num n)
         }
         imprimir("\n")
 
-
+    }
 }

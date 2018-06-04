@@ -6,11 +6,10 @@ import java.util.List;
 public class Si extends Estructura {
 
     public Si(){
-        _sentencias = new LinkedList<Componente>();
     }
 
-    public Si(List<Componente> sentencias){
-        _sentencias = sentencias;
+    public Si(Componente sentencias){
+        _hijoMasIzq = sentencias;
     }
 
     @Override
