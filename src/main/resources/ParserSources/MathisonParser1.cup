@@ -231,11 +231,11 @@ start with programa;
 programa ::= clase:c programa:p
             {: arbolSemantico.putAtTheBeginOfContext(c); p._listaClases.add(c); RESULT = p; :}
            | clase:c
-           {: arbolSemantico.putAtTheEndOfContext(c); arbolSemantico.setFatherToCurrentContext(new Programa()); RESULT = new Programa(c); :}
+           {: arbolSemantico.putAtTheEndOfContext(c); arbolSemantico.setFatherToCurrentContext(new Programa(c)); RESULT = new Programa(c); :}
            | c_metodo:m programa:p
            {: arbolSemantico.putAtTheBeginOfContext(m); p._listaMetodos.add(m); RESULT = p; :}
            | c_metodo:m
-           {: arbolSemantico.putAtTheEndOfContext(m); arbolSemantico.setFatherToCurrentContext(new Programa()); RESULT = new Programa(m); :}
+           {: arbolSemantico.putAtTheEndOfContext(m); arbolSemantico.setFatherToCurrentContext(new Programa(m)); RESULT = new Programa(m); :}
            ;
 /* ------------------------------ Sintaxis de la estructura de un programa ------------------------------*/
 
@@ -387,6 +387,8 @@ c_estructuras ::= c_para:p
                 {: RESULT = s;:}
                 | c_revisar:r
                 {: RESULT = r;:}
+                | c_sino:sn
+                {: RESULT = sn;:}
                 ;
 
 c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
@@ -405,15 +407,16 @@ c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total 
                {: RESULT = new Mientras(ls);:}
              ;
 
-c_si ::= SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO c_sino
-         {: RESULT = new Si(ls);:}
+c_si ::= //SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO c_sino
+         //{: RESULT = new Si(ls);:}
+           SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
+          {: RESULT = new Si(ls);:}
        ;
 
 c_sino ::= SINO c_si
            {: RESULT = new Sino();:}
-         | SINO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO c_sino
+         | SINO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
            {: RESULT = new Sino(ls);:}
-         |
          ;
 
 c_revisar ::= REVISAR PARENTESISABIERTO VAR:v PARENTESISCERRADO LLAVEABIERTO c_revisar_casos LLAVECERRADO
