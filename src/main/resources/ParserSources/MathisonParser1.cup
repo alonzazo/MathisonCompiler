@@ -242,22 +242,22 @@ clase ::= c_vista CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: RESULT =
         | c_vista CLASE VAR:v cuerpo_clase LLAVECERRADO {: System.out.println("CLASE " + v); report_error("Llave de apertura faltante (\" { \") en declaración de clase:\t" + v, null);:}
         ;
 
-c_metodo ::= c_vista c_tipo_arreglo:t VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO    {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | c_vista c_tipo_arreglo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                     {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | c_vista c_tipo_primitivo:t VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO  {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | c_vista VAR:w VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO               {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO); System.out.println("METODO " + v);:}
-           | c_vista c_tipo_primitivo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                   {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | c_vista VAR:w VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                                {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO); System.out.println("METODO " + v);:}
-           | c_vista PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                {: RESULT = new Metodo(v, null); System.out.println("METODO " + v);:}
-           | c_vista PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                                 {: RESULT = new Metodo(v, null); System.out.println("METODO " + v);:}
-           | c_tipo_arreglo:t VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO            {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | c_tipo_arreglo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                             {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | c_tipo_primitivo:t VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO          {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | VAR:w VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                       {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO); System.out.println("METODO " + v);:}
-           | c_tipo_primitivo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                           {: RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);:}
-           | VAR:w VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                                        {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO); System.out.println("METODO " + v);:}
-           | PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                        {: RESULT = new Metodo(v, null); System.out.println("METODO " + v);:}
-           | PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                                         {: RESULT = new Metodo(v, null); System.out.println("METODO " + v);:}
+c_metodo ::= c_vista c_tipo_arreglo:t VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO    {: RESULT = new Metodo(v, (Tipo) t);            arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | c_vista c_tipo_arreglo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                     {: RESULT = new Metodo(v, (Tipo) t);            arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | c_vista c_tipo_primitivo:t VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO  {: RESULT = new Metodo(v, (Tipo) t);            arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | c_vista VAR:w VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO               {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO);   arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | c_vista c_tipo_primitivo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                   {: RESULT = new Metodo(v, (Tipo) t);            arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | c_vista VAR:w VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                                {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO);   arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | c_vista PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                {: RESULT = new Metodo(v, null);                arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | c_vista PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                                 {: RESULT = new Metodo(v, null);                arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | c_tipo_arreglo:t VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO            {: RESULT = new Metodo(v, (Tipo) t);            arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | c_tipo_arreglo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                             {: RESULT = new Metodo(v, (Tipo) t);             arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | c_tipo_primitivo:t VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO          {: RESULT = new Metodo(v, (Tipo) t);            arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | VAR:w VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                       {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO);   arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | c_tipo_primitivo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                           {: RESULT = new Metodo(v, (Tipo) t);            arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | VAR:w VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                                        {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO);   arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | PROC VAR:v PARENTESISABIERTO lista_parametros PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                        {: RESULT = new Metodo(v, null);                arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
+           | PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo LLAVECERRADO                                         {: RESULT = new Metodo(v, null);                arbolSemantico.setFatherToCurrentContext(RESULT);   System.out.println("METODO " + v);:}
 
            //--------------------------------------------------------Gramáticas erróneas
            // ERROR: Llave inicial faltante
@@ -389,7 +389,7 @@ c_revisar_casos ::= CASO c_expresion_numerica DOSPUNTOS c_lista_sentencias SALIR
                   | DEFECTO DOSPUNTOS c_lista_sentencias SALIR
                   ;
 
-c_lista_sentencias ::= c_asignacion c_lista_sentencias
+c_lista_sentencias ::= c_asignacion:asignacion c_lista_sentencias      {: arbolSemantico.putAtTheBeginOfContext((Asignacion)asignacion); :}
                      | c_declaracion c_lista_sentencias
                      | c_estructuras c_lista_sentencias
                      | c_expresion_llamado_metodo c_lista_sentencias
@@ -398,13 +398,14 @@ c_lista_sentencias ::= c_asignacion c_lista_sentencias
                      ;
 
 /*------------------------------Declaracion Basica ------------------------------*/
-c_declaracion ::= c_tipo_primitivo VAR:v                                  {:System.out.println("Declaración " + v);:}
-                | VAR:w VAR:v                                  {:System.out.println("Declaración " + v);:}
-                | c_tipo_primitivo VAR:v CORCHETEABIERTO CORCHETECERRADO  {:System.out.println("Declaración de arreglo" + v);:}
-                | VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO  {:System.out.println("Declaración de arreglo" + v);:}
-                | c_tipo_primitivo VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {:System.out.println("Declaración de arreglo" + v);:}
+//TODO: Agregar a las tablas de símbolos
+c_declaracion ::= c_tipo_primitivo:t VAR:v                                      {:System.out.println("Declaración " + v);:}
+                | VAR:w VAR:v                                                   {:System.out.println("Declaración " + v);:}
+                | c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO      {:System.out.println("Declaración de arreglo" + v);:}
+                | VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO                   {:System.out.println("Declaración de arreglo" + v);:}
+                | c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {:System.out.println("Declaración de arreglo" + v);:}
                 | VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {:System.out.println("Declaración de arreglo" + v);:}
-                | c_tipo_arreglo VAR:v                                  {:System.out.println("Declaración de arreglo" + v);:}
+                | c_tipo_arreglo:t VAR:v                                        {:System.out.println("Declaración de arreglo" + v);:}
                 ;
 
 /*------------------------------Primitivas de tipo de datos------------------------------*/
@@ -492,16 +493,17 @@ c_expresion_variable_comparacion ::= c_expresion_variable_igual
                                    ;
 
 /*------------------------------Declaracion de las asignaciones------------------------------*/
-
-c_asignacion ::=    c_tipo_primitivo VAR:v c_asignacion_prima                                                                                     {:System.out.println("Definición sobre variable " + v);:}    //num pi = 3.14
-                |   VAR:v VAR:w c_asignacion_prima                                                                                     {:System.out.println("Definición sobre variable " + v);:}    //num pi = 3.14
-                |   c_tipo_primitivo VAR:v CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima                                                     {:System.out.println("Definición sobre arreglo " + v);:}
-                |   VAR:v VAR:w CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima                                                     {:System.out.println("Definición sobre arreglo " + v);:}
-                |   c_tipo_primitivo VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima               {:System.out.println("Definición sobre arreglo " + v);:}
-                |   VAR:v VAR:w CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima               {:System.out.println("Definición sobre arreglo " + v);:}
-                |   c_tipo_arreglo VAR:v c_asignacion_prima                                                                             {:System.out.println("Definición sobre arreglo " + v);:}
-                |   VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima                      {:System.out.println("Asignación sobre arreglo " + v);:}
-                |   VAR:v c_asignacion_prima                                                                                            {:System.out.println("Asignación sobre variable " + v);:}
+//TODO: Considerar las declaraciones
+//De estas, para las asociaciones solo ocupo el valor que se recibe y el nombre.
+c_asignacion ::=    c_tipo_primitivo VAR:v c_asignacion_prima:a                                                                          {: RESULT = (Asignacion) a; RESULT.set_nombre(v); System.out.println("Definición sobre variable " + v);:}    //num pi = 3.14
+                |   VAR:w VAR:v c_asignacion_prima:a                                                                                     {: RESULT = (Asignacion) a; RESULT.set_nombre(v); System.out.println("Definición sobre variable " + v);:}    //num pi = 3.14
+                |   c_tipo_primitivo VAR:v CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:a                                          {: RESULT = (Asignacion) a; RESULT.set_nombre(v); System.out.println("Definición sobre arreglo " + v);:}
+                |   VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:a                                                     {: RESULT = (Asignacion) a; RESULT.set_nombre(v); System.out.println("Definición sobre arreglo " + v);:}
+                |   c_tipo_primitivo VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:a    {: RESULT = (Asignacion) a; RESULT.set_nombre(v); System.out.println("Definición sobre arreglo " + v);:}
+                |   VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:a               {: RESULT = (Asignacion) a; RESULT.set_nombre(v); System.out.println("Definición sobre arreglo " + v);:}
+                |   c_tipo_arreglo VAR:v c_asignacion_prima:a                                                                            {: RESULT = (Asignacion) a; RESULT.set_nombre(v); System.out.println("Definición sobre arreglo " + v);:}
+                |   VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:a                     {: RESULT = (Asignacion) a; RESULT.set_nombre(v); System.out.println("Asignación sobre arreglo " + v);:}
+                |   VAR:v c_asignacion_prima:a                                                                                           {: RESULT = (Asignacion) a; RESULT.set_nombre(v); System.out.println("Asignación sobre variable " + v);:}
                ;
 
 /*c_asignacion ::= c_asignacion_numerica              //num pi = 3.14
@@ -511,10 +513,10 @@ c_asignacion ::=    c_tipo_primitivo VAR:v c_asignacion_prima                   
 */
 /*------------------------------Sintaxis asignacion de tipo numericas------------------------------*/
 
-c_asignacion_prima ::=  ASIGNACION c_expresion_numerica        //Asignacion numerica
-                    |   ASIGNACION c_expresion_cadena
-                    |   ASIGNACION c_expresion_booleana
-                    |   ASIGNACION c_variable_o_llamadoMetodo
+c_asignacion_prima ::=  ASIGNACION c_expresion_numerica         {: RESULT = new Asignacion(); :}  //Asignacion numerica
+                    |   ASIGNACION c_expresion_cadena           {: RESULT = new Asignacion(); :}
+                    |   ASIGNACION c_expresion_booleana         {: RESULT = new Asignacion(); :}
+                    |   ASIGNACION c_variable_o_llamadoMetodo   {: RESULT = new Asignacion(); :}
 
                     //--------------------------------------------------------Gramáticas erróneas
                     //ERROR FATAL: Asignación vana

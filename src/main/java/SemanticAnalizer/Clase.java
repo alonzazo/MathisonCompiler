@@ -25,4 +25,11 @@ public class Clase extends ComponenteConcreto implements Nombre {
     public void set_nombre(String nombre) {
         this._nombre = nombre;
     }
+
+    @Override
+    public String toString() {
+        return "Clase{" +
+                "_nombre='" + _nombre + '\'' +
+                '}';
+    }
 }

@@ -42,4 +42,9 @@ public class Programa extends ComponenteConcreto{
     public Componente setHermanoDerecho(Componente hermanoDer) {
         return  null;
     }
+
+    @Override
+    public String toString() {
+        return "Programa";
+    }
 }

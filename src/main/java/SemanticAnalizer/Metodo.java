@@ -29,6 +29,14 @@ public class Metodo extends ComponenteConcreto implements Nombre {
     }
 
     @Override
+    public String toString() {
+        return "Metodo{" +
+                "_nombre='" + _nombre + '\'' +
+                ", _tipo=" + _tipo +
+                '}';
+    }
+
+    @Override
     public Tipo get_tipo() {
         return null;
     }
