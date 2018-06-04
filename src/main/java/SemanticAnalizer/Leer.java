@@ -3,7 +3,6 @@ package SemanticAnalizer;
 public class Leer extends Sentencia {
 
     public Leer(){
-        System.out.println("Leer");
     }
 
     @Override

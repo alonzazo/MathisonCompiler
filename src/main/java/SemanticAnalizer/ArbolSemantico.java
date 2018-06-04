@@ -102,7 +102,29 @@ public class ArbolSemantico {
         return null;
     }
 
+    @Override
+    public String toString() {
+        //Recorrido en profundidad primero
+        if (_RAIZ == null) return "";
+        return toStringAux("", 0,  _RAIZ);
+    }
 
+    private String toStringAux(String text,int indexLevel, Componente actual){
+        if (actual == null) return text;
+
+        text += '\n';
+        for (int i = 0; i < indexLevel; i++) text += "|\t";
+
+        text += actual.toString();
+
+        if ( actual.getHijoMasIzq() != null){
+            text = toStringAux(text, indexLevel + 1, actual.getHijoMasIzq());
+        }
+        if ( actual.getHermanoDerecho() != null ){
+            text = toStringAux(text, indexLevel, actual.getHermanoDerecho());
+        }
+        return text;
+    }
 
     //TODO: Pendientes métodos
 }

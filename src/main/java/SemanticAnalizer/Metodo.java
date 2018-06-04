@@ -13,7 +13,6 @@ public class Metodo extends ComponenteConcreto implements Nombre {
     public Metodo(){
         _nombre = "";
         _tipo = Tipo.NUMERICO;
-        System.out.println("Metodo");
     }
 
     public Metodo( String nombre, Tipo tipo, Componente sentencias){
@@ -56,5 +55,12 @@ public class Metodo extends ComponenteConcreto implements Nombre {
 
     public List<Variable> getParametros() {
         return new LinkedList<Variable>();
+    }
+
+    @Override
+    public String toString() {
+        return "Metodo{" +
+                "_nombre='" + _nombre + '\'' +
+                '}';
     }
 }
