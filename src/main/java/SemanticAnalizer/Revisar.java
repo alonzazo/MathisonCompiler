@@ -7,11 +7,11 @@ import java.util.List;
 public class Revisar extends Estructura {
 
     public Revisar(){
-        _sentencias = new LinkedList<Componente>();
+
     }
 
-    public Revisar(List<Componente> sentencias){
-        _sentencias = sentencias;
+    public Revisar(Componente sentencias){
+        _hijoMasIzq = sentencias;
     }
 
     @Override

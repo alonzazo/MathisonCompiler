@@ -5,7 +5,6 @@ import java.util.List;
 public class Imprimir extends Sentencia {
 
     String _valor;
-    private List<Componente> _sentencias;
 
     public Imprimir(){
     }

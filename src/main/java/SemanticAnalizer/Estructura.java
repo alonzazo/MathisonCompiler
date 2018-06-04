@@ -16,7 +16,6 @@ public abstract class Estructura extends ComponenteConcreto {
 
     protected TipoEstructura _tipoEstructura;
     protected Object _condicion;
-    protected List<Componente> _sentencias;
 
     public Estructura(){
 

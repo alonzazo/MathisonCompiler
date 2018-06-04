@@ -9,13 +9,11 @@ public class Asignacion extends Sentencia {
     private String _nombre;
 
     public Asignacion(){
-        System.out.println("Asignacion");
     }
 
     public Asignacion(String nombre,Object valor){
         _valor = valor;
         _nombre = nombre;
-        System.out.println("Asignacion " + nombre);
     }
 
     public Object get_valor() {
