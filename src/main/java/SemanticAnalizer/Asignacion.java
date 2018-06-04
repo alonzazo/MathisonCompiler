@@ -9,16 +9,21 @@ public class Asignacion extends Sentencia {
     private String _nombre;
 
     public Asignacion(){
-        _valor = new Object();
-        _nombre = "";
+        System.out.println("Asignacion");
     }
 
-    @Override
-    public String toString() {
-        return "Asignacion{" +
-                "_valor=" + _valor +
-                ", _nombre='" + _nombre + '\'' +
-                '}';
+    public Asignacion(String nombre,Object valor){
+        _valor = valor;
+        _nombre = nombre;
+        System.out.println("Asignacion " + nombre);
+    }
+
+    public Object get_valor() {
+        return _valor;
+    }
+
+    public void set_valor(Object _valor) {
+        this._valor = _valor;
     }
 
     public String get_nombre() {
@@ -29,13 +34,13 @@ public class Asignacion extends Sentencia {
         this._nombre = _nombre;
     }
 
-    public Asignacion(String nombre, Object valor){
-        _valor = valor;
-        _nombre = nombre;
-    }
-
     @Override
     public boolean evaluarSemantica() {
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Asignacion{" +  _nombre + '}';
     }
 }

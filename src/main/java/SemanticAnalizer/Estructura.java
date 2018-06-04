@@ -3,6 +3,7 @@ package SemanticAnalizer;
 import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 public abstract class Estructura extends ComponenteConcreto {
 
@@ -13,8 +14,9 @@ public abstract class Estructura extends ComponenteConcreto {
         PARA
     }
 
-    private TipoEstructura _tipoEstructura;
-    private String _condicion;
+    protected TipoEstructura _tipoEstructura;
+    protected Object _condicion;
+    protected List<Componente> _sentencias;
 
     public Estructura(){
 
