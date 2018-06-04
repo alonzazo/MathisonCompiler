@@ -18,6 +18,30 @@ action code {:
 
     //Se declaran las variables de control del árbol semántico.
     public ArbolSemantico arbolSemantico = new ArbolSemantico();
+    public Componente raiz = new Programa();
+
+    public String imprimirArbol() {
+            //Recorrido en profundidad primero
+            if (raiz == null) return "";
+            return toStringAux("", 0,  raiz);
+    }
+
+        private String toStringAux(String text,int indexLevel, Componente actual){
+            if (actual == null) return text;
+
+            text += '\n';
+            for (int i = 0; i < indexLevel; i++) text += "|\t";
+
+            text += actual.toString();
+
+            if ( actual.getHijoMasIzq() != null){
+                text = toStringAux(text, indexLevel + 1, actual.getHijoMasIzq());
+            }
+            if ( actual.getHermanoDerecho() != null ){
+                text = toStringAux(text, indexLevel, actual.getHermanoDerecho());
+            }
+            return text;
+        }
 
 :}
 
@@ -153,9 +177,9 @@ terminal    String CADENA;
 //non terminal Object     expr_list, expr_part;
 //non terminal Integer    expr, factor, termino;
 
-non terminal Programa programa;//--------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
+non terminal Componente programa;//--------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal Clase clase;//----------------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
-non terminal List<Componente> cuerpo_clase;//---------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
+non terminal Componente cuerpo_clase;//---------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal Metodo c_metodo;//-------------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal List<Variable> lista_parametros;
 non terminal Variable variable_arreglo;//-------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
@@ -197,14 +221,14 @@ non terminal Revisar c_revisar;//-----------------------------------------------
 non terminal c_revisar_casos;
 
 /* Lineas validas */
-non terminal List<Componente> c_lista_sentencias;//------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
+non terminal Componente c_lista_sentencias;//------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 
 non terminal Sentencia c_funciones_reservadas;
 non terminal Imprimir c_imprimir;//----------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal Leer c_leer;//------------------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal Devolver c_devolver;//-----------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 
-non terminal List<Componente> cuerpo_metodo;
+non terminal Componente cuerpo_metodo;
 
 /*Inicio de las precedence, se guian en base a la documentacion de java
 Entre más abajo esten tienen más prioridad*/
@@ -229,13 +253,13 @@ precedence left PARENTESISABIERTO,PARENTESISCERRADO;
 start with programa;
 
 programa ::= clase:c programa:p
-            {: arbolSemantico.putAtTheBeginOfContext(c); p._listaClases.add(c); RESULT = p; :}
+           {: c.setHermanoDerecho(p); RESULT = c; raiz = RESULT;:}
            | clase:c
-           {: arbolSemantico.putAtTheEndOfContext(c); arbolSemantico.setFatherToCurrentContext(new Programa()); RESULT = new Programa(c); :}
+           {: RESULT = c; raiz = RESULT;:}
            | c_metodo:m programa:p
-           {: arbolSemantico.putAtTheBeginOfContext(m); p._listaMetodos.add(m); RESULT = p; :}
+           {: m.setHermanoDerecho(p); RESULT = m;  raiz = RESULT;:}
            | c_metodo:m
-           {: arbolSemantico.putAtTheEndOfContext(m); arbolSemantico.setFatherToCurrentContext(new Programa()); RESULT = new Programa(m); :}
+           {: RESULT = m; raiz = RESULT;:}
            ;
 /* ------------------------------ Sintaxis de la estructura de un programa ------------------------------*/
 
@@ -331,13 +355,12 @@ variable_arreglo ::= VAR:v
                    ;
 
 cuerpo_clase ::= c_metodo:m cuerpo_clase:c
-                {: c.add(m); RESULT = c; :}
+                {: m.setHermanoDerecho(c); RESULT = m; :}
                | c_asignacion:a cuerpo_clase:c
-               {: c.add(a); RESULT = c; :}
+               {: a.setHermanoDerecho(c); RESULT = a;:}
                | c_declaracion cuerpo_clase:c
                {:RESULT = c; :}
                |
-               {: RESULT = new LinkedList<Componente>(); :}
                ;
 
 cuerpo_metodo ::= c_lista_sentencias:l
@@ -425,16 +448,16 @@ c_revisar_casos ::= CASO c_expresion_numerica DOSPUNTOS c_lista_sentencias SALIR
                   ;
 
 c_lista_sentencias ::= c_asignacion:a c_lista_sentencias:ls
-                      {: ls.add(a); RESULT = ls; :}
+                      {: a.setHermanoDerecho(ls); RESULT = a; :}
                      | c_declaracion:d c_lista_sentencias:ls
-                     {: RESULT = ls; :}
+                     {: RESULT = ls;// d.setHermanoDerecho(ls); RESULT = d; :}
                      | c_estructuras:e c_lista_sentencias:ls
-                     {: ls.add(e); RESULT = ls; :}
+                     {: e.setHermanoDerecho(ls); RESULT = e; :}
                      | c_expresion_llamado_metodo:m c_lista_sentencias:ls
-                     {: ls.add(m); RESULT = ls; :}
+                     {: m.setHermanoDerecho(ls); RESULT = m; :}
                      | c_funciones_reservadas:f c_lista_sentencias:ls
-                     {: ls.add(f); RESULT = ls; :}
-                     |  {: RESULT = new LinkedList<Componente>(); :}
+                     {: f.setHermanoDerecho(ls); RESULT = f; :}
+                     |
                      ;
 
 /*------------------------------Declaracion Basica ------------------------------*/

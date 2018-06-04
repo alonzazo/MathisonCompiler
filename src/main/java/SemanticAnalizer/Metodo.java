@@ -9,7 +9,6 @@ public class Metodo extends ComponenteConcreto implements Nombre {
     private String _nombre;
     private Tipo _tipo;
     private List<Variable> _parametros;
-    private List<Componente> _sentencias;
 
     public Metodo(){
         _nombre = "";
@@ -17,19 +16,19 @@ public class Metodo extends ComponenteConcreto implements Nombre {
         System.out.println("Metodo");
     }
 
-    public Metodo( String nombre, Tipo tipo, List<Componente> sentencias){
+    public Metodo( String nombre, Tipo tipo, Componente sentencias){
         _nombre = nombre;
         _tipo = tipo;
         _parametros = null;
-        _sentencias = sentencias;
+        _hijoMasIzq = sentencias;
         System.out.println("Metodo " + nombre);
     }
 
-    public Metodo( String nombre, Tipo tipo, List<Variable> params , List<Componente> sentencias){
+    public Metodo( String nombre, Tipo tipo, List<Variable> params , Componente sentencias){
         _nombre = nombre;
         _tipo = tipo;
         _parametros = params;
-        _sentencias = sentencias;
+        _hijoMasIzq = sentencias;
         System.out.println("Metodo " + nombre);
     }
 
