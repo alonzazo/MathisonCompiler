@@ -14,7 +14,6 @@ public class Metodo extends ComponenteConcreto implements Nombre {
     public Metodo(){
         _nombre = "";
         _tipo = Tipo.NUMERICO;
-        System.out.println("Metodo");
     }
 
     public Metodo( String nombre, Tipo tipo, List<Componente> sentencias){
@@ -22,7 +21,6 @@ public class Metodo extends ComponenteConcreto implements Nombre {
         _tipo = tipo;
         _parametros = null;
         _sentencias = sentencias;
-        System.out.println("Metodo " + nombre);
     }
 
     public Metodo( String nombre, Tipo tipo, List<Variable> params , List<Componente> sentencias){
@@ -30,7 +28,6 @@ public class Metodo extends ComponenteConcreto implements Nombre {
         _tipo = tipo;
         _parametros = params;
         _sentencias = sentencias;
-        System.out.println("Metodo " + nombre);
     }
 
     public void set_nombre(String _nombre) {
@@ -57,5 +54,12 @@ public class Metodo extends ComponenteConcreto implements Nombre {
 
     public List<Variable> getParametros() {
         return new LinkedList<Variable>();
+    }
+
+    @Override
+    public String toString() {
+        return "Metodo{" +
+                "_nombre='" + _nombre + '\'' +
+                '}';
     }
 }

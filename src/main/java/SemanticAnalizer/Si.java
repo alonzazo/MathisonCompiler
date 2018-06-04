@@ -1,9 +1,16 @@
 package SemanticAnalizer;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class Si extends Estructura {
 
     public Si(){
-        System.out.println("Si");
+        _sentencias = new LinkedList<Componente>();
+    }
+
+    public Si(List<Componente> sentencias){
+        _sentencias = sentencias;
     }
 
     @Override

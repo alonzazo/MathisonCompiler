@@ -390,29 +390,29 @@ c_estructuras ::= c_para:p
                 ;
 
 c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
-            AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias LLAVECERRADO
-            {: RESULT = new Para();:}
+            AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
+            {: RESULT = new Para(ls);:}
          |  PARA NUM VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
-            AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias LLAVECERRADO
-            {: RESULT = new Para();:}
+            AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
+            {: RESULT = new Para(ls);:}
          ;
 
 c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
-               HACER LLAVEABIERTO c_lista_sentencias LLAVECERRADO
-               {: RESULT = new Mientras();:}
-             | HACER LLAVEABIERTO c_lista_sentencias LLAVECERRADO MIENTRAS
+               HACER LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
+               {: RESULT = new Mientras(ls);:}
+             | HACER LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO MIENTRAS
                PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
-               {: RESULT = new Mientras();:}
+               {: RESULT = new Mientras(ls);:}
              ;
 
-c_si ::= SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias LLAVECERRADO c_sino
-         {: RESULT = new Si();:}
+c_si ::= SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO c_sino
+         {: RESULT = new Si(ls);:}
        ;
 
 c_sino ::= SINO c_si
            {: RESULT = new Sino();:}
-         | SINO LLAVEABIERTO c_lista_sentencias LLAVECERRADO c_sino
-           {: RESULT = new Sino();:}
+         | SINO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO c_sino
+           {: RESULT = new Sino(ls);:}
          |
          ;
 

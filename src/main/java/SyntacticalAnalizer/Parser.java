@@ -1669,7 +1669,10 @@ class CUP$Parser$actions {
 		int lpleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
 		int lpright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
 		List<Variable> lp = (List<Variable>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
-		 RESULT = new Metodo(v, (Tipo) t, lp); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, (Tipo) t, lp, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-8)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1684,7 +1687,10 @@ class CUP$Parser$actions {
 		int vleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).left;
 		int vright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).right;
 		String v = (String)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-5)).value;
-		 RESULT = new Metodo(v, (Tipo) t); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, (Tipo) t, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1702,7 +1708,10 @@ class CUP$Parser$actions {
 		int lpleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
 		int lpright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
 		List<Variable> lp = (List<Variable>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
-		 RESULT = new Metodo(v, (Tipo) t, lp); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, (Tipo) t, lp, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-8)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1720,7 +1729,10 @@ class CUP$Parser$actions {
 		int lpleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
 		int lpright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
 		List<Variable> lp = (List<Variable>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
-		 RESULT = new Metodo(v, Tipo.NO_PRIMITIVO, lp); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, Tipo.NO_PRIMITIVO, lp, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-8)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1735,7 +1747,10 @@ class CUP$Parser$actions {
 		int vleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).left;
 		int vright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).right;
 		String v = (String)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-5)).value;
-		 RESULT = new Metodo(v, (Tipo) t); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, (Tipo) t, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1750,7 +1765,10 @@ class CUP$Parser$actions {
 		int vleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).left;
 		int vright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).right;
 		String v = (String)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-5)).value;
-		 RESULT = new Metodo(v, Tipo.NO_PRIMITIVO); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, Tipo.NO_PRIMITIVO, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1765,7 +1783,10 @@ class CUP$Parser$actions {
 		int lpleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
 		int lpright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
 		List<Variable> lp = (List<Variable>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
-		 RESULT = new Metodo(v, null, lp); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, null, lp, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-8)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1777,7 +1798,10 @@ class CUP$Parser$actions {
 		int vleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).left;
 		int vright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).right;
 		String v = (String)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-5)).value;
-		 RESULT = new Metodo(v, null); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, null, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1795,7 +1819,10 @@ class CUP$Parser$actions {
 		int lpleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
 		int lpright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
 		List<Variable> lp = (List<Variable>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
-		 RESULT = new Metodo(v, (Tipo) t, lp); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, (Tipo) t, lp, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1810,7 +1837,10 @@ class CUP$Parser$actions {
 		int vleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).left;
 		int vright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).right;
 		String v = (String)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-5)).value;
-		 RESULT = new Metodo(v, (Tipo) t); System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, (Tipo) t, ls); System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-6)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1828,7 +1858,10 @@ class CUP$Parser$actions {
 		int lpleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
 		int lpright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
 		List<Variable> lp = (List<Variable>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
-		 RESULT = new Metodo(v, (Tipo) t, lp); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, (Tipo) t, lp, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1846,7 +1879,10 @@ class CUP$Parser$actions {
 		int lpleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
 		int lpright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
 		List<Variable> lp = (List<Variable>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
-		 RESULT = new Metodo(v, Tipo.NO_PRIMITIVO, lp); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, Tipo.NO_PRIMITIVO, lp, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1861,7 +1897,10 @@ class CUP$Parser$actions {
 		int vleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).left;
 		int vright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).right;
 		String v = (String)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-5)).value;
-		 RESULT = new Metodo(v, (Tipo) t); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, (Tipo) t, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-6)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1876,7 +1915,10 @@ class CUP$Parser$actions {
 		int vleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).left;
 		int vright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).right;
 		String v = (String)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-5)).value;
-		 RESULT = new Metodo(v, Tipo.NO_PRIMITIVO); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, Tipo.NO_PRIMITIVO, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-6)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1891,7 +1933,10 @@ class CUP$Parser$actions {
 		int lpleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
 		int lpright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
 		List<Variable> lp = (List<Variable>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
-		 RESULT = new Metodo(v, null, lp); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, null, lp, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1903,7 +1948,10 @@ class CUP$Parser$actions {
 		int vleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).left;
 		int vright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).right;
 		String v = (String)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-5)).value;
-		 RESULT = new Metodo(v, null); //System.out.println("METODO " + v);
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Metodo(v, null, ls); //System.out.println("METODO " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_metodo",3, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-6)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2464,7 +2512,10 @@ class CUP$Parser$actions {
 		int vleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-9)).left;
 		int vright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-9)).right;
 		String v = (String)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-9)).value;
-		 RESULT = new Para();
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Para(ls);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_para",36, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-10)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2476,7 +2527,10 @@ class CUP$Parser$actions {
 		int vleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-9)).left;
 		int vright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-9)).right;
 		String v = (String)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-9)).value;
-		 RESULT = new Para();
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Para(ls);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_para",36, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-11)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2485,7 +2539,10 @@ class CUP$Parser$actions {
           case 71: // c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO HACER LLAVEABIERTO c_lista_sentencias LLAVECERRADO 
             {
               Mientras RESULT =null;
-		 RESULT = new Mientras();
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Mientras(ls);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_mientras",37, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2494,7 +2551,10 @@ class CUP$Parser$actions {
           case 72: // c_mientras ::= HACER LLAVEABIERTO c_lista_sentencias LLAVECERRADO MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO 
             {
               Mientras RESULT =null;
-		 RESULT = new Mientras();
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-5)).value;
+		 RESULT = new Mientras(ls);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_mientras",37, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2503,7 +2563,10 @@ class CUP$Parser$actions {
           case 73: // c_si ::= SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias LLAVECERRADO c_sino 
             {
               Si RESULT =null;
-		 RESULT = new Si();
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		 RESULT = new Si(ls);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_si",38, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2521,7 +2584,10 @@ class CUP$Parser$actions {
           case 75: // c_sino ::= SINO LLAVEABIERTO c_lista_sentencias LLAVECERRADO c_sino 
             {
               Sino RESULT =null;
-		 RESULT = new Sino();
+		int lsleft = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int lsright = ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		List<Componente> ls = (List<Componente>)((Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		 RESULT = new Sino(ls);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_sino",39, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

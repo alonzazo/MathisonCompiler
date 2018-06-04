@@ -11,13 +11,11 @@ public class LlamadaMetodo extends Sentencia {
 
     public LlamadaMetodo(String nombre){
         _nombre = nombre;
-        System.out.println("Llamada a Metodo " + nombre);
     }
 
     public LlamadaMetodo(List params, String nombre){
         _parametros = params;
         _nombre = nombre;
-        System.out.println("Llamada a Metodo " + nombre);
     }
 
     @Override
