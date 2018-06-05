@@ -16,4 +16,11 @@ public class Si extends Estructura {
     public boolean evaluarCondicion() throws SemanticError {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "Si{" +
+                "_condicion=" + _condicion +
+                '}';
+    }
 }

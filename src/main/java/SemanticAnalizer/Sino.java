@@ -17,4 +17,11 @@ public class Sino extends Estructura {
     public boolean evaluarCondicion() throws SemanticError {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "Sino{" +
+                "_condicion=" + _condicion +
+                '}';
+    }
 }

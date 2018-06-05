@@ -10,7 +10,6 @@ public class Programa extends ComponenteConcreto{
     public List<Metodo> _listaMetodos;
 
     public Programa(){
-        System.out.println("Programa ");
         _listaClases = new LinkedList<Clase>();
         _listaMetodos = new LinkedList<Metodo>();
     }
@@ -45,5 +44,10 @@ public class Programa extends ComponenteConcreto{
     @Override
     public Componente setHermanoDerecho(Componente hermanoDer) {
         return  null;
+    }
+
+    @Override
+    public String toString() {
+        return "Programa{}";
     }
 }

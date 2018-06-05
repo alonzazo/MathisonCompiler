@@ -9,18 +9,15 @@ public class Variable implements Nombre{
     private Object _valor;
 
     public Variable(){
-        System.out.println("Variable");
     }
 
     public Variable(String nombre){
         _nombre = nombre;
-        System.out.println("Variable " + nombre);
     }
 
     public Variable(String nombre, Object valor){
         _nombre = nombre;
         _valor = valor;
-        System.out.println("Variable" + nombre);
     }
 
     public String getNombre(){

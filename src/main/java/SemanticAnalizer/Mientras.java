@@ -18,4 +18,11 @@ public class Mientras extends Estructura {
     public boolean evaluarCondicion() throws SemanticError {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "Mientras{" +
+                "_condicion=" + _condicion +
+                '}';
+    }
 }

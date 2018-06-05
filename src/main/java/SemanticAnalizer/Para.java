@@ -17,4 +17,9 @@ public class Para extends Estructura {
     public boolean evaluarCondicion() throws SemanticError {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "Para{}";
+    }
 }

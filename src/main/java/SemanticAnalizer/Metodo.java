@@ -20,7 +20,6 @@ public class Metodo extends ComponenteConcreto implements Nombre {
         _tipo = tipo;
         _parametros = null;
         _hijoMasIzq = sentencias;
-        System.out.println("Metodo " + nombre);
     }
 
     public Metodo( String nombre, Tipo tipo, List<Variable> params , Componente sentencias){
@@ -28,7 +27,6 @@ public class Metodo extends ComponenteConcreto implements Nombre {
         _tipo = tipo;
         _parametros = params;
         _hijoMasIzq = sentencias;
-        System.out.println("Metodo " + nombre);
     }
 
     public void set_nombre(String _nombre) {
