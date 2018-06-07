@@ -467,13 +467,13 @@ c_lista_sentencias ::= c_asignacion:a c_lista_sentencias:ls
 
 /*------------------------------Declaracion Basica ------------------------------*/
 
-c_declaracion ::= c_tipo_primitivo VAR:v                                  {://System.out.println("Declaración " + v);:}
-                | VAR:w VAR:v                                  {://System.out.println("Declaración " + v);:}
-                | c_tipo_primitivo VAR:v CORCHETEABIERTO CORCHETECERRADO  {://System.out.println("Declaración de arreglo" + v);:}
-                | VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO  {://System.out.println("Declaración de arreglo" + v);:}
-                | c_tipo_primitivo VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {://System.out.println("Declaración de arreglo" + v);:}
-                | VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {://System.out.println("Declaración de arreglo" + v);:}
-                | c_tipo_arreglo VAR:v                                  {://System.out.println("Declaración de arreglo" + v);:}
+c_declaracion ::= c_tipo_primitivo:t VAR:v                                                          {: RESULT = new Declaracion(v,t); //System.out.println("Declaración " + v);:}
+                | VAR:w VAR:v                                                                       {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO); //System.out.println("Declaración " + v);:}//TODO: Agregar el nombre de la clase
+                | c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO                          {: RESULT = new Declaracion(v,t); //System.out.println("Declaración de arreglo" + v);:}
+                | VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO                                       {: RESULT = new Declaracion(v, Tipo.NO_PRIMITIVO); //System.out.println("Declaración de arreglo" + v);:}
+                | c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {: RESULT = new Declaracion(v,t); //System.out.println("Declaración de arreglo" + v);:}
+                | VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO); //System.out.println("Declaración de arreglo" + v);:}
+                | c_tipo_arreglo VAR:v                                                              {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO); //System.out.println("Declaración de arreglo" + v);:}
                 ;
 
 /*------------------------------Primitivas de tipo de datos------------------------------*/
