@@ -157,12 +157,9 @@ parser code {:
 
 //PALABRAS RESERVADAS
 terminal    Y, O, PARA, DESDE, HASTA, AVANCE, MIENTRAS, HACER, SI;
-terminal    SINO, DEVOLVER, PROC, CLASE, REC, CAD, BOOL, PUBLICO;
+terminal    SINO, DEVOLVER, PROC, CLASE, CAD, BOOL, PUBLICO;
 terminal    PRIVADO, IMPRIMIR, LEER, VERDADERO, FALSO;
 terminal    REVISAR, CASO, DEFECTO, NUM, NEGACION;
-
-terminal    MOD, LANZAR, ATRAPAR, EN, EXCEPTO, TERMINAR, INTENTAR, CONSTANTE, CONTINUAR, FINALMENTE;
-terminal    POTENCIA, CON, FIN, COMO, MOSTRAR, EJECUTAR, IMPORTAR;
 
 terminal    MENORQUE, MAYORQUE, MENOROIGUAL, MAYOROIGUAL, DISTINTO, IGUAL;
 
@@ -181,7 +178,7 @@ terminal SALIR;
 //CON VALOR ASOCIADO
 terminal    Double NUMERO;
 terminal    String VAR;
-terminal    String DELIMITADOR;
+//terminal    String DELIMITADOR;
 terminal    String CADENA;
 
 /* No terminales usados en la seccion gramatical. 
