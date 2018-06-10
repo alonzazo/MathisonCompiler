@@ -909,9 +909,7 @@ public class Lexer implements java_cup.runtime.Scanner {
             { return symbol(sym.MULTIPLICACION);
             }
           case 79: break;
-          case 12: 
-            { return symbol(sym.POTENCIA);
-            }
+          case 12: break;
           case 80: break;
           case 13: 
             { return symbol(sym.RESTA);
@@ -957,9 +955,7 @@ public class Lexer implements java_cup.runtime.Scanner {
             { return symbol(sym.COMA);
             }
           case 91: break;
-          case 24: 
-            { return symbol(sym.EN);
-            }
+          case 24: break;
           case 92: break;
           case 25: 
             { return symbol(sym.SI);
@@ -985,29 +981,21 @@ public class Lexer implements java_cup.runtime.Scanner {
             { return symbol(sym.CADENA,new String(yytext()));
             }
           case 98: break;
-          case 31: 
-            { return symbol(sym.REC);
-            }
+          case 31: break;
           case 99: break;
           case 32: 
             { return symbol(sym.NUM);
             }
           case 100: break;
-          case 33: 
-            { return symbol(sym.CON);
-            }
+          case 33: break;
           case 101: break;
           case 34: 
             { return symbol(sym.CAD);
             }
           case 102: break;
-          case 35: 
-            { return symbol(sym.MOD);
-            }
+          case 35: break;
           case 103: break;
-          case 36: 
-            { return symbol(sym.FIN);
-            }
+          case 36: break;
           case 104: break;
           case 37: 
             { return symbol(sym.PARA);
@@ -1021,9 +1009,7 @@ public class Lexer implements java_cup.runtime.Scanner {
             { return symbol(sym.SINO);
             }
           case 107: break;
-          case 40: 
-            { return symbol(sym.COMO);
-            }
+          case 40: break;
           case 108: break;
           case 41: 
             { return symbol(sym.CASO);
@@ -1061,9 +1047,7 @@ public class Lexer implements java_cup.runtime.Scanner {
             { return symbol(sym.AVANCE);
             }
           case 117: break;
-          case 50: 
-            { return symbol(sym.LANZAR);
-            }
+          case 50: break;
           case 118: break;
           case 51: 
             { return symbol(sym.PRIVADO);
@@ -1073,9 +1057,7 @@ public class Lexer implements java_cup.runtime.Scanner {
             { return symbol(sym.PUBLICO);
             }
           case 120: break;
-          case 53: 
-            { return symbol(sym.ATRAPAR);
-            }
+          case 53: break;
           case 121: break;
           case 54: 
             { return symbol(sym.REVISAR);
@@ -1085,37 +1067,25 @@ public class Lexer implements java_cup.runtime.Scanner {
             { return symbol(sym.DEFECTO);
             }
           case 123: break;
-          case 56: 
-            { return symbol(sym.EXCEPTO);
-            }
+          case 56: break;
           case 124: break;
-          case 57: 
-            { return symbol(sym.MOSTRAR);
-            }
+          case 57: break;
           case 125: break;
           case 58: 
             { return symbol(sym.DEVOLVER);
             }
           case 126: break;
-          case 59: 
-            { return symbol(sym.EJECUTAR);
-            }
+          case 59: break;
           case 127: break;
-          case 60: 
-            { return symbol(sym.TERMINAR);
-            }
+          case 60: break;
           case 128: break;
           case 61: 
             { return symbol(sym.MIENTRAS);
             }
           case 129: break;
-          case 62: 
-            { return symbol(sym.INTENTAR);
-            }
+          case 62: break;
           case 130: break;
-          case 63: 
-            { return symbol(sym.IMPORTAR);
-            }
+          case 63: break;
           case 131: break;
           case 64: 
             { return symbol(sym.IMPRIMIR);
@@ -1125,17 +1095,11 @@ public class Lexer implements java_cup.runtime.Scanner {
             { return symbol(sym.VERDADERO);
             }
           case 133: break;
-          case 66: 
-            { return symbol(sym.CONSTANTE);
-            }
+          case 66: break;
           case 134: break;
-          case 67: 
-            { return symbol(sym.CONTINUAR);
-            }
+          case 67: break;
           case 135: break;
-          case 68: 
-            { return symbol(sym.FINALMENTE);
-            }
+          case 68: break;
           case 136: break;
           default:
             zzScanError(ZZ_NO_MATCH);

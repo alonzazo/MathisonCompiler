@@ -82,24 +82,6 @@ LEER		=		(l|L)(e|E)(e|E)(r|R)
 FIN		= 		(f|F)(i|I)(n|N)
 VERDADERO	=		(V|v)(E|e)(R|r)(D|d)(A|a)(D|d)(E|e)(R|r)(O|o)
 FALSO		=		(F|f)(A|a)(L|l)(S|s)(O|o)
-IMPORTAR 	= 		(i|I)(m|M)(p|P)(o|O)(r|R)(t|T)(a|A)(r|R)
-MOD 		= 		(m|M)(o|O)(d|D)
-INTENTAR 	= 		(i|I)(n|N)(t|T)(e|E)(n|N)(t|T)(a|A)(r|R)
-ATRAPAR 	= 		(a|A)(t|T)(r|R)(a|A)(p|P)(a|A)(r|R)
-LANZAR 		= 		(l|L)(a|A)(n|N)(z|Z)(a|A)(r|R)
-CONSTANTE 	= 		(c|C)(o|O)(n|N)(s|S)(t|T)(a|A)(n|N)(t|T)(e|E)
-REVISAR 	= 		(r|R)(e|E)(v|V)(i|I)(s|S)(a|A)(r|R)
-CASO 		= 		(c|C)(a|A)(s|S)(o|O)
-COMO 		= 		(c|C)(o|O)(m|M)(o|O)
-DEFECTO 	= 		(d|D)(e|E)(f|F)(e|E)(c|C)(t|T)(o|O)
-CON 		= 		(c|C)(o|O)(n|N)
-TERMINAR 	= 		(t|T)(e|E)(r|R)(m|M)(i|I)(n|N)(a|A)(r|R)
-EXCEPTO 	= 		(e|E)(x|X)(c|C)(e|E)(p|P)(t|T)(o|O)
-MOSTRAR 	= 		(m|M)(o|O)(s|S)(t|T)(r|R)(a|A)(r|R)
-EJECUTAR 	= 		(e|E)(j|J)(e|E)(c|C)(u|U)(t|T)(a|A)(r|R)
-EN 			= 		(e|E)(n|N)
-CONTINUAR 	= 		(c|C)(o|O)(n|N)(t|T)(i|I)(n|N)(u|U)(a|A)(r|R)
-FINALMENTE 	= 		(F|f)(I|i)(N|n)(A|a)(L|l)(M|m)(E|e)(N|n)(T|t)(E|e)
 
 //Operadores compuestos
 
@@ -198,11 +180,6 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
 			return symbol(sym.NUM);
 		}
 
-{REC}
-		{
-			return symbol(sym.REC);
-		}
-
 {CAD}
 		{
 			return symbol(sym.CAD);
@@ -247,14 +224,6 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
 		}
 
 
-"\^"
-		{
-			return symbol(sym.POTENCIA);
-		}
-
-
-
-
 "-"
 		{
 			return symbol(sym.RESTA);
@@ -265,10 +234,6 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
 			return symbol(sym.ASIGNACION);
 		}
 
-{MOD}
-        	{
-			return symbol(sym.MOD);
-             }
 
 "\/"
    {
@@ -313,93 +278,6 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
     }
 
 
-
-/*PALABRAS RESERVADAS MENOS UTILIZADAS PR*/
-
-{IMPORTAR}
-		{
-			return symbol(sym.IMPORTAR);
-        }
-
-
-{INTENTAR}
-		{
-			return symbol(sym.INTENTAR);
-        }
-
-{ATRAPAR}
-		{
-			return symbol(sym.ATRAPAR);
-        }
-
-{LANZAR}
-		{
-			return symbol(sym.LANZAR);
-        }
-
-{CONSTANTE}
-		{
-			return symbol(sym.CONSTANTE);
-        }
-
-{REVISAR}
-		{
-			return symbol(sym.REVISAR);
-        }
-
-{CASO}
-		{
-			return symbol(sym.CASO);
-        }
-
-{COMO}
-		{
-			return symbol(sym.COMO);
-        }
-
-{DEFECTO}
-		{
-			return symbol(sym.DEFECTO);
-        }
-
-{CON}
-		{
-			return symbol(sym.CON);
-        }
-
-{TERMINAR}
-		{
-			return symbol(sym.TERMINAR);
-        }
-
-{EXCEPTO}
-		{
-			return symbol(sym.EXCEPTO);
-        }
-
-{MOSTRAR}
-		{
-			return symbol(sym.MOSTRAR);
-        }
-
-{EJECUTAR}
-		{
-			return symbol(sym.EJECUTAR);
-        }
-
-{EN}    {
-			return symbol(sym.EN);
-        }
-
-{CONTINUAR}
-		{
-			return symbol(sym.CONTINUAR);
-        }
-
-{FINALMENTE}
-		{
-			return symbol(sym.FINALMENTE);
-        }
 
 {COMENTARIO}
 	{

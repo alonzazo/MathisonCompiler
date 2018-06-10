@@ -13,6 +13,7 @@ public interface Componente {
     public Componente getHijoMasIzq();
     public Componente setHermanoDerecho(Componente hermano);
     public Componente setHijoMasIzq(Componente hijo);
+    public void setTblSimbolosLocales(HashMap<String, Nombre> tabla);
     public Componente getUltimoHijo();
     public Componente setUltimoHijo(Componente hijo);
     public HashMap< String, Nombre > getTblSimbolosLocales();

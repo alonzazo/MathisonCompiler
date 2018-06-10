@@ -47,16 +47,25 @@ action code {:
 
 
     public void llenarTabla()
-    {
-        Queue<Componente> cola = new Queue<Componente>();
-        cola.offer(raiz);
-        while (cola.peek() != null)
         {
-            Componente aux = cola.poll();
-            Componente hijo;
-
+            HashMap<String, Nombre> tablaSimbolos = new HashMap<String, Nombre>();
+            LinkedList cola = new LinkedList();
+            cola.addLast(raiz);
+            while (cola.getFirst() != null) //Mientras la cola no esté vacía
+            {
+                Componente aux = (Componente) cola.removeFirst();
+                Componente hijo = aux.getHijoMasIzq();
+                while (hijo != null) //Mientras tenga hijos
+                {
+                    hijo.setPadre(aux);
+                    cola.addLast(hijo);
+                    //Agregar a la tabla del padre si es Clase, Metodo o Variable
+                    hijo = hijo.getHermanoDerecho();
+                }
+                aux.setTblSimbolosLocales(tablaSimbolos);
+                tablaSimbolos = new HashMap<String, Nombre>();
+            }
         }
-    }
 
 :}
 
@@ -156,10 +165,10 @@ parser code {:
    tienen un valor como los enteros son listados en la segunda o demas lineas. */
 
 //PALABRAS RESERVADAS
-terminal    Y, O, PARA, DESDE, HASTA, AVANCE, MIENTRAS, HACER, SI;
-terminal    SINO, DEVOLVER, PROC, CLASE, CAD, BOOL, PUBLICO;
-terminal    PRIVADO, IMPRIMIR, LEER, VERDADERO, FALSO;
-terminal    REVISAR, CASO, DEFECTO, NUM, NEGACION;
+terminal    Y, O, PARA, DESDE, HASTA, AVANCE, MIENTRAS, HACER, SI, SINO;
+terminal    DEVOLVER, PROC, CLASE, CAD, BOOL, PUBLICO, PRIVADO;
+terminal    IMPRIMIR, LEER, VERDADERO, FALSO, NUM, NEGACION;
+terminal    REVISAR, CASO, DEFECTO;
 
 terminal    MENORQUE, MAYORQUE, MENOROIGUAL, MAYOROIGUAL, DISTINTO, IGUAL;
 
