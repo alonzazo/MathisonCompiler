@@ -28,22 +28,35 @@ action code {:
             return toStringAux("", 0,  raiz);
     }
 
-        private String toStringAux(String text,int indexLevel, Componente actual){
-            if (actual == null) return text;
+    private String toStringAux(String text,int indexLevel, Componente actual){
+        if (actual == null) return text;
 
-            text += '\n';
-            for (int i = 0; i < indexLevel; i++) text += "|\t";
+        text += '\n';
+        for (int i = 0; i < indexLevel; i++) text += "|\t";
 
-            text += actual.toString();
+        text += actual.toString();
 
-            if ( actual.getHijoMasIzq() != null){
-                text = toStringAux(text, indexLevel + 1, actual.getHijoMasIzq());
-            }
-            if ( actual.getHermanoDerecho() != null ){
-                text = toStringAux(text, indexLevel, actual.getHermanoDerecho());
-            }
-            return text;
+        if ( actual.getHijoMasIzq() != null){
+            text = toStringAux(text, indexLevel + 1, actual.getHijoMasIzq());
         }
+        if ( actual.getHermanoDerecho() != null ){
+            text = toStringAux(text, indexLevel, actual.getHermanoDerecho());
+        }
+        return text;
+    }
+
+
+    public void llenarTabla()
+    {
+        Queue<Componente> cola = new Queue<Componente>();
+        cola.offer(raiz);
+        while (cola.peek() != null)
+        {
+            Componente aux = cola.poll();
+            Componente hijo;
+
+        }
+    }
 
 :}
 
