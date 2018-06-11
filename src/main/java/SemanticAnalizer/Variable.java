@@ -1,6 +1,6 @@
 package SemanticAnalizer;
 
-public class Variable implements Nombre{
+public class Variable extends ComponenteConcreto implements Nombre{
 
 
     private boolean _arreglo;

@@ -22,9 +22,6 @@ action code {:
     public String imprimirArbol() {
             //Recorrido en profundidad primero
             if (raiz == null) return "";
-            Programa raizReal = new Programa();
-            raizReal.setHijoMasIzq(raiz);
-            raiz = raizReal;
             return toStringAux("", 0,  raiz);
     }
 
@@ -35,6 +32,12 @@ action code {:
         for (int i = 0; i < indexLevel; i++) text += "|\t";
 
         text += actual.toString();
+
+        if (actual.getTblSimbolosLocales() != null  && !actual.getTblSimbolosLocales().isEmpty()) {
+                  text += '\n';
+                  for (int i = 0; i < indexLevel; i++) text += "|\t";
+                  text += "TABLA SIMBOLOS: " + actual.getTblSimbolosLocales().toString();
+                }
 
         if ( actual.getHijoMasIzq() != null){
             text = toStringAux(text, indexLevel + 1, actual.getHijoMasIzq());
@@ -393,9 +396,9 @@ lista_parametros ::= c_tipo_primitivo variable_arreglo:v COMA lista_parametros:l
 variable_arreglo ::= VAR:v
                     {: RESULT = new Variable(v); :}
                    | VAR:v CORCHETEABIERTO CORCHETECERRADO
-                   {: RESULT = new Variable(v); :}
+                   {: RESULT = new Variable(v,null,true); :}
                    | VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO
-                   {: RESULT = new Variable(v); :}
+                   {: RESULT = new Variable(v,null,true); :}
 
                    //--------------------------------------------------------Gramáticas erróneas
                    //ERROR: FALTA DE CORCHETES
@@ -541,16 +544,16 @@ c_tipo_arreglo ::=  c_tipo_primitivo:t CORCHETEABIERTO CORCHETECERRADO      {: R
 
 /*-------------------------Sintaxis de las variables y operaciones con variables------------------------*/
 
-c_variable_o_llamadoMetodo ::= c_expresion_variable     {://System.out.println("Variable de expresion");:}
-                             | c_llamadoMetodo          {://System.out.println("Llamado a metodo en expresion");:}
+c_variable_o_llamadoMetodo ::= c_expresion_variable:v     {: RESULT = v;//System.out.println("Variable de expresion");:}
+                             | c_llamadoMetodo:v          {: RESULT = v;//System.out.println("Llamado a metodo en expresion");:}
                              ;
 
-c_llamadoMetodo ::= c_expresion_llamado_metodo
-                  | PARENTESISABIERTO c_llamadoMetodo PARENTESISCERRADO
+c_llamadoMetodo ::= c_expresion_llamado_metodo:m                            {: RESULT = m;:}
+                  | PARENTESISABIERTO c_llamadoMetodo:m PARENTESISCERRADO   {: RESULT = m;:}
                   ;
 
-c_expresion_variable ::= variable_arreglo
-                       | PARENTESISABIERTO c_expresion_variable PARENTESISCERRADO
+c_expresion_variable ::= variable_arreglo:v                                         {:RESULT = v;:}
+                       | PARENTESISABIERTO c_expresion_variable:v PARENTESISCERRADO {:RESULT = v;:}
                        ;
 
 c_expresion_variable_igual ::= c_expresion_numerica IGUAL c_expresion_numerica
@@ -596,62 +599,62 @@ c_expresion_variable_comparacion ::= c_expresion_variable_igual
 /*------------------------------Declaracion de las asignaciones------------------------------*/
 
 c_asignacion ::=    c_tipo_primitivo:t VAR:v c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t));:}
+                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.setHijoMasIzq((Componente)o);:}
                 |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t));:}
+                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.setHijoMasIzq((Componente)o);:}
                 |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t));:}
+                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.setHijoMasIzq((Componente)o);:}
                 |   c_tipo_arreglo:t VAR:v c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t));:}
+                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.setHijoMasIzq((Componente)o);:}
                 |   VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v);:}
+                    {:RESULT = new Asignacion(v); RESULT.setHijoMasIzq((Componente)o);:}
                 |   VAR:v c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v);:}
+                    {:RESULT = new Asignacion(v); RESULT.setHijoMasIzq((Componente)o);:}
                ;
 
 /*------------------------------Sintaxis asignacion de tipo numericas------------------------------*/
 
-c_asignacion_prima ::=  ASIGNACION c_expresion_numerica      {:RESULT = new Object();:}    //Asignacion numerica
-                    |   ASIGNACION c_expresion_cadena        {:RESULT = new Object();:}
-                    |   ASIGNACION c_expresion_booleana      {:RESULT = new Object();:}
-                    |   ASIGNACION c_variable_o_llamadoMetodo{:RESULT = new Object();:}
+c_asignacion_prima ::=  ASIGNACION c_expresion_numerica:e       {:RESULT = e;:}    //Asignacion numerica
+                    |   ASIGNACION c_expresion_cadena           {:RESULT = new ExpresionGenerico("Expresion");:}
+                    |   ASIGNACION c_expresion_booleana         {:RESULT = new ExpresionGenerico("Expresion");:}
+                    |   ASIGNACION c_variable_o_llamadoMetodo:e {:RESULT = e;:}
                     ;
-c_asignacion_expresion_Numerica_Total ::= c_expresion_numerica //Corresponde a todas aquellas menos las que tienen solo variables
-                                        | c_variable_o_llamadoMetodo
+c_asignacion_expresion_Numerica_Total ::= c_expresion_numerica:e        {:RESULT = e;:} //Corresponde a todas aquellas menos las que tienen solo variables
+                                        | c_variable_o_llamadoMetodo:e  {:RESULT = e;:}
                                         ;
 
 
-c_expresion_numerica  ::= c_expresion_numerica SUMA c_expresion_numerica            {://System.out.println("c_expresion_numerica SUMA c_expresion_numerica");:}
-                        | c_expresion_numerica RESTA c_expresion_numerica           {://System.out.println("c_expresion_numerica RESTA c_expresion_numerica");:}
-                        | c_expresion_numerica MULTIPLICACION c_expresion_numerica  {://System.out.println("c_expresion_numerica MULTIPLICACION c_expresion_numerica");:}
-                        | c_expresion_numerica DIVISION c_expresion_numerica        {://System.out.println("c_expresion_numerica DIVISION c_expresion_numerica");:}
-                        | RESTA c_expresion_numerica %prec NEGATIVO
-                        | RESTA c_variable_o_llamadoMetodo %prec NEGATIVO
+c_expresion_numerica  ::= c_expresion_numerica:e SUMA c_expresion_numerica:f            {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex;//System.out.println("c_expresion_numerica SUMA c_expresion_numerica");:}
+                        | c_expresion_numerica:e RESTA c_expresion_numerica:f           {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; //System.out.println("c_expresion_numerica RESTA c_expresion_numerica");:}
+                        | c_expresion_numerica:e MULTIPLICACION c_expresion_numerica:f  {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex;//System.out.println("c_expresion_numerica MULTIPLICACION c_expresion_numerica");:}
+                        | c_expresion_numerica:e DIVISION c_expresion_numerica:f        {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex;//System.out.println("c_expresion_numerica DIVISION c_expresion_numerica");:}
+                        | RESTA c_expresion_numerica:e %prec NEGATIVO
+                        | RESTA c_variable_o_llamadoMetodo:v %prec NEGATIVO
 
                         //Una variable + otra cosa
 
-                        | c_variable_o_llamadoMetodo SUMA c_expresion_numerica
-                        | c_expresion_numerica SUMA c_variable_o_llamadoMetodo
+                        | c_variable_o_llamadoMetodo:m SUMA c_expresion_numerica:f      {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
+                        | c_expresion_numerica:f SUMA c_variable_o_llamadoMetodo:m          {: Componente ex = (Componente)f; ex.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = ex; :}
 
-                        | c_variable_o_llamadoMetodo RESTA c_expresion_numerica
-                        | c_expresion_numerica RESTA c_variable_o_llamadoMetodo
+                        | c_variable_o_llamadoMetodo:m RESTA c_expresion_numerica:f         {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
+                        | c_expresion_numerica:f RESTA c_variable_o_llamadoMetodo:m         {: Componente ex = (Componente)f; ex.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = ex; :}
 
-                        | c_variable_o_llamadoMetodo MULTIPLICACION c_expresion_numerica
-                        | c_expresion_numerica MULTIPLICACION c_variable_o_llamadoMetodo
+                        | c_variable_o_llamadoMetodo:m MULTIPLICACION c_expresion_numerica:f{: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
+                        | c_expresion_numerica:f MULTIPLICACION c_variable_o_llamadoMetodo:m{: Componente ex = (Componente)f; ex.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = ex; :}
 
-                        | c_variable_o_llamadoMetodo DIVISION c_expresion_numerica
-                        | c_expresion_numerica DIVISION c_variable_o_llamadoMetodo
+                        | c_variable_o_llamadoMetodo:m DIVISION c_expresion_numerica:f      {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
+                        | c_expresion_numerica:f DIVISION c_variable_o_llamadoMetodo:m      {: Componente ex = (Componente)f; ex.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = ex; :}
 
                         //Dos variables
 
-                        | c_variable_o_llamadoMetodo SUMA c_variable_o_llamadoMetodo    //Esta operación contempla la concatenación de cadenas y la suma de literales numéricos.
-                        | c_variable_o_llamadoMetodo RESTA c_variable_o_llamadoMetodo
-                        | c_variable_o_llamadoMetodo MULTIPLICACION c_variable_o_llamadoMetodo
-                        | c_variable_o_llamadoMetodo DIVISION c_variable_o_llamadoMetodo
+                        | c_variable_o_llamadoMetodo:m SUMA c_variable_o_llamadoMetodo:n    {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = m; :}//Esta operación contempla la concatenación de cadenas y la suma de literales numéricos.
+                        | c_variable_o_llamadoMetodo:m RESTA c_variable_o_llamadoMetodo:n   {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = m; :}
+                        | c_variable_o_llamadoMetodo:m MULTIPLICACION c_variable_o_llamadoMetodo:n{: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = m; :}
+                        | c_variable_o_llamadoMetodo:m DIVISION c_variable_o_llamadoMetodo:n{: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = m; :}
 
                         //Terminos
-                        | NUMERO:v                                                  //{:System.out.println("Numero " + v);:}
-                        | PARENTESISABIERTO c_expresion_numerica PARENTESISCERRADO
+                        | NUMERO:v                                                      {: RESULT = new ExpresionGenerico(v.toString());:}  //{:System.out.println("Numero " + v);:}
+                        | PARENTESISABIERTO c_expresion_numerica:e PARENTESISCERRADO    {: RESULT = e;:}
                         ;
 
 c_asignacion_expresion_Cadena_total ::= c_expresion_cadena  //Cuando al menos una no es una variable
