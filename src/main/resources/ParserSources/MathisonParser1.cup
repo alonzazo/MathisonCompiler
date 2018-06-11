@@ -56,7 +56,7 @@ action code {:
             Componente iterPadres = compActual.getPadre();
             while (iterPadres != null && !existe)
             {
-                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
+                if (iterPadres.getTblSimbolosLocales() == null || !iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
                 {
                     iterPadres = iterPadres.getPadre();
                 }
@@ -154,6 +154,27 @@ action code {:
                 Componente hijo = aux.getHijoMasIzq();
                 while (hijo != null && todoBien) //Mientras tenga hijos
                 {
+
+                    if(hijo instanceof Variable)
+                    {
+                        String nombre = ((Variable) hijo).get_nombre();
+                        if(!tabla.containsKey(nombre))
+                        {
+                            Componente iterPadres = aux;
+                            while (iterPadres != null)
+                            {
+                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
+                                {
+                                    iterPadres = iterPadres.getPadre();
+                                }else break;
+                            }
+                            if(iterPadres == null)
+                            {
+                                todoBien = false;
+                                throw new SemanticError("ERROR SEMANTICO: Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
+                            }
+                        }
+                    }
                     if(hijo instanceof Asignacion)
                     {
                         String nombre = ((Asignacion) hijo).get_nombre();
@@ -170,7 +191,7 @@ action code {:
                             if(iterPadres == null)
                             {
                                 todoBien = false;
-                                throw new SemanticError("ERROR SEMANTICO: Referencia no declarada: " + nombre);
+                                throw new SemanticError("ERROR SEMANTICO: Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
                             }
                         }
                     }
@@ -190,7 +211,7 @@ action code {:
                                 if(iterPadres == null)
                                 {
                                     todoBien = false;
-                                    throw new SemanticError("ERROR SEMANTICO: Referencia no declarada: " + nombre);
+                                    throw new SemanticError("ERROR SEMANTICO: Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
                                 }
                             }
                         }
@@ -535,7 +556,7 @@ c_expresion_llamado_metodo ::= VAR:v PARENTESISABIERTO c_lleno_parametros:p PARE
                             //|  VAR:v PARENTESISABIERTO c_lleno_parametros   {: report_error("FATAL: Falta apertura de paréntesis (\" ( \") en llamada a método:\t" + v, null);:}
                              ;
 
-c_lleno_parametros ::= c_hay_parametro {:RESULT = new LinkedList<Object>();:}
+c_lleno_parametros ::= c_hay_parametro {:RESULT = new LinkedList<Object>();:}//TODO Revisar la lista de parametrso en llamadas a metodos
                      | PARENTESISABIERTO c_lleno_parametros:p PARENTESISCERRADO {:RESULT = p;:}
                      |  {:RESULT = new LinkedList<Object>(); :}
                      ;
@@ -574,15 +595,15 @@ c_estructuras ::= c_para:p
 
 c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
             AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: RESULT = new Para(v, ls);:}
+            {: RESULT = new Para(v, ls);:}//TODO Si encuentra un para sacar la asignacion a variable
          |  PARA NUM VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
             AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: RESULT = new Para(v, ls);:}
+            {: RESULT = new Para(v, ls);:}//TODO Si encuentra un para sacar la declaracion de la variable
          ;
 
 c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
                HACER LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-               {: RESULT = new Mientras(ls);:}
+               {: RESULT = new Mientras(ls);:}//TODO Revisar las expresiones de los MIENTRAS
              | HACER LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO MIENTRAS
                PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
                {: RESULT = new Mientras(ls);:}
@@ -591,7 +612,7 @@ c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total 
 c_si ::= //SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO c_sino
          //{: RESULT = new Si(ls);:}
            SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-          {: RESULT = new Si(ls);:}
+          {: RESULT = new Si(ls);:}//TODO Revisar las expresiones de los SI
        ;
 
 c_sino ::= SINO c_si
@@ -600,7 +621,7 @@ c_sino ::= SINO c_si
            {: RESULT = new Sino(ls);:}
          ;
 
-c_revisar ::= REVISAR PARENTESISABIERTO VAR:v PARENTESISCERRADO LLAVEABIERTO c_revisar_casos LLAVECERRADO
+c_revisar ::= REVISAR PARENTESISABIERTO VAR:v PARENTESISCERRADO LLAVEABIERTO c_revisar_casos LLAVECERRADO //TODO: Revisar los casos de las REVISIONES
               {: RESULT = new Revisar();:}
             ;
 
@@ -609,7 +630,7 @@ c_revisar_casos ::= CASO c_expresion_numerica DOSPUNTOS c_lista_sentencias SALIR
                   ;
 
 c_lista_sentencias ::= c_asignacion:a c_lista_sentencias:ls
-                      {: a.getUltimoHermano().setHermanoDerecho(ls); RESULT = a; :}
+                      {: a.getUltimoHermano().setHermanoDerecho(ls); RESULT = a; :}//Se coloca así porque a puede ser una lista de elemetos entoces hay que buscar el ultimo elemento para ligarlo.
                      | c_declaracion:d c_lista_sentencias:ls
                      {: d.setHermanoDerecho(ls); RESULT = d; :}
                      | c_estructuras:e c_lista_sentencias:ls
@@ -624,12 +645,12 @@ c_lista_sentencias ::= c_asignacion:a c_lista_sentencias:ls
 /*------------------------------Declaracion Basica ------------------------------*/
 
 c_declaracion ::= c_tipo_primitivo:t VAR:v                                                          {: RESULT = new Declaracion(v,(Tipo) t); //System.out.println("Declaración " + v);:}
-                | VAR:w VAR:v                                                                       {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO); //System.out.println("Declaración " + v);:}//TODO: Agregar el nombre de la clase
+                | VAR:w VAR:v                                                                       {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO, w); //System.out.println("Declaración " + v);:}//TODO: Agregar el nombre de la clase
                 | c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO                          {: RESULT = new Declaracion(v,(Tipo) t,true); //System.out.println("Declaración de arreglo" + v);:}
-                | VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO                                       {: RESULT = new Declaracion(v, Tipo.NO_PRIMITIVO, true); //System.out.println("Declaración de arreglo" + v);:}
+                | VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO                                       {: RESULT = new Declaracion(v, Tipo.NO_PRIMITIVO, true, w); //System.out.println("Declaración de arreglo" + v);:}
                 | c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {: RESULT = new Declaracion(v,(Tipo) t, true); //System.out.println("Declaración de arreglo" + v);:}
-                | VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO, true); //System.out.println("Declaración de arreglo" + v);:}
-                | c_tipo_arreglo VAR:v                                                              {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO, true); //System.out.println("Declaración de arreglo" + v);:}
+                | VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO, true, w); //System.out.println("Declaración de arreglo" + v);:}
+                | c_tipo_arreglo:t VAR:v                                                              {: RESULT = new Declaracion(v,(Tipo)t, true); //System.out.println("Declaración de arreglo" + v);:}//TODO Checkear los no primitivos de los arreglos
                 ;
 
 /*------------------------------Primitivas de tipo de datos------------------------------*/
@@ -644,9 +665,9 @@ c_tipo_primitivo ::= CAD                                                    {: R
                   ;
 
 c_tipo_arreglo ::=  c_tipo_primitivo:t CORCHETEABIERTO CORCHETECERRADO      {: RESULT = t;:}
-                |   VAR:w CORCHETEABIERTO CORCHETECERRADO                   {: RESULT = Tipo.NO_PRIMITIVO;:}//Una clase
+                |   VAR:w CORCHETEABIERTO CORCHETECERRADO                   {: RESULT = Tipo.NO_PRIMITIVO;:}//TODO Pasar por alguna parte el nombre del tipo
                 |   c_tipo_primitivo:t CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = t;:}
-                |   VAR:w CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = Tipo.NO_PRIMITIVO;:}//Una clase
+                |   VAR:w CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = Tipo.NO_PRIMITIVO;:}//TODO Pasar por alguna parte el nombre del tipo
                 ;
 
 /*-------------------------Sintaxis de las variables y operaciones con variables------------------------*/
@@ -662,45 +683,45 @@ c_llamadoMetodo ::= c_expresion_llamado_metodo:m                            {: R
 c_expresion_variable ::= variable_arreglo:v                                         {:RESULT = v;:}
                        | PARENTESISABIERTO c_expresion_variable:v PARENTESISCERRADO {:RESULT = v;:}
                        ;
+//TODO Agregar estas expresiones al árbol semántico
+c_expresion_variable_igual ::= c_expresion_numerica:e IGUAL c_expresion_numerica:f                      {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex;:}
+                             | c_expresion_booleana:e  IGUAL c_expresion_booleana:f                     {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex;:}
+                             | c_expresion_booleana:e  IGUAL c_variable_o_llamadoMetodo:m               {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = ex;:}
+                             | c_variable_o_llamadoMetodo:m  IGUAL c_asignacion_booleana:e              {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)e); RESULT = ex;:}
 
-c_expresion_variable_igual ::= c_expresion_numerica IGUAL c_expresion_numerica
-                             | c_expresion_booleana  IGUAL c_expresion_booleana
-                             | c_expresion_booleana  IGUAL c_variable_o_llamadoMetodo
-                             | c_variable_o_llamadoMetodo  IGUAL c_asignacion_booleana
-
-                             | c_variable_o_llamadoMetodo IGUAL c_expresion_numerica
-                             | c_expresion_numerica IGUAL c_variable_o_llamadoMetodo
-                             | c_variable_o_llamadoMetodo IGUAL c_variable_o_llamadoMetodo
+                             | c_variable_o_llamadoMetodo:m IGUAL c_expresion_numerica:e                {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)e); RESULT = ex;:}
+                             | c_expresion_numerica:e IGUAL c_variable_o_llamadoMetodo:m                {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = ex;:}
+                             | c_variable_o_llamadoMetodo:m IGUAL c_variable_o_llamadoMetodo:n          {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = ex;:}
                              ;
 
-c_expresion_variable_distinto ::=c_expresion_numerica DISTINTO c_expresion_numerica
-                              |  c_expresion_booleana  DISTINTO c_expresion_booleana
-                              | c_expresion_booleana  DISTINTO c_variable_o_llamadoMetodo
-                              | c_variable_o_llamadoMetodo  DISTINTO c_asignacion_booleana
-                              |  c_variable_o_llamadoMetodo DISTINTO c_expresion_numerica
-                               | c_expresion_numerica DISTINTO c_variable_o_llamadoMetodo
-                               | c_variable_o_llamadoMetodo DISTINTO c_variable_o_llamadoMetodo
+c_expresion_variable_distinto ::=c_expresion_numerica:e DISTINTO c_expresion_numerica:f                 {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex;:}
+                              |  c_expresion_booleana:e  DISTINTO c_expresion_booleana:f                {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex;:}
+                              | c_expresion_booleana:e  DISTINTO c_variable_o_llamadoMetodo:m           {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = ex;:}
+                              | c_variable_o_llamadoMetodo:m  DISTINTO c_asignacion_booleana:e          {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)e); RESULT = ex;:}
+                              |  c_variable_o_llamadoMetodo:m DISTINTO c_expresion_numerica:e           {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)e); RESULT = ex;:}
+                               | c_expresion_numerica:e DISTINTO c_variable_o_llamadoMetodo:m           {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = ex;:}
+                               | c_variable_o_llamadoMetodo:m DISTINTO c_variable_o_llamadoMetodo:n     {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = ex;:}
                                ;
 
-c_expresion_variable_mayorque ::= c_asignacion_expresion_Numerica_Total MAYORQUE c_asignacion_expresion_Numerica_Total
+c_expresion_variable_mayorque ::= c_asignacion_expresion_Numerica_Total:e MAYORQUE c_asignacion_expresion_Numerica_Total:f  {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex;:}
                                 ;
 
 
-c_expresion_variable_mayoroigual ::= c_asignacion_expresion_Numerica_Total MAYOROIGUAL c_asignacion_expresion_Numerica_Total
+c_expresion_variable_mayoroigual ::= c_asignacion_expresion_Numerica_Total:e MAYOROIGUAL c_asignacion_expresion_Numerica_Total:f {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex;:}
                                    ;
 
-c_expresion_variable_menorque ::= c_asignacion_expresion_Numerica_Total MENORQUE c_asignacion_expresion_Numerica_Total
+c_expresion_variable_menorque ::= c_asignacion_expresion_Numerica_Total:e MENORQUE c_asignacion_expresion_Numerica_Total:f {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex;:}
                                 ;
 
-c_expresion_variable_menoroigual ::= c_asignacion_expresion_Numerica_Total MENOROIGUAL c_asignacion_expresion_Numerica_Total
+c_expresion_variable_menoroigual ::= c_asignacion_expresion_Numerica_Total:e MENOROIGUAL c_asignacion_expresion_Numerica_Total:f {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex;:}
                                    ;
 
-c_expresion_variable_comparacion ::= c_expresion_variable_igual
-                                   | c_expresion_variable_distinto
-                                   | c_expresion_variable_mayorque
-                                   | c_expresion_variable_mayoroigual
-                                   | c_expresion_variable_menorque
-                                   | c_expresion_variable_menoroigual
+c_expresion_variable_comparacion ::= c_expresion_variable_igual:e           {:RESULT = e;:}
+                                   | c_expresion_variable_distinto:e        {:RESULT = e;:}
+                                   | c_expresion_variable_mayorque:e        {:RESULT = e;:}
+                                   | c_expresion_variable_mayoroigual:e     {:RESULT = e;:}
+                                   | c_expresion_variable_menorque:e        {:RESULT = e;:}
+                                   | c_expresion_variable_menoroigual:e     {:RESULT = e;:}
                                    ;
 
 /*------------------------------Declaracion de las asignaciones------------------------------*/
@@ -764,68 +785,68 @@ c_expresion_numerica  ::= c_expresion_numerica:e SUMA c_expresion_numerica:f    
                         | PARENTESISABIERTO c_expresion_numerica:e PARENTESISCERRADO    {: RESULT = e;:}
                         ;
 
-c_asignacion_expresion_Cadena_total ::= c_expresion_cadena  //Cuando al menos una no es una variable
+c_asignacion_expresion_Cadena_total ::= c_expresion_cadena:e {: RESULT = e;:}  //Cuando al menos una no es una variable
                                       ;
 
 /*------------------------------Sintaxis de tipo cadena tipo numericas------------------------------*/
 
-c_expresion_cadena ::= c_expresion_cadena SUMA c_expresion_cadena
+c_expresion_cadena ::= c_expresion_cadena:e SUMA c_expresion_cadena:f               {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex;//System.out.println("c_expresion_numerica SUMA c_expresion_numerica");:}
                      //Una variable + otra cosa
-                     | c_variable_o_llamadoMetodo SUMA c_expresion_cadena
-                     | c_expresion_cadena SUMA c_variable_o_llamadoMetodo
-                     | CADENA:v                                             {://System.out.println("Cadena " + v);:}
+                     | c_variable_o_llamadoMetodo:m SUMA c_expresion_cadena:f       {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
+                     | c_expresion_cadena:f SUMA c_variable_o_llamadoMetodo:m       {: Componente ex = (Componente)f; ex.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = ex; :}
+                     | CADENA:v                                                     {:RESULT = new ExpresionGenerico(v);//System.out.println("Cadena " + v);:}
                      //|c_nombre_metodo
-                     | PARENTESISABIERTO c_expresion_cadena PARENTESISCERRADO
+                     | PARENTESISABIERTO c_expresion_cadena:e PARENTESISCERRADO     {: RESULT = e;:}
                      ;
 
 /*------------------------------ Sintaxis de tipo cadena tipo booleana------------------------------*/
 
-c_asignacion_expresion_Booleana_Total ::= c_expresion_booleana //Corresponde a todas las operaciones excpeto cuando todas son variables
-                                        | c_variable_o_llamadoMetodo
+c_asignacion_expresion_Booleana_Total ::= c_expresion_booleana:e            {:RESULT = e;:}//Corresponde a todas las operaciones excpeto cuando todas son variables
+                                        | c_variable_o_llamadoMetodo:e      {:RESULT = e;:}
                                         ;
 
 /*c_asignacion_booleana ::= BOOL VAR:V ASIGNACION c_asignacion_expresion_Booleana_Total
                         ;
 */
 
-c_expresion_booleana::= c_expresion_booleana  Y c_expresion_booleana
-                      | c_expresion_booleana O c_expresion_booleana
+c_expresion_booleana::= c_expresion_booleana:e  Y c_expresion_booleana:f                {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
+                      | c_expresion_booleana:e O c_expresion_booleana:f                 {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
                       | DISTINTO c_expresion_booleana %prec NEGACION
                       | DISTINTO c_variable_o_llamadoMetodo %prec NEGACION
 
 
                       //Una variables o más + otra cosa
 
-                      | c_variable_o_llamadoMetodo Y c_expresion_booleana
-                      | c_expresion_booleana Y c_variable_o_llamadoMetodo
+                      | c_variable_o_llamadoMetodo:m Y c_expresion_booleana:f           {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
+                      | c_expresion_booleana:f Y c_variable_o_llamadoMetodo:m           {: Componente ex = (Componente)f; ex.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = ex; :}
 
-                      | c_variable_o_llamadoMetodo O c_expresion_booleana
-                      | c_expresion_booleana O c_variable_o_llamadoMetodo
+                      | c_variable_o_llamadoMetodo:m O c_expresion_booleana:f           {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
+                      | c_expresion_booleana:f O c_variable_o_llamadoMetodo:m           {: Componente ex = (Componente)f; ex.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = ex; :}
 
                       //Dos variables o más + otra cosa
 
-                      | c_variable_o_llamadoMetodo Y c_variable_o_llamadoMetodo
-                      | c_variable_o_llamadoMetodo O c_variable_o_llamadoMetodo
+                      | c_variable_o_llamadoMetodo:m Y c_variable_o_llamadoMetodo:n         {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = ex; :}
+                      | c_variable_o_llamadoMetodo:m O c_variable_o_llamadoMetodo:n         {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = ex; :}
 
-                      | c_expresion_variable_comparacion
-                      | VERDADERO
-                      | FALSO
-                      | PARENTESISABIERTO c_expresion_booleana PARENTESISCERRADO
+                      | c_expresion_variable_comparacion//TODO Comparaciones
+                      | VERDADERO                                                   {:RESULT = new ExpresionGenerico("VERDADERO");:}
+                      | FALSO                                                       {:RESULT = new ExpresionGenerico("FALSO");:}
+                      | PARENTESISABIERTO c_expresion_booleana:e PARENTESISCERRADO  {:RESULT = e;:}
                       ;
 
 
 /*------------------------------ Sintaxis de otras funciones reservadas ------------------------------*/
 
-c_imprimir ::= IMPRIMIR PARENTESISABIERTO c_expresion_cadena:s PARENTESISCERRADO
-                {: RESULT = new Imprimir(); :}
-             | IMPRIMIR PARENTESISABIERTO c_variable_o_llamadoMetodo PARENTESISCERRADO
-                {: RESULT = new Imprimir(); :}
+c_imprimir ::= IMPRIMIR PARENTESISABIERTO c_expresion_cadena:e PARENTESISCERRADO
+                {: RESULT = new Imprimir(); RESULT.setHijoMasIzq((Componente)e);:}
+             | IMPRIMIR PARENTESISABIERTO c_variable_o_llamadoMetodo:e PARENTESISCERRADO
+                {: RESULT = new Imprimir(); RESULT.setHijoMasIzq((Componente)e);:}
              | IMPRIMIR PARENTESISABIERTO NUMERO:n PARENTESISCERRADO
-                {: RESULT = new Imprimir(n); :}
+                {: RESULT = new Imprimir(n);:}
              ;
 
 c_leer ::= LEER PARENTESISABIERTO VAR:v PARENTESISCERRADO
-            {: RESULT = new Leer(); :}
+            {: RESULT = new Leer(v); :}
          ;
 
 c_devolver ::= DEVOLVER c_variable_o_llamadoMetodo:o

@@ -4,7 +4,7 @@ publico proc imprimirTriangulo(num n)
 	cad c
 	leer(c)
 	imprimir("Digite el numero de filas que desea que tenga el triangulo")
-	num n
+	//num n
 	leer(n)
 	cad fila = ""
 	para num i desde 1 hasta n avance 1

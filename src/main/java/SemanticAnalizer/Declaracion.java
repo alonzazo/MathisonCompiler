@@ -11,10 +11,18 @@ public class Declaracion extends ComponenteConcreto {
     private int _tamano;
     private LinkedList<Symbol> _expresionTamano;
     private Tipo _tipo;
+    private String _nombreTipo;
 
     public Declaracion(String _nombre, Tipo _tipo) {
         this._nombre = _nombre;
         this._tipo = _tipo;
+    }
+
+    public Declaracion(String _nombre, Tipo _tipo, String _nombreTipo) {
+        this._nombre = _nombre;
+        this._tipo = _tipo;
+        if (_tipo == Tipo.NO_PRIMITIVO)
+            this._nombreTipo = _nombreTipo;
     }
 
     @Override
@@ -32,6 +40,14 @@ public class Declaracion extends ComponenteConcreto {
         this._nombre = _nombre;
         this._tipo = _tipo;
         this._arreglo = _arreglo;
+    }
+
+    public Declaracion(String _nombre, Tipo _tipo, boolean _arreglo, String _nombreTipo) {
+        this._nombre = _nombre;
+        this._tipo = _tipo;
+        this._arreglo = _arreglo;
+        if (_tipo == Tipo.NO_PRIMITIVO)
+            this._nombreTipo = _nombreTipo;
     }
 
     public int get_tamano() {
