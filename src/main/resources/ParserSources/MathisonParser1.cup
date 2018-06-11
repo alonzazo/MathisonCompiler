@@ -28,22 +28,62 @@ action code {:
             return toStringAux("", 0,  raiz);
     }
 
-        private String toStringAux(String text,int indexLevel, Componente actual){
-            if (actual == null) return text;
+    private String toStringAux(String text,int indexLevel, Componente actual){
+        if (actual == null) return text;
 
-            text += '\n';
-            for (int i = 0; i < indexLevel; i++) text += "|\t";
+        text += '\n';
+        for (int i = 0; i < indexLevel; i++) text += "|\t";
 
-            text += actual.toString();
+        text += actual.toString();
 
-            if ( actual.getHijoMasIzq() != null){
-                text = toStringAux(text, indexLevel + 1, actual.getHijoMasIzq());
-            }
-            if ( actual.getHermanoDerecho() != null ){
-                text = toStringAux(text, indexLevel, actual.getHermanoDerecho());
-            }
-            return text;
+        if ( actual.getHijoMasIzq() != null){
+            text = toStringAux(text, indexLevel + 1, actual.getHijoMasIzq());
         }
+        if ( actual.getHermanoDerecho() != null ){
+            text = toStringAux(text, indexLevel, actual.getHermanoDerecho());
+        }
+        return text;
+    }
+
+
+    public void llenarTabla()
+            {
+                HashMap<String, Nombre> tablaSimbolos = new HashMap<String, Nombre>();
+                LinkedList cola = new LinkedList();
+                cola.addLast(raiz);
+                while (cola.getFirst() != null) //Mientras la cola no esté vacía
+                {
+                    Componente aux = (Componente) cola.removeFirst();
+
+                    //Ver si es un simbolo guardado
+                    if(aux instanceof  Clase || aux instanceof Metodo)
+                    {
+                        Nombre simbolo = (Nombre) aux;
+                        System.out.println("Soy " + simbolo.get_nombre());
+                    }
+                    else
+                    {
+                        System.out.println("Soy solo un componente");
+                    }
+
+                    Componente hijo = aux.getHijoMasIzq();
+                    while (hijo != null) //Mientras tenga hijos
+                    {
+                        hijo.setPadre(aux);
+                        cola.addLast(hijo);
+
+                        //Agregar a la tabla del padre si es Clase, Metodo o Variable
+                        if(hijo instanceof Clase || hijo instanceof Metodo)
+                        {
+                            Nombre hijoSimbolo = (Nombre) hijo;
+                            tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
+                        }
+                        hijo = hijo.getHermanoDerecho();
+                    }
+                    aux.setTblSimbolosLocales(tablaSimbolos);
+                    tablaSimbolos = new HashMap<String, Nombre>(); //Reinicia la tabla del padre
+                }
+            }
 
 :}
 
@@ -143,13 +183,10 @@ parser code {:
    tienen un valor como los enteros son listados en la segunda o demas lineas. */
 
 //PALABRAS RESERVADAS
-terminal    Y, O, PARA, DESDE, HASTA, AVANCE, MIENTRAS, HACER, SI;
-terminal    SINO, DEVOLVER, PROC, CLASE, REC, CAD, BOOL, PUBLICO;
-terminal    PRIVADO, IMPRIMIR, LEER, VERDADERO, FALSO;
-terminal    REVISAR, CASO, DEFECTO, NUM, NEGACION;
-
-terminal    MOD, LANZAR, ATRAPAR, EN, EXCEPTO, TERMINAR, INTENTAR, CONSTANTE, CONTINUAR, FINALMENTE;
-terminal    POTENCIA, CON, FIN, COMO, MOSTRAR, EJECUTAR, IMPORTAR;
+terminal    Y, O, PARA, DESDE, HASTA, AVANCE, MIENTRAS, HACER, SI, SINO;
+terminal    DEVOLVER, PROC, CLASE, CAD, BOOL, PUBLICO, PRIVADO;
+terminal    IMPRIMIR, LEER, VERDADERO, FALSO, NUM, NEGACION;
+terminal    REVISAR, CASO, DEFECTO;
 
 terminal    MENORQUE, MAYORQUE, MENOROIGUAL, MAYOROIGUAL, DISTINTO, IGUAL;
 
@@ -168,7 +205,7 @@ terminal SALIR;
 //CON VALOR ASOCIADO
 terminal    Double NUMERO;
 terminal    String VAR;
-terminal    String DELIMITADOR;
+//terminal    String DELIMITADOR;
 terminal    String CADENA;
 
 /* No terminales usados en la seccion gramatical. 
@@ -418,10 +455,10 @@ c_estructuras ::= c_para:p
 
 c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
             AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: RESULT = new Para(ls);:}
+            {: RESULT = new Para(v, ls);:}
          |  PARA NUM VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
             AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: RESULT = new Para(ls);:}
+            {: RESULT = new Para(v, ls);:}
          ;
 
 c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
@@ -467,13 +504,13 @@ c_lista_sentencias ::= c_asignacion:a c_lista_sentencias:ls
 
 /*------------------------------Declaracion Basica ------------------------------*/
 
-c_declaracion ::= c_tipo_primitivo VAR:v                                  {://System.out.println("Declaración " + v);:}
-                | VAR:w VAR:v                                  {://System.out.println("Declaración " + v);:}
-                | c_tipo_primitivo VAR:v CORCHETEABIERTO CORCHETECERRADO  {://System.out.println("Declaración de arreglo" + v);:}
-                | VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO  {://System.out.println("Declaración de arreglo" + v);:}
-                | c_tipo_primitivo VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {://System.out.println("Declaración de arreglo" + v);:}
-                | VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {://System.out.println("Declaración de arreglo" + v);:}
-                | c_tipo_arreglo VAR:v                                  {://System.out.println("Declaración de arreglo" + v);:}
+c_declaracion ::= c_tipo_primitivo:t VAR:v                                                          {: RESULT = new Declaracion(v,t); //System.out.println("Declaración " + v);:}
+                | VAR:w VAR:v                                                                       {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO); //System.out.println("Declaración " + v);:}//TODO: Agregar el nombre de la clase
+                | c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO                          {: RESULT = new Declaracion(v,t); //System.out.println("Declaración de arreglo" + v);:}
+                | VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO                                       {: RESULT = new Declaracion(v, Tipo.NO_PRIMITIVO); //System.out.println("Declaración de arreglo" + v);:}
+                | c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {: RESULT = new Declaracion(v,t); //System.out.println("Declaración de arreglo" + v);:}
+                | VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO); //System.out.println("Declaración de arreglo" + v);:}
+                | c_tipo_arreglo VAR:v                                                              {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO); //System.out.println("Declaración de arreglo" + v);:}
                 ;
 
 /*------------------------------Primitivas de tipo de datos------------------------------*/
@@ -549,32 +586,18 @@ c_expresion_variable_comparacion ::= c_expresion_variable_igual
 
 /*------------------------------Declaracion de las asignaciones------------------------------*/
 
-c_asignacion ::=    c_tipo_primitivo VAR:v c_asignacion_prima:o
-                    {: RESULT = new Asignacion(v,o);:}
-                |   VAR:v VAR:w c_asignacion_prima:o
-                    {:RESULT = new Asignacion(w,o);
-                    //System.out.println("Definición sobre variable " + v);:}
-                |   c_tipo_primitivo VAR:v CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v,o);
-                    //System.out.println("Definición sobre arreglo " + v);:}
-                |   VAR:v VAR:w CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(w,o);
-                    //System.out.println("Definición sobre arreglo " + v);:}
-                |   c_tipo_primitivo VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v,o);
-                    //System.out.println("Definición sobre arreglo " + v);:}
-                |   VAR:v VAR:w CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v,o);
-                    //System.out.println("Definición sobre arreglo " + v);:}
-                |   c_tipo_arreglo VAR:v c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v,o);
-                    //System.out.println("Definición sobre arreglo " + v);:}
+c_asignacion ::=    c_tipo_primitivo:t VAR:v c_asignacion_prima:o
+                    {: RESULT = new Asignacion(t, v);:}
+                |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:o
+                    {:RESULT = new Asignacion(t, v);:}
+                |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
+                    {:RESULT = new Asignacion(t, v);:}
+                |   c_tipo_arreglo:t VAR:v c_asignacion_prima:o
+                    {:RESULT = new Asignacion(t, v);:}
                 |   VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v,o);
-                    //System.out.println("Asignación sobre arreglo " + v);:}
+                    {:RESULT = new Asignacion(v);:}
                 |   VAR:v c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v,o);
-                    //System.out.println("Asignación sobre variable " + v);:}
+                    {:RESULT = new Asignacion(v);:}
                ;
 
 /*------------------------------Sintaxis asignacion de tipo numericas------------------------------*/

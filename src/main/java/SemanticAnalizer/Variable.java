@@ -6,6 +6,7 @@ public class Variable implements Nombre{
     private boolean _arreglo;
     private String _nombre;
     private Tipo _tipo;
+    private int _tamano;
     private Object _valor;
 
     public Variable(){
@@ -15,6 +16,22 @@ public class Variable implements Nombre{
     public Variable(String nombre){
         _nombre = nombre;
         System.out.println("Variable " + nombre);
+    }
+
+    public boolean is_arreglo() {
+        return _arreglo;
+    }
+
+    public void set_arreglo(boolean _arreglo) {
+        this._arreglo = _arreglo;
+    }
+
+    public int get_tamano() {
+        return _tamano;
+    }
+
+    public void set_tamano(int _tamano) {
+        this._tamano = _tamano;
     }
 
     public Variable(String nombre, Object valor){
