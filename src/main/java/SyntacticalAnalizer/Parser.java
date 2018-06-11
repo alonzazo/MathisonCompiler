@@ -1640,6 +1640,13 @@ class CUP$Parser$actions {
                             hijo.setPadre(aux);
                             cola.addLast(hijo);
 
+
+                            /*if (hijo instanceof Para){
+                                Para para = (Para) hijo;
+                                if (!existeSimbolo(para.get_variable(),hijo,tablaSimbolos))
+                                    tablaSimbolos.put(declaracion.get_nombre(), new Variable(declaracion.get_nombre(), declaracion.get_tipo(), declaracion.is_arreglo()));
+                                else throw new SemanticError("ERROR SEMANTICO: Declaración duplicada de variable: " + declaracion.get_nombre());
+                            }*/
                             //Agregar a la tabla del padre si es Clase, Metodo o Variable
                             if(hijo instanceof Clase)
                             {
@@ -1792,18 +1799,18 @@ class CUP$Parser$actions {
 		int start_valright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Componente start_val = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		RESULT = start_val;
-              //--------------------------------------------------------POST-ACTIONS
-              Programa raizReal = new Programa();
-              raizReal.setHijoMasIzq(raiz);
-              raiz = raizReal;
-              try{
-                llenarTabla();
-                System.out.println(imprimirArbol());
-                verificarExistencias();
-              }catch (SemanticError ex){
-                System.out.println(ex.getMessage());
-              }
-              //---------------------------------------------------------------------
+                //--------------------------------------------------------POST-ACTIONS
+                Programa raizReal = new Programa();
+                raizReal.setHijoMasIzq(raiz);
+                raiz = raizReal;
+                try{
+                    llenarTabla();
+                    System.out.println(imprimirArbol());
+                    verificarExistencias();
+                }catch (SemanticError ex){
+                    System.out.println(ex.getMessage());
+                }
+                //---------------------------------------------------------------------
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           /* ACCEPT */
@@ -2762,7 +2769,7 @@ class CUP$Parser$actions {
 		int lsleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int lsright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Componente ls = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		 RESULT = new Para(v, ls);
+		 Asignacion a = new Asignacion(v); a.setHermanoDerecho(ls);RESULT = new Para(v, a);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_para",36, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-10)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2777,7 +2784,7 @@ class CUP$Parser$actions {
 		int lsleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int lsright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Componente ls = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		 RESULT = new Para(v, ls);
+		 Asignacion a = new Asignacion(v); Declaracion decl = new Declaracion(v, Tipo.NUMERICO); a.setHermanoDerecho(decl); decl.setHermanoDerecho(ls); RESULT = new Para(v, a);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_para",36, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-11)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

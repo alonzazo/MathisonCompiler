@@ -100,7 +100,6 @@ action code {:
                         {
                             hijo.setPadre(aux);
                             cola.addLast(hijo);
-
                             //Agregar a la tabla del padre si es Clase, Metodo o Variable
                             if(hijo instanceof Clase)
                             {
@@ -595,10 +594,10 @@ c_estructuras ::= c_para:p
 
 c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
             AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: RESULT = new Para(v, ls);:}//TODO Si encuentra un para sacar la asignacion a variable
+            {: Asignacion a = new Asignacion(v); a.setHermanoDerecho(ls);RESULT = new Para(v, a);:}//TODO Si encuentra un para sacar la asignacion a variable
          |  PARA NUM VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
             AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: RESULT = new Para(v, ls);:}//TODO Si encuentra un para sacar la declaracion de la variable
+            {: Asignacion a = new Asignacion(v); Declaracion decl = new Declaracion(v, Tipo.NUMERICO); a.setHermanoDerecho(decl); decl.setHermanoDerecho(ls); RESULT = new Para(v, a);:}//TODO Si encuentra un para sacar la declaracion de la variable
          ;
 
 c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
