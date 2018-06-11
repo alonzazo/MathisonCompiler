@@ -71,6 +71,7 @@ action code {:
                     {
                         hijo.setPadre(aux);
                         cola.addLast(hijo);
+
                         //Agregar a la tabla del padre si es Clase, Metodo o Variable
                         if(hijo instanceof Clase || hijo instanceof Metodo)
                         {
@@ -454,10 +455,10 @@ c_estructuras ::= c_para:p
 
 c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
             AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: RESULT = new Para(ls);:}
+            {: RESULT = new Para(v, ls);:}
          |  PARA NUM VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
             AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: RESULT = new Para(ls);:}
+            {: RESULT = new Para(v, ls);:}
          ;
 
 c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
@@ -585,32 +586,18 @@ c_expresion_variable_comparacion ::= c_expresion_variable_igual
 
 /*------------------------------Declaracion de las asignaciones------------------------------*/
 
-c_asignacion ::=    c_tipo_primitivo VAR:v c_asignacion_prima:o
-                    {: RESULT = new Asignacion(v,o);:}
-                |   VAR:v VAR:w c_asignacion_prima:o
-                    {:RESULT = new Asignacion(w,o);
-                    //System.out.println("Definición sobre variable " + v);:}
-                |   c_tipo_primitivo VAR:v CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v,o);
-                    //System.out.println("Definición sobre arreglo " + v);:}
-                |   VAR:v VAR:w CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(w,o);
-                    //System.out.println("Definición sobre arreglo " + v);:}
-                |   c_tipo_primitivo VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v,o);
-                    //System.out.println("Definición sobre arreglo " + v);:}
-                |   VAR:v VAR:w CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v,o);
-                    //System.out.println("Definición sobre arreglo " + v);:}
-                |   c_tipo_arreglo VAR:v c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v,o);
-                    //System.out.println("Definición sobre arreglo " + v);:}
+c_asignacion ::=    c_tipo_primitivo:t VAR:v c_asignacion_prima:o
+                    {: RESULT = new Asignacion(t, v);:}
+                |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:o
+                    {:RESULT = new Asignacion(t, v);:}
+                |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
+                    {:RESULT = new Asignacion(t, v);:}
+                |   c_tipo_arreglo:t VAR:v c_asignacion_prima:o
+                    {:RESULT = new Asignacion(t, v);:}
                 |   VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v,o);
-                    //System.out.println("Asignación sobre arreglo " + v);:}
+                    {:RESULT = new Asignacion(v);:}
                 |   VAR:v c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v,o);
-                    //System.out.println("Asignación sobre variable " + v);:}
+                    {:RESULT = new Asignacion(v);:}
                ;
 
 /*------------------------------Sintaxis asignacion de tipo numericas------------------------------*/

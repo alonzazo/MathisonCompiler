@@ -18,12 +18,13 @@ publico num sumar(num n1, num n2){
     }
 }
 
-
+/*
 publico clase Carl
 {
     num x = 7 + -(-metodo())
     bool lul = !metboo() Y VERDADERO
 }
+*/
 
 /*
 publico clase Dani{
