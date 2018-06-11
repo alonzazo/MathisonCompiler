@@ -95,6 +95,44 @@ action code {:
                     }
                 }
 
+    public boolean verificarExistencias()
+        {
+            boolean todoBien = true;
+            LinkedList cola = new LinkedList();
+            cola.addLast(raiz.getHijoMasIzq());
+            while (cola.size() != 0 && todoBien) //Mientras la cola no esté vacía
+            {
+                Componente aux = (Componente) cola.removeFirst();
+                HashMap<String, Nombre> tabla = aux.getTblSimbolosLocales();
+                Componente hijo = aux.getHijoMasIzq();
+                while (hijo != null && todoBien) //Mientras tenga hijos
+                {
+                    if(hijo instanceof Asignacion)
+                    {
+                        String nombre = ((Asignacion) hijo).get_nombre();
+                        if(!tabla.containsKey(nombre))
+                        {
+                            Componente iterPadres = aux;
+                            while (iterPadres != null)
+                            {
+                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre))
+                                {
+                                    iterPadres = iterPadres.getPadre();
+                                }
+                            }
+                            if(iterPadres == null)
+                            {
+                                todoBien = false;
+                            }
+                        }
+                    }
+                    cola.addLast(hijo);
+                    hijo = hijo.getHermanoDerecho();
+                }
+            }
+            return todoBien;
+        }
+
 :}
 
 /* Codigo del parser, se copia integramente a la clase final.
