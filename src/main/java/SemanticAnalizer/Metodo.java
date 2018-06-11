@@ -45,7 +45,7 @@ public class Metodo extends ComponenteConcreto implements Nombre {
 
     @Override
     public String get_nombre() {
-        return null;
+        return _nombre;
     }
 
     @Override
