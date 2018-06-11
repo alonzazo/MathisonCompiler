@@ -1588,8 +1588,33 @@ class CUP$Parser$actions {
         return text;
     }
 
+    public boolean existeSimbolo(String nombre, Componente compActual, HashMap<String,Nombre> tabla){
+        boolean existe = false;
+        if(!tabla.containsKey(nombre))
+        {
+            Componente iterPadres = compActual.getPadre();
+            while (iterPadres != null && !existe)
+            {
+                if (iterPadres.getTblSimbolosLocales() == null || (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable)))
+                {
+                    iterPadres = iterPadres.getPadre();
+                }
+                else{
+                    existe = true;
+                }
+            }
+            if(iterPadres == null)
+            {
+                existe = false;
+            }
+        }
+        else {
+            existe = true;
+        }
+        return existe;
+    }
 
-    public void llenarTabla()
+    public void llenarTabla() throws SemanticError
                 {
                     HashMap<String, Nombre> tablaSimbolos = new HashMap<String, Nombre>();
                     LinkedList cola = new LinkedList();
@@ -1619,13 +1644,16 @@ class CUP$Parser$actions {
                             if(hijo instanceof Clase)
                             {
                                 Nombre hijoSimbolo = (Nombre) hijo;
-                                tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
+                                if (!existeSimbolo(hijoSimbolo.get_nombre(),(Componente) hijoSimbolo,tablaSimbolos))
+                                    tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
+                                else throw new SemanticError("ERROR SEMANTICO: Declaracion duplicada de clase: " + hijoSimbolo.get_nombre());
                             }
                             if(hijo instanceof Metodo)
                             {
                                 Metodo hijoSimbolo = (Metodo) hijo;
-                                tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
-
+                                if (!existeSimbolo(hijoSimbolo.get_nombre(),hijoSimbolo,tablaSimbolos))
+                                    tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
+                                else throw new SemanticError("ERROR SEMANTICO: Declaración duplicada de metodo: " + hijoSimbolo.get_nombre());
                                 //Agregamos los parametros como declaraciones
                                 List<Variable> variables = hijoSimbolo.getParametros();
                                 for ( Variable i:variables ) {
@@ -1637,7 +1665,9 @@ class CUP$Parser$actions {
                             }
                             if (hijo instanceof Declaracion){
                                 Declaracion declaracion = (Declaracion) hijo;
-                                tablaSimbolos.put(declaracion.get_nombre(), new Variable(declaracion.get_nombre(), declaracion.get_tipo(), declaracion.is_arreglo()));
+                                if (!existeSimbolo(declaracion.get_nombre(),hijo,tablaSimbolos))
+                                    tablaSimbolos.put(declaracion.get_nombre(), new Variable(declaracion.get_nombre(), declaracion.get_tipo(), declaracion.is_arreglo()));
+                                else throw new SemanticError("ERROR SEMANTICO: Declaración duplicada de variable: " + declaracion.get_nombre());
                             }
                             hijo = hijo.getHermanoDerecho();
                         }
@@ -1745,9 +1775,9 @@ class CUP$Parser$actions {
               Programa raizReal = new Programa();
               raizReal.setHijoMasIzq(raiz);
               raiz = raizReal;
-              llenarTabla();
-              System.out.println(imprimirArbol());
               try{
+                llenarTabla();
+                System.out.println(imprimirArbol());
                 verificarExistencias();
               }catch (SemanticError ex){
                 System.out.println(ex.getMessage());
