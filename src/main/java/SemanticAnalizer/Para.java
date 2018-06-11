@@ -7,6 +7,7 @@ import java.util.List;
 public class Para extends Estructura
 {
     private String _variable;
+    
 
     public Para(){
     }
