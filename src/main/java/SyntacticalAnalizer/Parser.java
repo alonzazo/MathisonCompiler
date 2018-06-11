@@ -1634,6 +1634,64 @@ class CUP$Parser$actions {
                     }
                 }
 
+    public boolean verificarExistencias() throws SemanticError
+        {
+            boolean todoBien = true;
+            LinkedList cola = new LinkedList();
+            cola.addLast(raiz.getHijoMasIzq());
+            while (cola.size() != 0 && todoBien) //Mientras la cola no esté vacía
+            {
+                Componente aux = (Componente) cola.removeFirst();
+                HashMap<String, Nombre> tabla = aux.getTblSimbolosLocales();
+                Componente hijo = aux.getHijoMasIzq();
+                while (hijo != null && todoBien) //Mientras tenga hijos
+                {
+                    if(hijo instanceof Asignacion)
+                    {
+                        String nombre = ((Asignacion) hijo).get_nombre();
+                        if(!tabla.containsKey(nombre))
+                        {
+                            Componente iterPadres = aux;
+                            while (iterPadres != null)
+                            {
+                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
+                                {
+                                    iterPadres = iterPadres.getPadre();
+                                }
+                            }
+                            if(iterPadres == null)
+                            {
+                                todoBien = false;
+                                throw new SemanticError("ERROR SEMANTICO: Referencia no declarada: " + nombre);
+                            }
+                        }
+                    }
+                    if (hijo instanceof LlamadaMetodo){
+                        String nombre = ((LlamadaMetodo) hijo).getNombre();
+                        if(!tabla.containsKey(nombre))
+                        {
+                            Componente iterPadres = aux;
+                            while (iterPadres != null)
+                            {
+                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Metodo))
+                                {
+                                    iterPadres = iterPadres.getPadre();
+                                }
+                            }
+                            if(iterPadres == null)
+                            {
+                                todoBien = false;
+                                throw new SemanticError("ERROR SEMANTICO: Referencia no declarada: " + nombre);
+                            }
+                        }
+                    }
+                    cola.addLast(hijo);
+                    hijo = hijo.getHermanoDerecho();
+                }
+            }
+            return todoBien;
+        }
+
 
   private final Parser parser;
 
@@ -1670,6 +1728,11 @@ class CUP$Parser$actions {
               raiz = raizReal;
               llenarTabla();
               System.out.println(imprimirArbol());
+              try{
+                  verificarExistencias();
+              }catch (SemanticError ex){
+                System.out.println(ex.getMessage());
+              }
               //---------------------------------------------------------------------
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

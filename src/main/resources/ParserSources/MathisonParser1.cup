@@ -95,7 +95,7 @@ action code {:
                     }
                 }
 
-    public boolean verificarExistencias()
+    public boolean verificarExistencias() throws SemanticError
         {
             boolean todoBien = true;
             LinkedList cola = new LinkedList();
@@ -115,7 +115,7 @@ action code {:
                             Componente iterPadres = aux;
                             while (iterPadres != null)
                             {
-                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre))
+                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
                                 {
                                     iterPadres = iterPadres.getPadre();
                                 }
@@ -123,6 +123,26 @@ action code {:
                             if(iterPadres == null)
                             {
                                 todoBien = false;
+                                throw new SemanticError("ERROR SEMANTICO: Referencia no declarada: " + nombre);
+                            }
+                        }
+                    }
+                    if (hijo instanceof LlamadaMetodo){
+                        String nombre = ((LlamadaMetodo) hijo).getNombre();
+                        if(!tabla.containsKey(nombre))
+                        {
+                            Componente iterPadres = aux;
+                            while (iterPadres != null)
+                            {
+                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Metodo))
+                                {
+                                    iterPadres = iterPadres.getPadre();
+                                }
+                            }
+                            if(iterPadres == null)
+                            {
+                                todoBien = false;
+                                throw new SemanticError("ERROR SEMANTICO: Referencia no declarada: " + nombre);
                             }
                         }
                     }
