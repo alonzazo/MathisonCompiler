@@ -1598,25 +1598,42 @@ class CUP$Parser$actions {
 
 
     public void llenarTabla()
-        {
-            HashMap<String, Nombre> tablaSimbolos = new HashMap<String, Nombre>();
-            LinkedList cola = new LinkedList();
-            cola.addLast(raiz);
-            while (cola.getFirst() != null) //Mientras la cola no esté vacía
             {
-                Componente aux = (Componente) cola.removeFirst();
-                Componente hijo = aux.getHijoMasIzq();
-                while (hijo != null) //Mientras tenga hijos
+                HashMap<String, Nombre> tablaSimbolos = new HashMap<String, Nombre>();
+                LinkedList cola = new LinkedList();
+                cola.addLast(raiz);
+                while (cola.getFirst() != null) //Mientras la cola no esté vacía
                 {
-                    hijo.setPadre(aux);
-                    cola.addLast(hijo);
-                    //Agregar a la tabla del padre si es Clase, Metodo o Variable
-                    hijo = hijo.getHermanoDerecho();
+                    Componente aux = (Componente) cola.removeFirst();
+
+                    //Ver si es un simbolo guardado
+                    if(aux instanceof  Clase || aux instanceof Metodo)
+                    {
+                        Nombre simbolo = (Nombre) aux;
+                        System.out.println("Soy " + simbolo.get_nombre());
+                    }
+                    else
+                    {
+                        System.out.println("Soy solo un componente");
+                    }
+
+                    Componente hijo = aux.getHijoMasIzq();
+                    while (hijo != null) //Mientras tenga hijos
+                    {
+                        hijo.setPadre(aux);
+                        cola.addLast(hijo);
+                        //Agregar a la tabla del padre si es Clase, Metodo o Variable
+                        if(hijo instanceof Clase || hijo instanceof Metodo)
+                        {
+                            Nombre hijoSimbolo = (Nombre) hijo;
+                            tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
+                        }
+                        hijo = hijo.getHermanoDerecho();
+                    }
+                    aux.setTblSimbolosLocales(tablaSimbolos);
+                    tablaSimbolos = new HashMap<String, Nombre>(); //Reinicia la tabla del padre
                 }
-                aux.setTblSimbolosLocales(tablaSimbolos);
-                tablaSimbolos = new HashMap<String, Nombre>();
             }
-        }
 
 
   private final Parser parser;
