@@ -13,8 +13,32 @@ public class Variable implements Nombre{
         System.out.println("Variable");
     }
 
+    public Variable(boolean _arreglo, String _nombre, Tipo _tipo, int _tamano) {
+        this._arreglo = _arreglo;
+        this._nombre = _nombre;
+        this._tipo = _tipo;
+        this._tamano = _tamano;
+    }
+
+    public Variable(String _nombre, Tipo _tipo, boolean _arreglo) {
+        this._arreglo = _arreglo;
+        this._nombre = _nombre;
+        this._tipo = _tipo;
+    }
+
+    @Override
+    public String toString() {
+        return "Variable{" +
+                "_arreglo=" + _arreglo +
+                ", _nombre='" + _nombre + '\'' +
+                ", _tipo=" + _tipo +
+                ", _tamano=" + _tamano +
+                '}';
+    }
+
     public Variable(String nombre){
         _nombre = nombre;
+
         System.out.println("Variable " + nombre);
     }
 

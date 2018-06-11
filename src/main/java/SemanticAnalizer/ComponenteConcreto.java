@@ -10,6 +10,13 @@ public abstract class ComponenteConcreto implements Componente{
     protected HashMap<String, Nombre> _tblSimbolosLocales;
 
     @Override
+    public Componente getUltimoHermano(){
+        Componente i = this;
+        while (i.getHermanoDerecho() != null) i = i.getHermanoDerecho();
+        return i;
+    }
+
+    @Override
     public Componente getPadre() {
         return _padre;
     }
@@ -45,7 +52,7 @@ public abstract class ComponenteConcreto implements Componente{
             _hermanoDerecho = hermano;
             Componente i = _hermanoDerecho;
             while ( i.getHermanoDerecho() != null ){
-                i = _hermanoDerecho;
+                i = i.getHermanoDerecho();
             }
             _ultimoHijo = i;
         }

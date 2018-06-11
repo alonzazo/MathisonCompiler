@@ -47,43 +47,50 @@ action code {:
 
 
     public void llenarTabla()
-            {
-                HashMap<String, Nombre> tablaSimbolos = new HashMap<String, Nombre>();
-                LinkedList cola = new LinkedList();
-                cola.addLast(raiz);
-                while (cola.getFirst() != null) //Mientras la cola no esté vacía
                 {
-                    Componente aux = (Componente) cola.removeFirst();
-
-                    //Ver si es un simbolo guardado
-                    if(aux instanceof  Clase || aux instanceof Metodo)
+                    HashMap<String, Nombre> tablaSimbolos = new HashMap<String, Nombre>();
+                    LinkedList cola = new LinkedList();
+                    cola.addLast(raiz);
+                    while (!cola.isEmpty()) //Mientras la cola no esté vacía
                     {
-                        Nombre simbolo = (Nombre) aux;
-                        System.out.println("Soy " + simbolo.get_nombre());
-                    }
-                    else
-                    {
-                        System.out.println("Soy solo un componente");
-                    }
+                        Componente aux = (Componente) cola.removeFirst();
 
-                    Componente hijo = aux.getHijoMasIzq();
-                    while (hijo != null) //Mientras tenga hijos
-                    {
-                        hijo.setPadre(aux);
-                        cola.addLast(hijo);
-
-                        //Agregar a la tabla del padre si es Clase, Metodo o Variable
-                        if(hijo instanceof Clase || hijo instanceof Metodo)
+                        //Ver si es un simbolo guardado
+                        /*if(aux instanceof  Clase || aux instanceof Metodo)
                         {
-                            Nombre hijoSimbolo = (Nombre) hijo;
-                            tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
+                            Nombre simbolo = (Nombre) aux;
+                            System.out.println("Soy " + simbolo.get_nombre());
                         }
-                        hijo = hijo.getHermanoDerecho();
+                        else
+                        {
+                            System.out.println("Soy solo un " + aux.toString());
+                        }*/
+
+                        Componente hijo = aux.getHijoMasIzq();
+                        while (hijo != null) //Mientras tenga hijos
+                        {
+                            hijo.setPadre(aux);
+                            cola.addLast(hijo);
+
+                            //Agregar a la tabla del padre si es Clase, Metodo o Variable
+                            if(hijo instanceof Clase || hijo instanceof Metodo)
+                            {
+                                Nombre hijoSimbolo = (Nombre) hijo;
+                                tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
+                            }
+                            if (hijo instanceof Declaracion){
+                                Declaracion declaracion = (Declaracion) hijo;
+                                tablaSimbolos.put(declaracion.get_nombre(), new Variable(declaracion.get_nombre(), declaracion.get_tipo(), declaracion.is_arreglo()));
+                            }
+                            hijo = hijo.getHermanoDerecho();
+                        }
+                        aux.setTblSimbolosLocales(tablaSimbolos);
+
+                        //System.out.println("Tabla asignada a " + aux.toString() + "\n" + aux.getTblSimbolosLocales().toString());
+
+                        tablaSimbolos = new HashMap<String, Nombre>(); //Reinicia la tabla del padre
                     }
-                    aux.setTblSimbolosLocales(tablaSimbolos);
-                    tablaSimbolos = new HashMap<String, Nombre>(); //Reinicia la tabla del padre
                 }
-            }
 
 :}
 
@@ -223,7 +230,9 @@ non terminal Metodo c_metodo;//-------------------------------------------------
 non terminal List<Variable> lista_parametros;
 non terminal Variable variable_arreglo;//-------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal    c_vista,  c_tipo_metodo, c_declaracion_metodo;
-non terminal    c_declaracion, c_tipo, c_tipo_primitivo, c_tipo_arreglo;
+non terminal Declaracion c_declaracion;//-------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
+non terminal c_tipo, c_tipo_primitivo, c_tipo_arreglo;
+
 
 non terminal c_expresion_variable;
 non terminal c_expresion_variable_mayorque, c_expresion_variable_mayoroigual, c_expresion_variable_menorque,c_expresion_variable_menoroigual;
@@ -310,7 +319,7 @@ clase ::= c_vista CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: RESULT =
         ;
 
 c_metodo ::= c_vista c_tipo_arreglo:t VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
-            {: RESULT = new Metodo(v, (Tipo) t, lp, ls); //System.out.println("METODO " + v);:}
+           {: RESULT = new Metodo(v, (Tipo) t, lp, ls); //System.out.println("METODO " + v);:}
            | c_vista c_tipo_arreglo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
            {: RESULT = new Metodo(v, (Tipo) t, ls); //System.out.println("METODO " + v);:}
            | c_vista c_tipo_primitivo:t VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
@@ -397,8 +406,8 @@ cuerpo_clase ::= c_metodo:m cuerpo_clase:c
                 {: m.setHermanoDerecho(c); RESULT = m; :}
                | c_asignacion:a cuerpo_clase:c
                {: a.setHermanoDerecho(c); RESULT = a;:}
-               | c_declaracion cuerpo_clase:c
-               {:RESULT = c; :}
+               | c_declaracion:d cuerpo_clase:c
+               {: d.setHermanoDerecho(c); RESULT = d; :}
                |
                ;
 
@@ -490,9 +499,9 @@ c_revisar_casos ::= CASO c_expresion_numerica DOSPUNTOS c_lista_sentencias SALIR
                   ;
 
 c_lista_sentencias ::= c_asignacion:a c_lista_sentencias:ls
-                      {: a.setHermanoDerecho(ls); RESULT = a; :}
+                      {: a.getUltimoHermano().setHermanoDerecho(ls); RESULT = a; :}
                      | c_declaracion:d c_lista_sentencias:ls
-                     {: RESULT = ls;// d.setHermanoDerecho(ls); RESULT = d; :}
+                     {: d.setHermanoDerecho(ls); RESULT = d; :}
                      | c_estructuras:e c_lista_sentencias:ls
                      {: e.setHermanoDerecho(ls); RESULT = e; :}
                      | c_expresion_llamado_metodo:m c_lista_sentencias:ls
@@ -504,13 +513,13 @@ c_lista_sentencias ::= c_asignacion:a c_lista_sentencias:ls
 
 /*------------------------------Declaracion Basica ------------------------------*/
 
-c_declaracion ::= c_tipo_primitivo:t VAR:v                                                          {: RESULT = new Declaracion(v,t); //System.out.println("Declaración " + v);:}
+c_declaracion ::= c_tipo_primitivo:t VAR:v                                                          {: RESULT = new Declaracion(v,(Tipo) t); //System.out.println("Declaración " + v);:}
                 | VAR:w VAR:v                                                                       {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO); //System.out.println("Declaración " + v);:}//TODO: Agregar el nombre de la clase
-                | c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO                          {: RESULT = new Declaracion(v,t); //System.out.println("Declaración de arreglo" + v);:}
-                | VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO                                       {: RESULT = new Declaracion(v, Tipo.NO_PRIMITIVO); //System.out.println("Declaración de arreglo" + v);:}
-                | c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {: RESULT = new Declaracion(v,t); //System.out.println("Declaración de arreglo" + v);:}
-                | VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO); //System.out.println("Declaración de arreglo" + v);:}
-                | c_tipo_arreglo VAR:v                                                              {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO); //System.out.println("Declaración de arreglo" + v);:}
+                | c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO                          {: RESULT = new Declaracion(v,(Tipo) t,true); //System.out.println("Declaración de arreglo" + v);:}
+                | VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO                                       {: RESULT = new Declaracion(v, Tipo.NO_PRIMITIVO, true); //System.out.println("Declaración de arreglo" + v);:}
+                | c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {: RESULT = new Declaracion(v,(Tipo) t, true); //System.out.println("Declaración de arreglo" + v);:}
+                | VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO, true); //System.out.println("Declaración de arreglo" + v);:}
+                | c_tipo_arreglo VAR:v                                                              {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO, true); //System.out.println("Declaración de arreglo" + v);:}
                 ;
 
 /*------------------------------Primitivas de tipo de datos------------------------------*/
@@ -587,13 +596,13 @@ c_expresion_variable_comparacion ::= c_expresion_variable_igual
 /*------------------------------Declaracion de las asignaciones------------------------------*/
 
 c_asignacion ::=    c_tipo_primitivo:t VAR:v c_asignacion_prima:o
-                    {: RESULT = new Asignacion(t, v);:}
+                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t));:}
                 |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(t, v);:}
+                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t));:}
                 |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(t, v);:}
+                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t));:}
                 |   c_tipo_arreglo:t VAR:v c_asignacion_prima:o
-                    {:RESULT = new Asignacion(t, v);:}
+                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t));:}
                 |   VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
                     {:RESULT = new Asignacion(v);:}
                 |   VAR:v c_asignacion_prima:o
@@ -602,10 +611,10 @@ c_asignacion ::=    c_tipo_primitivo:t VAR:v c_asignacion_prima:o
 
 /*------------------------------Sintaxis asignacion de tipo numericas------------------------------*/
 
-c_asignacion_prima ::=  ASIGNACION c_expresion_numerica    {:RESULT = new Object();:}    //Asignacion numerica
-                    |   ASIGNACION c_expresion_cadena       {:RESULT = new Object();:}
-                    |   ASIGNACION c_expresion_booleana     {:RESULT = new Object();:}
-                    |   ASIGNACION c_variable_o_llamadoMetodo       {:RESULT = new Object();:}
+c_asignacion_prima ::=  ASIGNACION c_expresion_numerica      {:RESULT = new Object();:}    //Asignacion numerica
+                    |   ASIGNACION c_expresion_cadena        {:RESULT = new Object();:}
+                    |   ASIGNACION c_expresion_booleana      {:RESULT = new Object();:}
+                    |   ASIGNACION c_variable_o_llamadoMetodo{:RESULT = new Object();:}
                     ;
 c_asignacion_expresion_Numerica_Total ::= c_expresion_numerica //Corresponde a todas aquellas menos las que tienen solo variables
                                         | c_variable_o_llamadoMetodo

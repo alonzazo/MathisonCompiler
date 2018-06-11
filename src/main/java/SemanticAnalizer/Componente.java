@@ -16,6 +16,7 @@ public interface Componente {
     public void setTblSimbolosLocales(HashMap<String, Nombre> tabla);
     public Componente getUltimoHijo();
     public Componente setUltimoHijo(Componente hijo);
+    public Componente getUltimoHermano();
     public HashMap< String, Nombre > getTblSimbolosLocales();
 
 }
