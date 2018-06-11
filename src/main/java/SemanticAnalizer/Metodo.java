@@ -54,7 +54,7 @@ public class Metodo extends ComponenteConcreto implements Nombre {
     }
 
     public List<Variable> getParametros() {
-        return new LinkedList<Variable>();
+        return _parametros;
     }
 
     @Override

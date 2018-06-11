@@ -10,6 +10,7 @@ import java.io.FileReader;
 import LexicalAnalizer.Lexer;
 import java.util.Scanner;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.LinkedList;
 import SemanticAnalizer.*;
@@ -1615,10 +1616,24 @@ class CUP$Parser$actions {
                             cola.addLast(hijo);
 
                             //Agregar a la tabla del padre si es Clase, Metodo o Variable
-                            if(hijo instanceof Clase || hijo instanceof Metodo)
+                            if(hijo instanceof Clase)
                             {
                                 Nombre hijoSimbolo = (Nombre) hijo;
                                 tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
+                            }
+                            if(hijo instanceof Metodo)
+                            {
+                                Metodo hijoSimbolo = (Metodo) hijo;
+                                tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
+
+                                //Agregamos los parametros como declaraciones
+                                List<Variable> variables = hijoSimbolo.getParametros();
+                                for ( Variable i:variables ) {
+                                    Declaracion decl = new Declaracion(i.get_nombre(),i.get_tipo(),i.is_arreglo());
+                                    decl.setHermanoDerecho(hijoSimbolo.getHijoMasIzq());
+                                    hijoSimbolo.setHijoMasIzq(decl);
+                                }
+
                             }
                             if (hijo instanceof Declaracion){
                                 Declaracion declaracion = (Declaracion) hijo;
@@ -1639,6 +1654,8 @@ class CUP$Parser$actions {
             boolean todoBien = true;
             LinkedList cola = new LinkedList();
             cola.addLast(raiz.getHijoMasIzq());
+            HashSet<String> metodosNativos = new HashSet<String>();
+                metodosNativos.add("raiz");
             while (cola.size() != 0 && todoBien) //Mientras la cola no esté vacía
             {
                 Componente aux = (Componente) cola.removeFirst();
@@ -1657,7 +1674,7 @@ class CUP$Parser$actions {
                                 if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
                                 {
                                     iterPadres = iterPadres.getPadre();
-                                }
+                                }else break;
                             }
                             if(iterPadres == null)
                             {
@@ -1668,20 +1685,22 @@ class CUP$Parser$actions {
                     }
                     if (hijo instanceof LlamadaMetodo){
                         String nombre = ((LlamadaMetodo) hijo).getNombre();
-                        if(!tabla.containsKey(nombre))
-                        {
-                            Componente iterPadres = aux;
-                            while (iterPadres != null)
+                        if (!metodosNativos.contains(nombre)){
+                            if(!tabla.containsKey(nombre))
                             {
-                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Metodo))
+                                Componente iterPadres = aux;
+                                while (iterPadres != null)
                                 {
-                                    iterPadres = iterPadres.getPadre();
+                                    if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Metodo))
+                                    {
+                                        iterPadres = iterPadres.getPadre();
+                                    }else break;
                                 }
-                            }
-                            if(iterPadres == null)
-                            {
-                                todoBien = false;
-                                throw new SemanticError("ERROR SEMANTICO: Referencia no declarada: " + nombre);
+                                if(iterPadres == null)
+                                {
+                                    todoBien = false;
+                                    throw new SemanticError("ERROR SEMANTICO: Referencia no declarada: " + nombre);
+                                }
                             }
                         }
                     }
@@ -1729,7 +1748,7 @@ class CUP$Parser$actions {
               llenarTabla();
               System.out.println(imprimirArbol());
               try{
-                  verificarExistencias();
+                verificarExistencias();
               }catch (SemanticError ex){
                 System.out.println(ex.getMessage());
               }
