@@ -594,10 +594,10 @@ c_estructuras ::= c_para:p
 
 c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
             AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: Asignacion a = new Asignacion(v); a.setHermanoDerecho(ls);RESULT = new Para(v, a);:}//TODO Si encuentra un para sacar la asignacion a variable
+            {: Asignacion a = new Asignacion(v); a.setHermanoDerecho(ls);RESULT = new Para(v, a);:}//TODO Agregar listas de expresiones para el desde, el hasta y avance (estos no se pueden simplemente agregar al scope)
          |  PARA NUM VAR:v DESDE c_asignacion_expresion_Numerica_Total HASTA c_asignacion_expresion_Numerica_Total
             AVANCE c_asignacion_expresion_Numerica_Total LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: Asignacion a = new Asignacion(v); Declaracion decl = new Declaracion(v, Tipo.NUMERICO); a.setHermanoDerecho(decl); decl.setHermanoDerecho(ls); RESULT = new Para(v, a);:}//TODO Si encuentra un para sacar la declaracion de la variable
+            {: Asignacion a = new Asignacion(v); Declaracion decl = new Declaracion(v, Tipo.NUMERICO); a.setHermanoDerecho(decl); decl.setHermanoDerecho(ls); RESULT = new Para(v, a);:}
          ;
 
 c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
@@ -619,7 +619,7 @@ c_sino ::= SINO c_si
          | SINO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
            {: RESULT = new Sino(ls);:}
          ;
-
+//POR DECISIÓN SE QUITÓ
 c_revisar ::= REVISAR PARENTESISABIERTO VAR:v PARENTESISCERRADO LLAVEABIERTO c_revisar_casos LLAVECERRADO //TODO: Revisar los casos de las REVISIONES
               {: RESULT = new Revisar();:}
             ;
@@ -644,12 +644,14 @@ c_lista_sentencias ::= c_asignacion:a c_lista_sentencias:ls
 /*------------------------------Declaracion Basica ------------------------------*/
 
 c_declaracion ::= c_tipo_primitivo:t VAR:v                                                          {: RESULT = new Declaracion(v,(Tipo) t); //System.out.println("Declaración " + v);:}
-                | VAR:w VAR:v                                                                       {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO, w); //System.out.println("Declaración " + v);:}//TODO: Agregar el nombre de la clase
+                | VAR:w VAR:v                                                                       {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO, w); //System.out.println("Declaración " + v);:}
+                //TODOold Agregar el nombre de la clase
                 | c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO                          {: RESULT = new Declaracion(v,(Tipo) t,true); //System.out.println("Declaración de arreglo" + v);:}
                 | VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO                                       {: RESULT = new Declaracion(v, Tipo.NO_PRIMITIVO, true, w); //System.out.println("Declaración de arreglo" + v);:}
                 | c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {: RESULT = new Declaracion(v,(Tipo) t, true); //System.out.println("Declaración de arreglo" + v);:}
                 | VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO, true, w); //System.out.println("Declaración de arreglo" + v);:}
-                | c_tipo_arreglo:t VAR:v                                                              {: RESULT = new Declaracion(v,(Tipo)t, true); //System.out.println("Declaración de arreglo" + v);:}//TODO Checkear los no primitivos de los arreglos
+                | c_tipo_arreglo:t VAR:v                                                              {: RESULT = new Declaracion(v,(Tipo)t, true); //System.out.println("Declaración de arreglo" + v);:}
+                //TODOold Checkear los no primitivos de los arreglos
                 ;
 
 /*------------------------------Primitivas de tipo de datos------------------------------*/
@@ -664,13 +666,14 @@ c_tipo_primitivo ::= CAD                                                    {: R
                   ;
 
 c_tipo_arreglo ::=  c_tipo_primitivo:t CORCHETEABIERTO CORCHETECERRADO      {: RESULT = t;:}
-                |   VAR:w CORCHETEABIERTO CORCHETECERRADO                   {: RESULT = Tipo.NO_PRIMITIVO;:}//TODO Pasar por alguna parte el nombre del tipo
+                |   VAR:w CORCHETEABIERTO CORCHETECERRADO                   {: RESULT = Tipo.NO_PRIMITIVO;:}                    //Pasar por alguna parte el nombre del tipo
                 |   c_tipo_primitivo:t CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = t;:}
-                |   VAR:w CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = Tipo.NO_PRIMITIVO;:}//TODO Pasar por alguna parte el nombre del tipo
+                |   VAR:w CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = Tipo.NO_PRIMITIVO;:}//Pasar por alguna parte el nombre del tipo
                 ;
 
 /*-------------------------Sintaxis de las variables y operaciones con variables------------------------*/
-
+//TODO Para añadir soporte a orientación a objetos agregar esta linea
+//c_variable_o_llamadoMetodo ::= c_expresion_variable:v PUNTO c_variable_o_llamadoMetodo
 c_variable_o_llamadoMetodo ::= c_expresion_variable:v     {: RESULT = v;//System.out.println("Variable de expresion");:}
                              | c_llamadoMetodo:v          {: RESULT = v;//System.out.println("Llamado a metodo en expresion");:}
                              ;
@@ -682,7 +685,7 @@ c_llamadoMetodo ::= c_expresion_llamado_metodo:m                            {: R
 c_expresion_variable ::= variable_arreglo:v                                         {:RESULT = v;:}
                        | PARENTESISABIERTO c_expresion_variable:v PARENTESISCERRADO {:RESULT = v;:}
                        ;
-//TODO Agregar estas expresiones al árbol semántico
+//TODO Agregar solo reducciones y linkeo de variables o llamados a métodos al arbol
 c_expresion_variable_igual ::= c_expresion_numerica:e IGUAL c_expresion_numerica:f                      {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex;:}
                              | c_expresion_booleana:e  IGUAL c_expresion_booleana:f                     {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex;:}
                              | c_expresion_booleana:e  IGUAL c_variable_o_llamadoMetodo:m               {: Componente ex = (Componente)e; ex.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = ex;:}
@@ -827,7 +830,7 @@ c_expresion_booleana::= c_expresion_booleana:e  Y c_expresion_booleana:f        
                       | c_variable_o_llamadoMetodo:m Y c_variable_o_llamadoMetodo:n         {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = ex; :}
                       | c_variable_o_llamadoMetodo:m O c_variable_o_llamadoMetodo:n         {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = ex; :}
 
-                      | c_expresion_variable_comparacion//TODO Comparaciones
+                      | c_expresion_variable_comparacion
                       | VERDADERO                                                   {:RESULT = new ExpresionGenerico("VERDADERO");:}
                       | FALSO                                                       {:RESULT = new ExpresionGenerico("FALSO");:}
                       | PARENTESISABIERTO c_expresion_booleana:e PARENTESISCERRADO  {:RESULT = e;:}
