@@ -75,7 +75,7 @@ action code {:
         return existe;
     }
 
-    public void llenarTabla() throws SemanticError
+    public void llenarTabla() throws SemanticError          //TODO Colocar número de aparición a cada elemento
                 {
                     HashMap<String, Nombre> tablaSimbolos = new HashMap<String, Nombre>();
                     LinkedList cola = new LinkedList();
@@ -139,7 +139,7 @@ action code {:
                     }
                 }
 
-    public boolean verificarExistencias() throws SemanticError
+    public boolean verificarExistencias() throws SemanticError          //TODO Verificar si el número de aparición es mayor que el de su declaración.
         {
             boolean todoBien = true;
             LinkedList cola = new LinkedList();
