@@ -7,6 +7,7 @@ public abstract class ComponenteConcreto implements Componente{
     protected Componente _padre;
     protected Componente _hijoMasIzq;
     protected Componente _hermanoDerecho;
+    protected int ordenAparicion;
     protected HashMap<String, Nombre> _tblSimbolosLocales;
 
     @Override
@@ -104,6 +105,18 @@ public abstract class ComponenteConcreto implements Componente{
     @Override
     public HashMap<String, Nombre> getTblSimbolosLocales() {
         return _tblSimbolosLocales;
+    }
+
+    @Override
+    public void setOrdenAparicion(int aparicion)
+    {
+        ordenAparicion = aparicion;
+    }
+
+    @Override
+    public int getOrdenAparicion()
+    {
+        return ordenAparicion;
     }
 
     @Override
