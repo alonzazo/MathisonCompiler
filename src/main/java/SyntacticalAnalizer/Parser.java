@@ -1615,159 +1615,173 @@ class CUP$Parser$actions {
     }
 
     public void llenarTabla() throws SemanticError
+    {
+        HashMap<String, Nombre> tablaSimbolos = new HashMap<String, Nombre>();
+        LinkedList cola = new LinkedList();
+        cola.addLast(raiz);
+        int aparicion = 0;
+        while (!cola.isEmpty()) //Mientras la cola no esté vacía
+        {
+            Componente aux = (Componente) cola.removeFirst();
+
+            //Ver si es un simbolo guardado
+            /*if(aux instanceof  Clase || aux instanceof Metodo)
+            {
+                Nombre simbolo = (Nombre) aux;
+                System.out.println("Soy " + simbolo.get_nombre());
+            }
+            else
+            {
+                System.out.println("Soy solo un " + aux.toString());
+            }*/
+
+            Componente hijo = aux.getHijoMasIzq();
+            while (hijo != null) //Mientras tenga hijos
+            {
+                hijo.setPadre(aux);
+                cola.addLast(hijo);
+                hijo.setOrdenAparicion(aparicion);
+
+                /*if (hijo instanceof Para){
+                    Para para = (Para) hijo;
+                    if (!existeSimbolo(para.get_variable(),hijo,tablaSimbolos))
+                        tablaSimbolos.put(declaracion.get_nombre(), new Variable(declaracion.get_nombre(), declaracion.get_tipo(), declaracion.is_arreglo()));
+                    else throw new SemanticError("ERROR SEMANTICO: Declaración duplicada de variable: " + declaracion.get_nombre());
+                }*/
+                //Agregar a la tabla del padre si es Clase, Metodo o Variable
+                if(hijo instanceof Clase)
                 {
-                    HashMap<String, Nombre> tablaSimbolos = new HashMap<String, Nombre>();
-                    LinkedList cola = new LinkedList();
-                    cola.addLast(raiz);
-                    while (!cola.isEmpty()) //Mientras la cola no esté vacía
-                    {
-                        Componente aux = (Componente) cola.removeFirst();
-
-                        //Ver si es un simbolo guardado
-                        /*if(aux instanceof  Clase || aux instanceof Metodo)
-                        {
-                            Nombre simbolo = (Nombre) aux;
-                            System.out.println("Soy " + simbolo.get_nombre());
-                        }
-                        else
-                        {
-                            System.out.println("Soy solo un " + aux.toString());
-                        }*/
-
-                        Componente hijo = aux.getHijoMasIzq();
-                        while (hijo != null) //Mientras tenga hijos
-                        {
-                            hijo.setPadre(aux);
-                            cola.addLast(hijo);
-
-
-                            /*if (hijo instanceof Para){
-                                Para para = (Para) hijo;
-                                if (!existeSimbolo(para.get_variable(),hijo,tablaSimbolos))
-                                    tablaSimbolos.put(declaracion.get_nombre(), new Variable(declaracion.get_nombre(), declaracion.get_tipo(), declaracion.is_arreglo()));
-                                else throw new SemanticError("ERROR SEMANTICO: Declaración duplicada de variable: " + declaracion.get_nombre());
-                            }*/
-                            //Agregar a la tabla del padre si es Clase, Metodo o Variable
-                            if(hijo instanceof Clase)
-                            {
-                                Nombre hijoSimbolo = (Nombre) hijo;
-                                if (!existeSimbolo(hijoSimbolo.get_nombre(),(Componente) hijoSimbolo,tablaSimbolos))
-                                    tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
-                                else throw new SemanticError("ERROR SEMANTICO: Declaracion duplicada de clase: " + hijoSimbolo.get_nombre());
-                            }
-                            if(hijo instanceof Metodo)
-                            {
-                                Metodo hijoSimbolo = (Metodo) hijo;
-                                if (!existeSimbolo(hijoSimbolo.get_nombre(),hijoSimbolo,tablaSimbolos))
-                                    tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
-                                else throw new SemanticError("ERROR SEMANTICO: Declaración duplicada de metodo: " + hijoSimbolo.get_nombre());
-                                //Agregamos los parametros como declaraciones
-                                List<Variable> variables = hijoSimbolo.getParametros();
-                                for ( Variable i:variables ) {
-                                    Declaracion decl = new Declaracion(i.get_nombre(),i.get_tipo(),i.is_arreglo());
-                                    decl.setHermanoDerecho(hijoSimbolo.getHijoMasIzq());
-                                    hijoSimbolo.setHijoMasIzq(decl);
-                                }
-
-                            }
-                            if (hijo instanceof Declaracion){
-                                Declaracion declaracion = (Declaracion) hijo;
-                                if (!existeSimbolo(declaracion.get_nombre(),hijo,tablaSimbolos))
-                                    tablaSimbolos.put(declaracion.get_nombre(), new Variable(declaracion.get_nombre(), declaracion.get_tipo(), declaracion.is_arreglo()));
-                                else throw new SemanticError("ERROR SEMANTICO: Declaración duplicada de variable: " + declaracion.get_nombre());
-                            }
-                            hijo = hijo.getHermanoDerecho();
-                        }
-                        aux.setTblSimbolosLocales(tablaSimbolos);
-
-                        //System.out.println("Tabla asignada a " + aux.toString() + "\n" + aux.getTblSimbolosLocales().toString());
-
-                        tablaSimbolos = new HashMap<String, Nombre>(); //Reinicia la tabla del padre
-                    }
+                    Clase hijoSimbolo = (Clase) hijo;
+                    hijoSimbolo.setOrdenAparicion(aparicion);
+                    if (!existeSimbolo(hijoSimbolo.get_nombre(),(Componente) hijoSimbolo,tablaSimbolos))
+                        tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
+                    else throw new SemanticError("ERROR SEMANTICO: Declaracion duplicada de clase: " + hijoSimbolo.get_nombre());
                 }
+                if(hijo instanceof Metodo)
+                {
+                    Metodo hijoSimbolo = (Metodo) hijo;
+                    hijoSimbolo.setOrdenAparicion(aparicion);
+                    if (!existeSimbolo(hijoSimbolo.get_nombre(),hijoSimbolo,tablaSimbolos))
+                        tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
+                    else throw new SemanticError("ERROR SEMANTICO: Declaración duplicada de metodo: " + hijoSimbolo.get_nombre());
+                    //Agregamos los parametros como declaraciones
+                    List<Variable> variables = hijoSimbolo.getParametros();
+                    for ( Variable i:variables ) {
+                        Declaracion decl = new Declaracion(i.get_nombre(),i.get_tipo(),i.is_arreglo());
+                        decl.setHermanoDerecho(hijoSimbolo.getHijoMasIzq());
+                        hijoSimbolo.setHijoMasIzq(decl);
+                    }
+
+                }
+                if (hijo instanceof Declaracion){
+                    Declaracion declaracion = (Declaracion) hijo;
+                    if (!existeSimbolo(declaracion.get_nombre(),hijo,tablaSimbolos))
+                    {
+                        Variable variable = new Variable(declaracion.get_nombre(), declaracion.get_tipo(), declaracion.is_arreglo());
+                        variable.setOrdenAparicion(aparicion);
+                        tablaSimbolos.put(declaracion.get_nombre(), variable);
+                    }
+                    else throw new SemanticError("ERROR SEMANTICO: Declaración duplicada de variable: " + declaracion.get_nombre());
+                }
+                hijo = hijo.getHermanoDerecho();
+                aparicion++;
+            }
+            aux.setTblSimbolosLocales(tablaSimbolos);
+
+            //System.out.println("Tabla asignada a " + aux.toString() + "\n" + aux.getTblSimbolosLocales().toString());
+
+            tablaSimbolos = new HashMap<String, Nombre>(); //Reinicia la tabla del padre
+        }
+    }
 
     public boolean verificarExistencias() throws SemanticError
+    {
+        boolean todoBien = true;
+        LinkedList cola = new LinkedList();
+        cola.addLast(raiz.getHijoMasIzq());
+        HashSet<String> metodosNativos = new HashSet<String>();
+            metodosNativos.add("raiz");
+        while (cola.size() != 0 && todoBien) //Mientras la cola no esté vacía
         {
-            boolean todoBien = true;
-            LinkedList cola = new LinkedList();
-            cola.addLast(raiz.getHijoMasIzq());
-            HashSet<String> metodosNativos = new HashSet<String>();
-                metodosNativos.add("raiz");
-            while (cola.size() != 0 && todoBien) //Mientras la cola no esté vacía
+            Componente aux = (Componente) cola.removeFirst();
+            HashMap<String, Nombre> tabla = aux.getTblSimbolosLocales();
+            Componente hijo = aux.getHijoMasIzq();
+            while (hijo != null && todoBien) //Mientras tenga hijos
             {
-                Componente aux = (Componente) cola.removeFirst();
-                HashMap<String, Nombre> tabla = aux.getTblSimbolosLocales();
-                Componente hijo = aux.getHijoMasIzq();
-                while (hijo != null && todoBien) //Mientras tenga hijos
-                {
 
-                    if(hijo instanceof Variable)
+                if(hijo instanceof Variable)
+                {
+                    String nombre = ((Variable) hijo).get_nombre();
+                    if(!tabla.containsKey(nombre))
                     {
-                        String nombre = ((Variable) hijo).get_nombre();
-                        if(!tabla.containsKey(nombre))
+                        Componente iterPadres = aux;
+                        while (iterPadres != null)
                         {
-                            Componente iterPadres = aux;
-                            while (iterPadres != null)
+                            if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
                             {
-                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
-                                {
-                                    iterPadres = iterPadres.getPadre();
-                                }else break;
-                            }
-                            if(iterPadres == null)
-                            {
-                                todoBien = false;
-                                throw new SemanticError("ERROR SEMANTICO: Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
-                            }
+                                iterPadres = iterPadres.getPadre();
+                            }else break;
                         }
-                    }
-                    if(hijo instanceof Asignacion)
-                    {
-                        String nombre = ((Asignacion) hijo).get_nombre();
-                        if(!tabla.containsKey(nombre))
+                        if(iterPadres == null)
                         {
-                            Componente iterPadres = aux;
-                            while (iterPadres != null)
-                            {
-                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
-                                {
-                                    iterPadres = iterPadres.getPadre();
-                                }else break;
-                            }
-                            if(iterPadres == null)
-                            {
-                                todoBien = false;
-                                throw new SemanticError("ERROR SEMANTICO: Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
-                            }
+                            todoBien = false;
+                            throw new SemanticError("ERROR SEMANTICO: Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
                         }
                     }
-                    if (hijo instanceof LlamadaMetodo){
-                        String nombre = ((LlamadaMetodo) hijo).getNombre();
-                        if (!metodosNativos.contains(nombre)){
-                            if(!tabla.containsKey(nombre))
-                            {
-                                Componente iterPadres = aux;
-                                while (iterPadres != null)
-                                {
-                                    if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Metodo))
-                                    {
-                                        iterPadres = iterPadres.getPadre();
-                                    }else break;
-                                }
-                                if(iterPadres == null)
-                                {
-                                    todoBien = false;
-                                    throw new SemanticError("ERROR SEMANTICO: Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
-                                }
-                            }
-                        }
-                    }
-                    cola.addLast(hijo);
-                    hijo = hijo.getHermanoDerecho();
                 }
+                if(hijo instanceof Asignacion)
+                {
+                    String nombre = ((Asignacion) hijo).get_nombre();
+                    if(!tabla.containsKey(nombre))
+                    {
+                        Componente iterPadres = aux;
+                        while (iterPadres != null)
+                        {
+                            if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
+                            {
+                                iterPadres = iterPadres.getPadre();
+                            }else break;
+                        }
+                        if(iterPadres == null)
+                        {
+                            todoBien = false;
+                            throw new SemanticError("ERROR SEMANTICO: Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
+                        }
+                    }
+                    else //Si lo tiene, debe buscar que se declaró antes de usarlo
+                    {
+                        Variable simbolo = (Variable) tabla.get(nombre);
+                        if(hijo.getOrdenAparicion() < simbolo.getOrdenAparicion())
+                            throw new SemanticError("ERROR SEMANTICO: Variable todavia no declarada " + nombre);
+                    }
+                }
+                if (hijo instanceof LlamadaMetodo){
+                    String nombre = ((LlamadaMetodo) hijo).getNombre();
+                    if (!metodosNativos.contains(nombre)){
+                        if(!tabla.containsKey(nombre))
+                        {
+                            Componente iterPadres = aux;
+                            while (iterPadres != null)
+                            {
+                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Metodo))
+                                {
+                                    iterPadres = iterPadres.getPadre();
+                                }else break;
+                            }
+                            if(iterPadres == null)
+                            {
+                                todoBien = false;
+                                throw new SemanticError("ERROR SEMANTICO: Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
+                            }
+                        }
+                    }
+                }
+                cola.addLast(hijo);
+                hijo = hijo.getHermanoDerecho();
             }
-            return todoBien;
         }
+        return todoBien;
+    }
 
 
   private final Parser parser;
