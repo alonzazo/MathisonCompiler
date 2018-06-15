@@ -1,13 +1,12 @@
 package SemanticAnalizer;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
-public class LlamadaMetodo extends Sentencia implements Expresion {
+public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
 
     private List<Variable> _parametros;
     private String _nombre;
+    private Tipo _tipo;
 
     public LlamadaMetodo(String nombre){
         _nombre = nombre;
@@ -24,6 +23,11 @@ public class LlamadaMetodo extends Sentencia implements Expresion {
     }
 
     @Override
+    public Tipo getTipo() {
+        return _tipo;
+    }
+
+    @Override
     public boolean evaluarSemantica() {
         return false;
     }
@@ -31,5 +35,15 @@ public class LlamadaMetodo extends Sentencia implements Expresion {
     @Override
     public String toString() {
         return "LlamadaMetodo{" +  _nombre + '}';
+    }
+
+    @Override
+    public String get_nombre() {
+        return _nombre;
+    }
+
+    @Override
+    public Tipo get_tipo() {
+        return _tipo;
     }
 }

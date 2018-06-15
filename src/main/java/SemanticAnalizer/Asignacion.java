@@ -6,6 +6,7 @@ import java.util.LinkedList;
 public class Asignacion extends Sentencia {
     private String _nombre;
     private Object _valor;
+    private ExpresionGenerico _expresion;
 
     public Asignacion(){ }
 
@@ -28,6 +29,14 @@ public class Asignacion extends Sentencia {
 
     public void set_nombre(String _nombre) {
         this._nombre = _nombre;
+    }
+
+    public ExpresionGenerico get_expresion() {
+        return _expresion;
+    }
+
+    public void set_expresion(ExpresionGenerico expresion) {
+        this._expresion = expresion;
     }
 
     @Override
