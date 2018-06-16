@@ -50,7 +50,7 @@ public class Metodo extends ComponenteConcreto implements Nombre {
 
     @Override
     public Tipo get_tipo() {
-        return null;
+        return _tipo;
     }
 
     public List<Variable> getParametros() {

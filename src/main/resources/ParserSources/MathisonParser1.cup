@@ -139,58 +139,58 @@ action code {:
         }
     }
 
-    public boolean verificarExistencias() throws SemanticError          //TODO Verificar si el número de aparición es mayor que el de su declaración.
-    {
+    public boolean verificarExistencias() throws SemanticError {          //TODO Verificar si el número de aparición es mayor que el de su declaración.
         boolean todoBien = true;
         LinkedList cola = new LinkedList();
         cola.addLast(raiz.getHijoMasIzq());
         HashSet<String> metodosNativos = new HashSet<String>();
-            metodosNativos.add("raiz");
-        while (cola.size() != 0 && todoBien) //Mientras la cola no esté vacía
-        {
+        metodosNativos.add("raiz");
+        while (cola.size() != 0 && todoBien) { //Mientras la cola no esté vacía
             Componente aux = (Componente) cola.removeFirst();
             HashMap<String, Nombre> tabla = aux.getTblSimbolosLocales();
             Componente hijo = aux.getHijoMasIzq();
-            while (hijo != null && todoBien) //Mientras tenga hijos
-            {
-
-                if(hijo instanceof Variable)
-                {
+            while (hijo != null && todoBien) { //Mientras tenga hijos
+                if(hijo instanceof Variable) {
                     String nombre = ((Variable) hijo).get_nombre();
-                    if(!tabla.containsKey(nombre))
-                    {
+                    if(!tabla.containsKey(nombre)) {
                         Componente iterPadres = aux;
-                        while (iterPadres != null)
-                        {
-                            if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
-                            {
+                        while (iterPadres != null) {
+                            if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable)) {
                                 iterPadres = iterPadres.getPadre();
                             }else break;
                         }
-                        if(iterPadres == null)
-                        {
+                        if(iterPadres == null) {
                             todoBien = false;
                             throw new SemanticError("ERROR SEMANTICO: Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
                         }
                     }
                 }
-                if(hijo instanceof Asignacion)
-                {
+                if(hijo instanceof Asignacion) {
                     String nombre = ((Asignacion) hijo).get_nombre();
-                    if(!tabla.containsKey(nombre))
-                    {
+                    if(!tabla.containsKey(nombre)) {
                         Componente iterPadres = aux;
-                        while (iterPadres != null)
-                        {
-                            if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
-                            {
+                        while (iterPadres != null) {
+                            if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable)) {
                                 iterPadres = iterPadres.getPadre();
                             }else break;
                         }
-                        if(iterPadres == null)
-                        {
+                        if(iterPadres == null) {
                             todoBien = false;
                             throw new SemanticError("ERROR SEMANTICO: Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
+                        }else{
+                            ExpresionGenerico ex = ((Asignacion) hijo).get_expresion();
+                            Tipo t = iterPadres.getTblSimbolosLocales().get(nombre).get_tipo();
+                            Componente h = (Asignacion) hijo;
+                            if(!tipoDatosCorrecto( ex, t, h)){
+                                throw new SemanticError("ERROR SEMANTICO: Tipo de dato no compatible");
+                            }
+                        }
+                    }else{
+                        ExpresionGenerico ex = ((Asignacion) hijo).get_expresion();
+                        Tipo t = tabla.get(nombre).get_tipo();
+                        Componente h = (Asignacion) hijo;
+                        if(!tipoDatosCorrecto( ex, t, h)){
+                            throw new SemanticError("ERROR SEMANTICO: Tipo de dato no compatible");
                         }
                     }
                 }
@@ -222,8 +222,7 @@ action code {:
         return todoBien;
     }
 
-    public boolean tipoDatosCorrecto(ExpresionGenerico primero, Tipo tipoEsperado, Componente padre) throws SemanticError
-    {
+    public boolean tipoDatosCorrecto(ExpresionGenerico primero, Tipo tipoEsperado, Componente padre) throws SemanticError {
         ExpresionGenerico iter = primero;
         do{
             if (iter.getTipo() != null){
@@ -235,23 +234,52 @@ action code {:
                 Componente aux = padre;
 
                 if(iter.esMetodo()){ // si es una llamada a metodo
-
-                    while (aux != null) {
-                        if (!aux.getTblSimbolosLocales().containsKey(iter.getNombre()) || !(aux.getTblSimbolosLocales().get(iter.getNombre()) instanceof Metodo) || (aux.getTblSimbolosLocales().get(iter.getNombre()).get_tipo() != tipoEsperado) ) {
-                            aux = aux.getPadre();
-                        }else break;
+                    Tipo t = null;
+                    boolean esta = aux.getTblSimbolosLocales().containsKey(iter.getNombre());
+                    Nombre var = aux.getTblSimbolosLocales().get(iter.getNombre());
+                    if(var != null){
+                        t = var.get_tipo();
                     }
+                    do {
+                        if (!esta || !(var instanceof Metodo) || t != tipoEsperado ) {
+                            if((aux = aux.getPadre()) != null){
+                                esta = aux.getTblSimbolosLocales().containsKey(iter.getNombre());
+                                var = aux.getTblSimbolosLocales().get(iter.getNombre());
+                                if(var != null){
+                                    t = var.get_tipo();
+                                }
+                            }else{
+                                aux = null;
+                            }
+                        }else{
+                            break;
+                        }
+                    } while (aux != null);
                     if(aux == null) {
                         throw new SemanticError("ERROR SEMANTICO: Tipos no compatibles");
                     }
-
                 } else { // si es una variable
-
-                    while (aux != null) {
-                        if (!aux.getTblSimbolosLocales().containsKey(iter.getNombre()) || !(aux.getTblSimbolosLocales().get(iter.getNombre()) instanceof Metodo) || (aux.getTblSimbolosLocales().get(iter.getNombre()).get_tipo() != tipoEsperado)) {
-                            aux = aux.getPadre();
-                        }else break;
+                    Tipo t = null;
+                    boolean esta = aux.getTblSimbolosLocales().containsKey(iter.getNombre());
+                    Nombre var = aux.getTblSimbolosLocales().get(iter.getNombre());
+                    if(var != null){
+                        t = var.get_tipo();
                     }
+                    do {
+                        if (!esta || !(var instanceof Variable) || t != tipoEsperado ) {
+                            if((aux = aux.getPadre()) != null){
+                                esta = aux.getTblSimbolosLocales().containsKey(iter.getNombre());
+                                var = aux.getTblSimbolosLocales().get(iter.getNombre());
+                                if(var != null){
+                                    t = var.get_tipo();
+                                }
+                            }else{
+                                aux = null;
+                            }
+                        }else{
+                            break;
+                        }
+                    } while (aux != null);
                     if(aux == null) {
                         throw new SemanticError("ERROR SEMANTICO: Tipos no compatibles");
                     }
@@ -259,11 +287,11 @@ action code {:
             } else {
                 return false;
             }
+            System.out.println(iter.toString());
             iter = (ExpresionGenerico) iter.getHermanoDerecho();
-        }while(iter.getHermanoDerecho() != null);
+        }while(iter != null);
         return true;
     }
-
 
 :}
 
@@ -772,17 +800,17 @@ c_expresion_variable_comparacion ::= c_expresion_variable_igual:e           {:RE
 /*------------------------------Declaracion de las asignaciones------------------------------*/
 
 c_asignacion ::=    c_tipo_primitivo:t VAR:v c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o);:}
+                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());:}
                 |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o);:}
+                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());:}
                 |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o);:}
+                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());:}
                 |   c_tipo_arreglo:t VAR:v c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o);:}
+                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());:}
                 |   VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.set_expresion(o);:}
+                    {:RESULT = new Asignacion(v); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());:}
                 |   VAR:v c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.set_expresion(o);:}
+                    {:RESULT = new Asignacion(v); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());:}
                ;
 
 /*------------------------------Sintaxis asignacion de tipo numericas------------------------------*/

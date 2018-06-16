@@ -1678,58 +1678,58 @@ class CUP$Parser$actions {
         }
     }
 
-    public boolean verificarExistencias() throws SemanticError          //TODO Verificar si el número de aparición es mayor que el de su declaración.
-    {
+    public boolean verificarExistencias() throws SemanticError {          //TODO Verificar si el número de aparición es mayor que el de su declaración.
         boolean todoBien = true;
         LinkedList cola = new LinkedList();
         cola.addLast(raiz.getHijoMasIzq());
         HashSet<String> metodosNativos = new HashSet<String>();
-            metodosNativos.add("raiz");
-        while (cola.size() != 0 && todoBien) //Mientras la cola no esté vacía
-        {
+        metodosNativos.add("raiz");
+        while (cola.size() != 0 && todoBien) { //Mientras la cola no esté vacía
             Componente aux = (Componente) cola.removeFirst();
             HashMap<String, Nombre> tabla = aux.getTblSimbolosLocales();
             Componente hijo = aux.getHijoMasIzq();
-            while (hijo != null && todoBien) //Mientras tenga hijos
-            {
-
-                if(hijo instanceof Variable)
-                {
+            while (hijo != null && todoBien) { //Mientras tenga hijos
+                if(hijo instanceof Variable) {
                     String nombre = ((Variable) hijo).get_nombre();
-                    if(!tabla.containsKey(nombre))
-                    {
+                    if(!tabla.containsKey(nombre)) {
                         Componente iterPadres = aux;
-                        while (iterPadres != null)
-                        {
-                            if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
-                            {
+                        while (iterPadres != null) {
+                            if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable)) {
                                 iterPadres = iterPadres.getPadre();
                             }else break;
                         }
-                        if(iterPadres == null)
-                        {
+                        if(iterPadres == null) {
                             todoBien = false;
                             throw new SemanticError("ERROR SEMANTICO: Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
                         }
                     }
                 }
-                if(hijo instanceof Asignacion)
-                {
+                if(hijo instanceof Asignacion) {
                     String nombre = ((Asignacion) hijo).get_nombre();
-                    if(!tabla.containsKey(nombre))
-                    {
+                    if(!tabla.containsKey(nombre)) {
                         Componente iterPadres = aux;
-                        while (iterPadres != null)
-                        {
-                            if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
-                            {
+                        while (iterPadres != null) {
+                            if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable)) {
                                 iterPadres = iterPadres.getPadre();
                             }else break;
                         }
-                        if(iterPadres == null)
-                        {
+                        if(iterPadres == null) {
                             todoBien = false;
                             throw new SemanticError("ERROR SEMANTICO: Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
+                        }else{
+                            ExpresionGenerico ex = ((Asignacion) hijo).get_expresion();
+                            Tipo t = iterPadres.getTblSimbolosLocales().get(nombre).get_tipo();
+                            Componente h = (Asignacion) hijo;
+                            if(!tipoDatosCorrecto( ex, t, h)){
+                                throw new SemanticError("ERROR SEMANTICO: Tipo de dato no compatible");
+                            }
+                        }
+                    }else{
+                        ExpresionGenerico ex = ((Asignacion) hijo).get_expresion();
+                        Tipo t = tabla.get(nombre).get_tipo();
+                        Componente h = (Asignacion) hijo;
+                        if(!tipoDatosCorrecto( ex, t, h)){
+                            throw new SemanticError("ERROR SEMANTICO: Tipo de dato no compatible");
                         }
                     }
                 }
@@ -1761,8 +1761,7 @@ class CUP$Parser$actions {
         return todoBien;
     }
 
-    public boolean tipoDatosCorrecto(ExpresionGenerico primero, Tipo tipoEsperado, Componente padre) throws SemanticError
-    {
+    public boolean tipoDatosCorrecto(ExpresionGenerico primero, Tipo tipoEsperado, Componente padre) throws SemanticError {
         ExpresionGenerico iter = primero;
         do{
             if (iter.getTipo() != null){
@@ -1774,23 +1773,52 @@ class CUP$Parser$actions {
                 Componente aux = padre;
 
                 if(iter.esMetodo()){ // si es una llamada a metodo
-
-                    while (aux != null) {
-                        if (!aux.getTblSimbolosLocales().containsKey(iter.getNombre()) || !(aux.getTblSimbolosLocales().get(iter.getNombre()) instanceof Metodo) || (aux.getTblSimbolosLocales().get(iter.getNombre()).get_tipo() != tipoEsperado) ) {
-                            aux = aux.getPadre();
-                        }else break;
+                    Tipo t = null;
+                    boolean esta = aux.getTblSimbolosLocales().containsKey(iter.getNombre());
+                    Nombre var = aux.getTblSimbolosLocales().get(iter.getNombre());
+                    if(var != null){
+                        t = var.get_tipo();
                     }
+                    do {
+                        if (!esta || !(var instanceof Metodo) || t != tipoEsperado ) {
+                            if((aux = aux.getPadre()) != null){
+                                esta = aux.getTblSimbolosLocales().containsKey(iter.getNombre());
+                                var = aux.getTblSimbolosLocales().get(iter.getNombre());
+                                if(var != null){
+                                    t = var.get_tipo();
+                                }
+                            }else{
+                                aux = null;
+                            }
+                        }else{
+                            break;
+                        }
+                    } while (aux != null);
                     if(aux == null) {
                         throw new SemanticError("ERROR SEMANTICO: Tipos no compatibles");
                     }
-
                 } else { // si es una variable
-
-                    while (aux != null) {
-                        if (!aux.getTblSimbolosLocales().containsKey(iter.getNombre()) || !(aux.getTblSimbolosLocales().get(iter.getNombre()) instanceof Metodo) || (aux.getTblSimbolosLocales().get(iter.getNombre()).get_tipo() != tipoEsperado)) {
-                            aux = aux.getPadre();
-                        }else break;
+                    Tipo t = null;
+                    boolean esta = aux.getTblSimbolosLocales().containsKey(iter.getNombre());
+                    Nombre var = aux.getTblSimbolosLocales().get(iter.getNombre());
+                    if(var != null){
+                        t = var.get_tipo();
                     }
+                    do {
+                        if (!esta || !(var instanceof Variable) || t != tipoEsperado ) {
+                            if((aux = aux.getPadre()) != null){
+                                esta = aux.getTblSimbolosLocales().containsKey(iter.getNombre());
+                                var = aux.getTblSimbolosLocales().get(iter.getNombre());
+                                if(var != null){
+                                    t = var.get_tipo();
+                                }
+                            }else{
+                                aux = null;
+                            }
+                        }else{
+                            break;
+                        }
+                    } while (aux != null);
                     if(aux == null) {
                         throw new SemanticError("ERROR SEMANTICO: Tipos no compatibles");
                     }
@@ -1798,11 +1826,11 @@ class CUP$Parser$actions {
             } else {
                 return false;
             }
+            System.out.println(iter.toString());
             iter = (ExpresionGenerico) iter.getHermanoDerecho();
-        }while(iter.getHermanoDerecho() != null);
+        }while(iter != null);
         return true;
     }
-
 
 
   private final Parser parser;
@@ -3614,7 +3642,7 @@ class CUP$Parser$actions {
 		int oleft = ((Symbol)CUP$Parser$stack.peek()).left;
 		int oright = ((Symbol)CUP$Parser$stack.peek()).right;
 		ExpresionGenerico o = (ExpresionGenerico)((Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o);
+		RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_asignacion",27, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3632,7 +3660,7 @@ class CUP$Parser$actions {
 		int oleft = ((Symbol)CUP$Parser$stack.peek()).left;
 		int oright = ((Symbol)CUP$Parser$stack.peek()).right;
 		ExpresionGenerico o = (ExpresionGenerico)((Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o);
+		RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_asignacion",27, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3650,7 +3678,7 @@ class CUP$Parser$actions {
 		int oleft = ((Symbol)CUP$Parser$stack.peek()).left;
 		int oright = ((Symbol)CUP$Parser$stack.peek()).right;
 		ExpresionGenerico o = (ExpresionGenerico)((Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o);
+		RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_asignacion",27, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3668,7 +3696,7 @@ class CUP$Parser$actions {
 		int oleft = ((Symbol)CUP$Parser$stack.peek()).left;
 		int oright = ((Symbol)CUP$Parser$stack.peek()).right;
 		ExpresionGenerico o = (ExpresionGenerico)((Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o);
+		RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_asignacion",27, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3683,7 +3711,7 @@ class CUP$Parser$actions {
 		int oleft = ((Symbol)CUP$Parser$stack.peek()).left;
 		int oright = ((Symbol)CUP$Parser$stack.peek()).right;
 		ExpresionGenerico o = (ExpresionGenerico)((Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new Asignacion(v); RESULT.set_expresion(o);
+		RESULT = new Asignacion(v); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_asignacion",27, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3698,7 +3726,7 @@ class CUP$Parser$actions {
 		int oleft = ((Symbol)CUP$Parser$stack.peek()).left;
 		int oright = ((Symbol)CUP$Parser$stack.peek()).right;
 		ExpresionGenerico o = (ExpresionGenerico)((Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new Asignacion(v); RESULT.set_expresion(o);
+		RESULT = new Asignacion(v); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_asignacion",27, ((Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
