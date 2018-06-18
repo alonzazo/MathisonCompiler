@@ -10,6 +10,6 @@ public class SemanticError extends Exception {
      *                later retrieval by the {@link #getMessage()} method.
      */
     public SemanticError(String message) {
-        super(message);
+        super("ERROR SEMANTICO: " + message);
     }
 }
