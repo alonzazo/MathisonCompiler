@@ -5,6 +5,10 @@ public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
     private Tipo _tipo;
     private boolean _esMetodo;
 
+    public void setTipo(Tipo _tipo) {
+        this._tipo = _tipo;
+    }
+
     public ExpresionGenerico(String nombre, Tipo tipo) {
         this._nombre = nombre;
         this._tipo = tipo;

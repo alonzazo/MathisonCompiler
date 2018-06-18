@@ -9,5 +9,5 @@ public abstract class Sentencia extends ComponenteConcreto {
 
     }
 
-    public abstract boolean evaluarSemantica();
+    public abstract boolean evaluarSemantica() throws SemanticError;
 }

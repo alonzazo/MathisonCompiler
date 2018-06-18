@@ -22,6 +22,10 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
         return _nombre;
     }
 
+    public void setTipo(Tipo _tipo) {
+        this._tipo = _tipo;
+    }
+
     @Override
     public Tipo getTipo() {
         return _tipo;
