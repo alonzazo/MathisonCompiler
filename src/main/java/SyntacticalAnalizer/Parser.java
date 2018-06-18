@@ -1605,134 +1605,162 @@ class CUP$Parser$actions {
         return existe;
     }
 
-    public void llenarTabla() throws SemanticError          //TODO Colocar número de aparición a cada elemento
-    {
-        HashMap<String, Nombre> tablaSimbolos = new HashMap<String, Nombre>();
-        LinkedList cola = new LinkedList();
-        cola.addLast(raiz);
-        while (!cola.isEmpty()) //Mientras la cola no esté vacía
+    public void llenarTabla() throws SemanticError
         {
-            Componente aux = (Componente) cola.removeFirst();
+            HashMap<String, Nombre> tablaSimbolos = new HashMap<String, Nombre>();
+            LinkedList cola = new LinkedList();
+            cola.addLast(raiz);
+            int aparicion = 0;
+            while (!cola.isEmpty()) //Mientras la cola no esté vacía
+            {
+                Componente aux = (Componente) cola.removeFirst();
 
-            //Ver si es un simbolo guardado
-            /*if(aux instanceof  Clase || aux instanceof Metodo)
-            {
-                Nombre simbolo = (Nombre) aux;
-                System.out.println("Soy " + simbolo.get_nombre());
-            }
-            else
-            {
-                System.out.println("Soy solo un " + aux.toString());
-            }*/
-
-            Componente hijo = aux.getHijoMasIzq();
-            while (hijo != null) //Mientras tenga hijos
-            {
-                hijo.setPadre(aux);
-                cola.addLast(hijo);
-                //Agregar a la tabla del padre si es Clase, Metodo o Variable
-                if(hijo instanceof Clase)
+                //Ver si es un simbolo guardado
+                /*if(aux instanceof  Clase || aux instanceof Metodo)
                 {
-                    Nombre hijoSimbolo = (Nombre) hijo;
-                    if (!existeSimbolo(hijoSimbolo.get_nombre(),(Componente) hijoSimbolo,tablaSimbolos))
-                        tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
-                    else throw new SemanticError("Declaracion duplicada de clase: " + hijoSimbolo.get_nombre());
+                    Nombre simbolo = (Nombre) aux;
+                    System.out.println("Soy " + simbolo.get_nombre());
                 }
-                if(hijo instanceof Metodo)
+                else
                 {
-                    Metodo hijoSimbolo = (Metodo) hijo;
-                    if (!existeSimbolo(hijoSimbolo.get_nombre(),hijoSimbolo,tablaSimbolos))
-                        tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
-                    else throw new SemanticError("Declaración duplicada de metodo: " + hijoSimbolo.get_nombre());
-                    //Agregamos los parametros como declaraciones
-                    List<Variable> variables = hijoSimbolo.getParametros();
-                    for ( Variable i:variables ) {
-                        Declaracion decl = new Declaracion(i.get_nombre(),i.get_tipo(),i.is_arreglo());
-                        decl.setHermanoDerecho(hijoSimbolo.getHijoMasIzq());
-                        hijoSimbolo.setHijoMasIzq(decl);
+                    System.out.println("Soy solo un " + aux.toString());
+                }*/
+
+                Componente hijo = aux.getHijoMasIzq();
+                while (hijo != null) //Mientras tenga hijos
+                {
+                    hijo.setPadre(aux);
+                    cola.addLast(hijo);
+                    hijo.setOrdenAparicion(aparicion);
+
+                    /*if (hijo instanceof Para){
+                        Para para = (Para) hijo;
+                        if (!existeSimbolo(para.get_variable(),hijo,tablaSimbolos))
+                            tablaSimbolos.put(declaracion.get_nombre(), new Variable(declaracion.get_nombre(), declaracion.get_tipo(), declaracion.is_arreglo()));
+                        else throw new SemanticError("ERROR SEMANTICO: Declaración duplicada de variable: " + declaracion.get_nombre());
+                    }*/
+                    //Agregar a la tabla del padre si es Clase, Metodo o Variable
+                    if(hijo instanceof Clase)
+                    {
+                        Clase hijoSimbolo = (Clase) hijo;
+                        hijoSimbolo.setOrdenAparicion(aparicion);
+                        if (!existeSimbolo(hijoSimbolo.get_nombre(),(Componente) hijoSimbolo,tablaSimbolos))
+                            tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
+                        else throw new SemanticError("Declaracion duplicada de clase: " + hijoSimbolo.get_nombre());
                     }
-
-                }
-                if (hijo instanceof Declaracion){
-                    Declaracion declaracion = (Declaracion) hijo;
-                    if (!existeSimbolo(declaracion.get_nombre(),hijo,tablaSimbolos))
-                        tablaSimbolos.put(declaracion.get_nombre(), new Variable(declaracion.get_nombre(), declaracion.get_tipo(), declaracion.is_arreglo()));
-                    else throw new SemanticError("Declaración duplicada de variable: " + declaracion.get_nombre());
-                }
-                hijo = hijo.getHermanoDerecho();
-            }
-            aux.setTblSimbolosLocales(tablaSimbolos);
-
-            //System.out.println("Tabla asignada a " + aux.toString() + "\n" + aux.getTblSimbolosLocales().toString());
-
-            tablaSimbolos = new HashMap<String, Nombre>(); //Reinicia la tabla del padre
-        }
-    }
-
-    public boolean verificarExistencias() throws SemanticError {          //TODO Verificar si el número de aparición es mayor que el de su declaración.
-        boolean todoBien = true;
-        LinkedList cola = new LinkedList();
-        cola.addLast(raiz.getHijoMasIzq());
-        HashMap<String,Tipo> metodosNativos = new HashMap<String,Tipo>();
-        metodosNativos.put("raiz",Tipo.NUMERICO);
-        while (cola.size() != 0 && todoBien) { //Mientras la cola no esté vacía
-            Componente aux = (Componente) cola.removeFirst();
-            HashMap<String, Nombre> tabla = aux.getTblSimbolosLocales();
-            Componente hijo = aux.getHijoMasIzq();
-            while (hijo != null && todoBien) { //Mientras tenga hijos
-                if(hijo instanceof Variable) {
-                    String nombre = ((Variable) hijo).get_nombre();
-                    if(!tabla.containsKey(nombre)) {
-                        Componente iterPadres = aux;
-                        while (iterPadres != null) {
-                            if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable)) {
-                                iterPadres = iterPadres.getPadre();
-                            }else break;
+                    if(hijo instanceof Metodo)
+                    {
+                        Metodo hijoSimbolo = (Metodo) hijo;
+                        hijoSimbolo.setOrdenAparicion(aparicion);
+                        if (!existeSimbolo(hijoSimbolo.get_nombre(),hijoSimbolo,tablaSimbolos))
+                            tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
+                        else throw new SemanticError("Declaración duplicada de metodo: " + hijoSimbolo.get_nombre());
+                        //Agregamos los parametros como declaraciones
+                        List<Variable> variables = hijoSimbolo.getParametros();
+                        for ( Variable i:variables ) {
+                            Declaracion decl = new Declaracion(i.get_nombre(),i.get_tipo(),i.is_arreglo());
+                            decl.setHermanoDerecho(hijoSimbolo.getHijoMasIzq());
+                            hijoSimbolo.setHijoMasIzq(decl);
                         }
-                        if(iterPadres == null) {
-                            todoBien = false;
-                            throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
+
+                    }
+                    if (hijo instanceof Declaracion){
+                        Declaracion declaracion = (Declaracion) hijo;
+                        if (!existeSimbolo(declaracion.get_nombre(),hijo,tablaSimbolos))
+                        {
+                            Variable variable = new Variable(declaracion.get_nombre(), declaracion.get_tipo(), declaracion.is_arreglo());
+                            variable.setOrdenAparicion(aparicion);
+                            tablaSimbolos.put(declaracion.get_nombre(), variable);
                         }
+                        else throw new SemanticError("ERROR SEMANTICO: Declaración duplicada de variable: " + declaracion.get_nombre());
+                    }
+                    hijo = hijo.getHermanoDerecho();
+                    aparicion++;
+                }
+                aux.setTblSimbolosLocales(tablaSimbolos);
+
+                        //System.out.println("Tabla asignada a " + aux.toString() + "\n" + aux.getTblSimbolosLocales().toString());
+
+                        tablaSimbolos = new HashMap<String, Nombre>(); //Reinicia la tabla del padre
                     }
                 }
-                if(hijo instanceof Asignacion) {
-                    String nombre = ((Asignacion) hijo).get_nombre();
-                    if(!tabla.containsKey(nombre)) {
-                        Componente iterPadres = aux;
-                        while (iterPadres != null) {
-                            if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable)) {
-                                iterPadres = iterPadres.getPadre();
-                            }else break;
+
+    public boolean verificarExistencias() throws SemanticError          //TODO Verificar si el número de aparición es mayor que el de su declaración.
+        {
+            boolean todoBien = true;
+            LinkedList cola = new LinkedList();
+            cola.addLast(raiz.getHijoMasIzq());
+            HashMap<String,Tipo> metodosNativos = new HashMap<String,Tipo>();
+            metodosNativos.put("raiz",Tipo.NUMERICO);
+            while (cola.size() != 0 && todoBien) //Mientras la cola no esté vacía
+            {
+                Componente aux = (Componente) cola.removeFirst();
+                HashMap<String, Nombre> tabla = aux.getTblSimbolosLocales();
+                Componente hijo = aux.getHijoMasIzq();
+                while (hijo != null && todoBien) //Mientras tenga hijos
+                {
+
+                    if(hijo instanceof Variable)
+                    {
+                        String nombre = ((Variable) hijo).get_nombre();
+                        if(!tabla.containsKey(nombre))
+                        {
+                            Componente iterPadres = aux;
+                            while (iterPadres != null)
+                            {
+                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
+                                {
+                                    iterPadres = iterPadres.getPadre();
+                                }else break;
+                            }
+                            if(iterPadres == null)
+                            {
+                                todoBien = false;
+                                throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
+                            }
                         }
-                        if(iterPadres == null) {
-                            todoBien = false;
-                            throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
-                        }else{
-                            //ExpresionGenerico ex = ((Asignacion) hijo).get_expresion();
-                            //Tipo t = iterPadres.getTblSimbolosLocales().get(nombre).get_tipo();
-                            //Componente h = (Asignacion) hijo;
+                    }
+                    if(hijo instanceof Asignacion)
+                    {
+                        String nombre = ((Asignacion) hijo).get_nombre();
+                        if(!tabla.containsKey(nombre))
+                        {
+                            Componente iterPadres = aux;
+                            while (iterPadres != null)
+                            {
+                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
+                                {
+                                    iterPadres = iterPadres.getPadre();
+                                }else break;
+                            }
+                            if(iterPadres == null)
+                            {
+                                todoBien = false;
+                                throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
+                            }
+                        }
+                        else //Si lo tiene, debe buscar que se declaró antes de usarlo
+                        {
+                            Variable simbolo = (Variable) tabla.get(nombre);
+                            if(hijo.getOrdenAparicion() < simbolo.getOrdenAparicion())
+                                throw new SemanticError("Variable todavia no declarada: " + nombre);
+                            /*ExpresionGenerico ex = ((Asignacion) hijo).get_expresion();
+                            Tipo t = tabla.get(nombre).get_tipo();
+                            Componente h = (Asignacion) hijo;
+                            if(!tipoDatosCorrecto( ex, t, h)){
+                                throw new SemanticError("Tipo de dato no compatible");
+                            }*/
+
+                            //Se hace verificacion de tipos
                             Asignacion asig = (Asignacion) hijo;
                             if (metodosNativos.containsKey(asig.get_nombre())) throw new SemanticError("Palabra reservada para método nativo: " + asig.get_nombre());
-                            else asig.setTipo(iterPadres.getTblSimbolosLocales().get(nombre).get_tipo());
-                            if(!asig.evaluarSemantica()){
+                            else asig.setTipo(tabla.get(nombre).get_tipo());
+                            if(!((Asignacion) hijo).evaluarSemantica()){
                                 throw new SemanticError("Tipo de dato no compatible");
                             }
                         }
-                    }else{
-                        /*ExpresionGenerico ex = ((Asignacion) hijo).get_expresion();
-                        Tipo t = tabla.get(nombre).get_tipo();
-                        Componente h = (Asignacion) hijo;
-                        if(!tipoDatosCorrecto( ex, t, h)){
-                            throw new SemanticError("Tipo de dato no compatible");
-                        }*/
-                        Asignacion asig = (Asignacion) hijo;
-                        if (metodosNativos.containsKey(asig.get_nombre())) throw new SemanticError("Palabra reservada para método nativo: " + asig.get_nombre());
-                        else asig.setTipo(tabla.get(nombre).get_tipo());
-                        if(!((Asignacion) hijo).evaluarSemantica()){
-                            throw new SemanticError("Tipo de dato no compatible");
-                        }
                     }
-                }
+
                 if (hijo instanceof LlamadaMetodo){
                     String nombre = ((LlamadaMetodo) hijo).getNombre();
                     if (!metodosNativos.containsKey(nombre)){
@@ -2617,7 +2645,7 @@ class CUP$Parser$actions {
               Componente RESULT =null;
 		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		Asignacion a = (Asignacion)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		Componente a = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		int cleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int cright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Componente c = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
@@ -2902,7 +2930,7 @@ RESULT = p;
 		int lsleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int lsright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Componente ls = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		 Asignacion a = new Asignacion(v); a.set_expresion(desde); Declaracion decl = new Declaracion(v, Tipo.NUMERICO); a.setHermanoDerecho(decl); decl.setHermanoDerecho(ls); RESULT = new Para(v, a, desde, hasta, avance);
+		 Asignacion a = new Asignacion(v); a.set_expresion(desde); Declaracion decl = new Declaracion(v, Tipo.NUMERICO); decl.setHermanoDerecho(a); a.setHermanoDerecho(ls); RESULT = new Para(v, decl, desde, hasta, avance);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_para",36, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-11)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3000,7 +3028,7 @@ RESULT = p;
               Componente RESULT =null;
 		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		Asignacion a = (Asignacion)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		Componente a = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		int lsleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int lsright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Componente ls = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
@@ -3669,7 +3697,7 @@ RESULT = p;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 131: // c_asignacion ::= c_tipo_primitivo VAR c_asignacion_prima 
             {
-              Asignacion RESULT =null;
+              Componente RESULT =null;
 		int tleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
 		int tright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
 		Object t = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
@@ -3679,7 +3707,7 @@ RESULT = p;
 		int oleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int oright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Expresion o = (Expresion)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());
+		RESULT = new Declaracion(v, (Tipo)t); Asignacion asignacion = new Asignacion(v); RESULT.setHermanoDerecho(asignacion); asignacion.set_expresion(o); //System.out.println(RESULT.get_expresion().toString());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_asignacion",27, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3687,7 +3715,7 @@ RESULT = p;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 132: // c_asignacion ::= c_tipo_primitivo VAR CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima 
             {
-              Asignacion RESULT =null;
+              Componente RESULT =null;
 		int tleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
 		int tright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
 		Object t = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
@@ -3697,7 +3725,7 @@ RESULT = p;
 		int oleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int oright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Expresion o = (Expresion)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());
+		RESULT = new Declaracion(v, (Tipo)t); Asignacion asignacion = new Asignacion(v); RESULT.setHermanoDerecho(asignacion); asignacion.set_expresion(o); //System.out.println(RESULT.get_expresion().toString());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_asignacion",27, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3705,7 +3733,7 @@ RESULT = p;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 133: // c_asignacion ::= c_tipo_primitivo VAR CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima 
             {
-              Asignacion RESULT =null;
+              Componente RESULT =null;
 		int tleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).left;
 		int tright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).right;
 		Object t = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-5)).value;
@@ -3715,7 +3743,7 @@ RESULT = p;
 		int oleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int oright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Expresion o = (Expresion)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());
+		RESULT = new Declaracion(v, (Tipo)t); Asignacion asignacion = new Asignacion(v); RESULT.setHermanoDerecho(asignacion); asignacion.set_expresion(o); //System.out.println(RESULT.get_expresion().toString());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_asignacion",27, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3723,7 +3751,7 @@ RESULT = p;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 134: // c_asignacion ::= c_tipo_arreglo VAR c_asignacion_prima 
             {
-              Asignacion RESULT =null;
+              Componente RESULT =null;
 		int tleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
 		int tright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
 		Object t = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
@@ -3733,7 +3761,7 @@ RESULT = p;
 		int oleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int oright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Expresion o = (Expresion)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());
+		RESULT = new Declaracion(v, (Tipo)t); Asignacion asignacion = new Asignacion(v); RESULT.setHermanoDerecho(asignacion); asignacion.set_expresion(o); //System.out.println(RESULT.get_expresion().toString());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_asignacion",27, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3741,14 +3769,14 @@ RESULT = p;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 135: // c_asignacion ::= VAR CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima 
             {
-              Asignacion RESULT =null;
+              Componente RESULT =null;
 		int vleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
 		int vright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
 		String v = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
 		int oleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int oright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Expresion o = (Expresion)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new Asignacion(v); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());
+		RESULT = new Asignacion(v); ((Asignacion)RESULT).set_expresion(o); //System.out.println(RESULT.get_expresion().toString());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_asignacion",27, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3756,14 +3784,14 @@ RESULT = p;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 136: // c_asignacion ::= VAR c_asignacion_prima 
             {
-              Asignacion RESULT =null;
+              Componente RESULT =null;
 		int vleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int vright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		String v = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		int oleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int oright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Expresion o = (Expresion)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new Asignacion(v); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());
+		RESULT = new Asignacion(v); ((Asignacion)RESULT).set_expresion(o); //System.out.println(RESULT.get_expresion().toString());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_asignacion",27, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

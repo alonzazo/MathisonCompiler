@@ -230,7 +230,7 @@ action code {:
                             }
                         }
                     }
-                }
+
                 if (hijo instanceof LlamadaMetodo){
                     String nombre = ((LlamadaMetodo) hijo).getNombre();
                     if (!metodosNativos.containsKey(nombre)){
@@ -490,7 +490,7 @@ non terminal Expresion c_asignacion_expresion_Booleana_Total;
 non terminal Expresion c_expresion_cadena; //Todas las operaciones excepto solamente el nombre e la variable
 non terminal Expresion c_asignacion_expresion_Cadena_total; //El total
 
-non terminal Asignacion c_asignacion;//---------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
+non terminal Componente c_asignacion;//---------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal Expresion c_asignacion_prima;
 non terminal c_asignacion_booleana;
 
@@ -702,7 +702,7 @@ c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total:desde HASTA c
             {: Asignacion a = new Asignacion(v); a.set_expresion(desde); a.setHermanoDerecho(ls);RESULT = new Para(v, a, desde, hasta, avance);:}//TODO Agregar listas de expresiones para el desde, el hasta y avance (estos no se pueden simplemente agregar al scope)
          |  PARA NUM VAR:v DESDE c_asignacion_expresion_Numerica_Total:desde HASTA c_asignacion_expresion_Numerica_Total:hasta
             AVANCE c_asignacion_expresion_Numerica_Total:avance LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: Asignacion a = new Asignacion(v); a.set_expresion(desde); Declaracion decl = new Declaracion(v, Tipo.NUMERICO); a.setHermanoDerecho(decl); decl.setHermanoDerecho(ls); RESULT = new Para(v, a, desde, hasta, avance);:}
+            {: Asignacion a = new Asignacion(v); a.set_expresion(desde); Declaracion decl = new Declaracion(v, Tipo.NUMERICO); decl.setHermanoDerecho(a); a.setHermanoDerecho(ls); RESULT = new Para(v, decl, desde, hasta, avance);:}
          ;
 
 c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
@@ -834,17 +834,17 @@ c_expresion_variable_comparacion ::= c_expresion_variable_igual:e           {:RE
 /*------------------------------Declaracion de las asignaciones------------------------------*/
 
 c_asignacion ::=    c_tipo_primitivo:t VAR:v c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());:}
+                    {:RESULT = new Declaracion(v, (Tipo)t); Asignacion asignacion = new Asignacion(v); RESULT.setHermanoDerecho(asignacion); asignacion.set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
                 |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());:}
-                |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());:}
+                    {:RESULT = new Declaracion(v, (Tipo)t); Asignacion asignacion = new Asignacion(v); RESULT.setHermanoDerecho(asignacion); asignacion.set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
+                |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o//TODO Checkear la expresion del indice
+                    {:RESULT = new Declaracion(v, (Tipo)t); Asignacion asignacion = new Asignacion(v); RESULT.setHermanoDerecho(asignacion); asignacion.set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
                 |   c_tipo_arreglo:t VAR:v c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.setHermanoDerecho(new Declaracion(v, (Tipo)t)); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());:}
+                    {:RESULT = new Declaracion(v, (Tipo)t); Asignacion asignacion = new Asignacion(v); RESULT.setHermanoDerecho(asignacion); asignacion.set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
                 |   VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());:}
+                    {:RESULT = new Asignacion(v); ((Asignacion)RESULT).set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
                 |   VAR:v c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); RESULT.set_expresion(o); System.out.println(RESULT.get_expresion().toString());:}
+                    {:RESULT = new Asignacion(v); ((Asignacion)RESULT).set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
                ;
 
 /*------------------------------Sintaxis asignacion de tipo numericas------------------------------*/

@@ -2,7 +2,6 @@
 
 publico num[] cribaEratostenes(num n){
 
-
 	num limite = raiz(n)
 	num[n] numeros 	                        //Vector de num de tamaño n
 	numeros[i] = 0
