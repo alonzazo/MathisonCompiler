@@ -1685,7 +1685,7 @@ class CUP$Parser$actions {
                     }
                 }
 
-    public boolean verificarExistencias() throws SemanticError          //TODO Verificar si el número de aparición es mayor que el de su declaración.
+    public boolean verificarExistencias() throws SemanticError
         {
             boolean todoBien = true;
             LinkedList cola = new LinkedList();

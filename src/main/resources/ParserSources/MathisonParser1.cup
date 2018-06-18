@@ -155,7 +155,7 @@ action code {:
                     }
                 }
 
-    public boolean verificarExistencias() throws SemanticError          //TODO Verificar si el número de aparición es mayor que el de su declaración.
+    public boolean verificarExistencias() throws SemanticError
         {
             boolean todoBien = true;
             LinkedList cola = new LinkedList();
@@ -699,7 +699,7 @@ c_estructuras ::= c_para:p
 
 c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total:desde HASTA c_asignacion_expresion_Numerica_Total:hasta
             AVANCE c_asignacion_expresion_Numerica_Total:avance LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: Asignacion a = new Asignacion(v); a.set_expresion(desde); a.setHermanoDerecho(ls);RESULT = new Para(v, a, desde, hasta, avance);:}//TODO Agregar listas de expresiones para el desde, el hasta y avance (estos no se pueden simplemente agregar al scope)
+            {: Asignacion a = new Asignacion(v); a.set_expresion(desde); a.setHermanoDerecho(ls);RESULT = new Para(v, a, desde, hasta, avance);:}
          |  PARA NUM VAR:v DESDE c_asignacion_expresion_Numerica_Total:desde HASTA c_asignacion_expresion_Numerica_Total:hasta
             AVANCE c_asignacion_expresion_Numerica_Total:avance LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
             {: Asignacion a = new Asignacion(v); a.set_expresion(desde); Declaracion decl = new Declaracion(v, Tipo.NUMERICO); decl.setHermanoDerecho(a); a.setHermanoDerecho(ls); RESULT = new Para(v, decl, desde, hasta, avance);:}
