@@ -1738,6 +1738,13 @@ class CUP$Parser$actions {
                                 todoBien = false;
                                 throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
                             }
+
+                            Asignacion asig = (Asignacion) hijo;
+                            if (metodosNativos.containsKey(asig.get_nombre())) throw new SemanticError("Palabra reservada para método nativo: " + asig.get_nombre());
+                            else asig.setTipo(iterPadres.getTblSimbolosLocales().get(nombre).get_tipo());
+                            if(!((Asignacion) hijo).evaluarSemantica()){
+                                throw new SemanticError("Tipo de dato no compatible");
+                            }
                         }
                         else //Si lo tiene, debe buscar que se declaró antes de usarlo
                         {
@@ -1889,18 +1896,18 @@ class CUP$Parser$actions {
 		int start_valright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Componente start_val = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		RESULT = start_val;
-              //--------------------------------------------------------POST-ACTIONS
-              Programa raizReal = new Programa();
-              raizReal.setHijoMasIzq(raiz);
-              raiz = raizReal;
-              try{
-                llenarTabla();
-                System.out.println(imprimirArbol());
-                verificarExistencias();
-              }catch (SemanticError ex){
-                System.out.println(ex.getMessage());
-              }
-              //---------------------------------------------------------------------
+                //--------------------------------------------------------POST-ACTIONS
+                Programa raizReal = new Programa();
+                raizReal.setHijoMasIzq(raiz);
+                raiz = raizReal;
+                try{
+                    llenarTabla();
+                    System.out.println(imprimirArbol());
+                    verificarExistencias();
+                }catch (SemanticError ex){
+                    System.out.println(ex.getMessage());
+                }
+                //---------------------------------------------------------------------
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           /* ACCEPT */

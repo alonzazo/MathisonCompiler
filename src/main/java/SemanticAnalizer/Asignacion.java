@@ -68,7 +68,8 @@ public class Asignacion extends Sentencia {
 
             if (iter.getTipo() != null){
                 if(!iter.getTipo().equals(tipoEsperado)){
-                    return false;
+                    throw new SemanticError("Tipos no compatibles en " + padre.toString() + ":\nTipo de expresion dada: " + iter.getTipo() + "\nTipo de expresion esperada: " + tipoEsperado.toString());
+                    //return false;
                 }
             } else if (iter.getNombre() != null){
                 HashMap<String, Nombre> tabla = padre.getTblSimbolosLocales();

@@ -208,6 +208,13 @@ action code {:
                                 todoBien = false;
                                 throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
                             }
+
+                            Asignacion asig = (Asignacion) hijo;
+                            if (metodosNativos.containsKey(asig.get_nombre())) throw new SemanticError("Palabra reservada para método nativo: " + asig.get_nombre());
+                            else asig.setTipo(iterPadres.getTblSimbolosLocales().get(nombre).get_tipo());
+                            if(!((Asignacion) hijo).evaluarSemantica()){
+                                throw new SemanticError("Tipo de dato no compatible");
+                            }
                         }
                         else //Si lo tiene, debe buscar que se declaró antes de usarlo
                         {
