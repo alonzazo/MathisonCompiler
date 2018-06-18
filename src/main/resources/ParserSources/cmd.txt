@@ -1,0 +1,2 @@
+java -jar java-cup-11b.jar -interface -parser Parser MathisonParser1.cup
+Codes/code1.mathison

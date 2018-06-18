@@ -20,6 +20,6 @@ public class Devolver extends Sentencia {
 
     @Override
     public String toString() {
-        return "Devolver{" + '}';
+        return "Devolver{" + _valor.toString() + '}';
     }
 }

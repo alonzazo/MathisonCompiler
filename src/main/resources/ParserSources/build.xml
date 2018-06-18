@@ -6,6 +6,12 @@
     <!-- set global properties for this build -->
     <target name="Compile CupFile">
         <java jar="java-cup-11b.jar" args="-interface -parser Parser ${source}" fork="true"/>
+        <move todir="../../java/SyntacticalAnalizer">
+            <fileset dir=".">
+                <include name="Parser.java"/>
+                <include name="sym.java"/>
+            </fileset>
+        </move>
     </target>
 
 </project>

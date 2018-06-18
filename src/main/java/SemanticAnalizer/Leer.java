@@ -2,7 +2,13 @@ package SemanticAnalizer;
 
 public class Leer extends Sentencia {
 
+    String _variable;
     public Leer(){
+        _variable = "";
+    }
+
+    public Leer(String _variable) {
+        this._variable = _variable;
     }
 
     @Override
@@ -12,6 +18,6 @@ public class Leer extends Sentencia {
 
     @Override
     public String toString() {
-        return "Leer{" + '}';
+        return "Leer{" + _variable +'}';
     }
 }

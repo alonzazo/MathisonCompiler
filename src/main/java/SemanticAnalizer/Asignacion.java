@@ -4,15 +4,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Asignacion extends Sentencia {
-
-    private Object _valor;
     private String _nombre;
+    private Object _valor;
 
-    public Asignacion(){
-    }
+    public Asignacion(){ }
 
-    public Asignacion(String nombre,Object valor){
-        _valor = valor;
+    public Asignacion(String nombre)
+    {
         _nombre = nombre;
     }
 

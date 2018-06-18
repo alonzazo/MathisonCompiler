@@ -6,7 +6,7 @@ num fiboRec ( num n ) {
     }
     sino          //CASO TRIVIAL
 	{
-        enesimo = fiboRec ( n - 1 ) + fiboRec ( n - 2 )
+        num enesimo = fiboRec ( n - 1 ) + fiboRec ( n - 2 )
 	    imprimir (enesimo)
 	    devolver enesimo
 	}
