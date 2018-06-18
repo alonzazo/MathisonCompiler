@@ -4,7 +4,7 @@ import java.util.List;
 
 public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
 
-    private List<Variable> _parametros;
+    private List<ExpresionGenerico> _parametros;
     private String _nombre;
     private Tipo _tipo;
 
@@ -45,5 +45,13 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
     @Override
     public Tipo get_tipo() {
         return _tipo;
+    }
+
+    public List<ExpresionGenerico> get_parametros() {
+        return _parametros;
+    }
+
+    public void set_parametros(List<ExpresionGenerico> _parametros) {
+        this._parametros = _parametros;
     }
 }
