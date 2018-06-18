@@ -17,6 +17,8 @@ public interface Componente {
     public Componente getUltimoHijo();
     public Componente setUltimoHijo(Componente hijo);
     public Componente getUltimoHermano();
+    public void setOrdenAparicion(int aparicion);
+    public int getOrdenAparicion();
     public HashMap< String, Nombre > getTblSimbolosLocales();
 
 }

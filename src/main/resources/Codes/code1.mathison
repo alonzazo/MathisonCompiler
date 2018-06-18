@@ -5,9 +5,19 @@ privado proc comer(num cantidad)
 }
 */
 
-publico num sumar(num n1, num n2){
+privado num hola(cad yy)
+{
+    zzz = 666
+    num x
+    x = 7
+    num zzz
+}
 
-    num n4 = 0
+/*
+publico num sumar(num n1, num n2)
+{
+
+    num n4 = 0 + x
     num n3 = n1 + n2
 
     mientras(n4 < n3) HACER
@@ -16,7 +26,9 @@ publico num sumar(num n1, num n2){
         n2 = n1 - n2
         n1 = n1 - n2
     }
+    num x = 7
 }
+*/
 
 /*
 publico clase Carl
