@@ -671,10 +671,10 @@ c_estructuras ::= c_para:p
 
 c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total:desde HASTA c_asignacion_expresion_Numerica_Total:hasta
             AVANCE c_asignacion_expresion_Numerica_Total:avance LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: Asignacion a = new Asignacion(v); a.setHermanoDerecho(ls);RESULT = new Para(v, a);:}//TODO Agregar listas de expresiones para el desde, el hasta y avance (estos no se pueden simplemente agregar al scope)
+            {: Asignacion a = new Asignacion(v); a.set_expresion(desde); a.setHermanoDerecho(ls);RESULT = new Para(v, a, desde, hasta, avance);:}//TODO Agregar listas de expresiones para el desde, el hasta y avance (estos no se pueden simplemente agregar al scope)
          |  PARA NUM VAR:v DESDE c_asignacion_expresion_Numerica_Total:desde HASTA c_asignacion_expresion_Numerica_Total:hasta
             AVANCE c_asignacion_expresion_Numerica_Total:avance LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: Asignacion a = new Asignacion(v); Declaracion decl = new Declaracion(v, Tipo.NUMERICO); a.setHermanoDerecho(decl); decl.setHermanoDerecho(ls); RESULT = new Para(v, a);:}
+            {: Asignacion a = new Asignacion(v); a.set_expresion(desde); Declaracion decl = new Declaracion(v, Tipo.NUMERICO); a.setHermanoDerecho(decl); decl.setHermanoDerecho(ls); RESULT = new Para(v, a, desde, hasta, avance);:}
          ;
 
 c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
