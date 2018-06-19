@@ -1657,12 +1657,14 @@ class CUP$Parser$actions {
                         else throw new SemanticError("Declaración duplicada de metodo: " + hijoSimbolo.get_nombre());
                         //Agregamos los parametros como declaraciones
                         List<Variable> variables = hijoSimbolo.getParametros();
-                        for ( Variable i:variables ) {
-                            Declaracion decl = new Declaracion(i.get_nombre(),i.get_tipo(),i.is_arreglo());
-                            decl.setHermanoDerecho(hijoSimbolo.getHijoMasIzq());
-                            hijoSimbolo.setHijoMasIzq(decl);
+                        if(variables != null)
+                        {
+                            for ( Variable i:variables ) {
+                              Declaracion decl = new Declaracion(i.get_nombre(),i.get_tipo(),i.is_arreglo());
+                              decl.setHermanoDerecho(hijoSimbolo.getHijoMasIzq());
+                              hijoSimbolo.setHijoMasIzq(decl);
+                            }
                         }
-
                     }
                     if (hijo instanceof Declaracion){
                         Declaracion declaracion = (Declaracion) hijo;
@@ -1796,6 +1798,18 @@ class CUP$Parser$actions {
 
                     }
                 }
+                if(hijo instanceof Devolver)
+                {
+                  Componente iterPadre = aux;
+                  while (!(iterPadre instanceof Metodo)) //Hasta que llegue al metodo
+                    iterPadre = iterPadre.getPadre();
+                  Metodo metodo = (Metodo)iterPadre;
+                  if(metodo.get_tipo() == null) //No devuelve nada
+                    throw new SemanticError("Sentencia devolver en metodo " + metodo.get_nombre() + " que no devuelve nada");
+                  Devolver devolver = (Devolver) hijo;
+                  if(metodo.get_tipo() != devolver.get_tipo())
+                    throw new SemanticError("Tipo de retorno equivocado en metodo " + metodo.get_nombre());
+                }
                 cola.addLast(hijo);
                 hijo = hijo.getHermanoDerecho();
             }
@@ -1833,18 +1847,17 @@ class CUP$Parser$actions {
 		int start_valright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Componente start_val = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		RESULT = start_val;
-                //--------------------------------------------------------POST-ACTIONS
-                Programa raizReal = new Programa();
-                raizReal.setHijoMasIzq(raiz);
-                raiz = raizReal;
-                try{
-                    llenarTabla();
-                    System.out.println(imprimirArbol());
-                    verificarExistencias();
-                }catch (SemanticError ex){
-                    System.out.println(ex.getMessage());
-                }
-                //---------------------------------------------------------------------
+              //--------------------------------------------------------POST-ACTIONS
+              Programa raizReal = new Programa();
+              raizReal.setHijoMasIzq(raiz);
+              raiz = raizReal;
+              try{
+                llenarTabla();
+                System.out.println(imprimirArbol());
+                verificarExistencias();
+              }catch (SemanticError ex){
+                System.out.println(ex.getMessage());
+              }
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           /* ACCEPT */
@@ -4467,7 +4480,7 @@ RESULT = p;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Expresion e = (Expresion)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new Devolver(e); 
+		 RESULT = new Devolver(Tipo.NUMERICO); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_devolver",46, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -4479,7 +4492,7 @@ RESULT = p;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Expresion e = (Expresion)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new Devolver(e); 
+		 RESULT = new Devolver(Tipo.CADENA); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_devolver",46, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -4491,7 +4504,7 @@ RESULT = p;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Expresion e = (Expresion)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new Devolver(e); 
+		 RESULT = new Devolver(Tipo.BOOLEANO); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_devolver",46, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

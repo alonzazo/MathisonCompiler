@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Metodo extends ComponenteConcreto implements Nombre {
-
+public class Metodo extends ComponenteConcreto implements Nombre
+{
     private String _nombre;
     private Tipo _tipo;
     private List<Variable> _parametros;

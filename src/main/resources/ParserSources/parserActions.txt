@@ -1,0 +1,11 @@
+//--------------------------------------------------------POST-ACTIONS
+                Programa raizReal = new Programa();
+                raizReal.setHijoMasIzq(raiz);
+                raiz = raizReal;
+                try{
+                    llenarTabla();
+                    System.out.println(imprimirArbol());
+                    verificarExistencias();
+                }catch (SemanticError ex){
+                    System.out.println(ex.getMessage());
+                }
