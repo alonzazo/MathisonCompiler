@@ -37,6 +37,8 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
         boolean result = true;
         List<Variable> parametrosEsperados;
 
+        //Se le asignan padres a las expresiones de los parámetros y si no tienen tablas de simbolos se les coloca vacías.
+        //NOTA: Se colocan vacías para que en tipoCorrectoParametros y aquí mismo haya garantía de que siempre getTblSimbolosLocales devuelva algo. VER ASTERISCO POR EJEMPLO
         for (Expresion exp: _parametros)
             for (; exp != null; exp = (Expresion) exp.getHermanoDerecho()) {
                 exp.setPadre(this);
@@ -45,7 +47,7 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
 
         //Se busca en las tablas de simbolos la referencia
         Componente i = this._padre;
-        for (; !i.getTblSimbolosLocales().containsKey(getNombre()); i = i.getPadre());
+        for (; !i.getTblSimbolosLocales().containsKey(getNombre()); i = i.getPadre());          //-----**------
 
         if (i == null)
             throw new SemanticError("Referencia no declarada en " + this._padre.toString() + ": " + getNombre());
