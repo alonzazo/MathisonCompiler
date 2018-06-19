@@ -31,6 +31,12 @@ public class Devolver extends Sentencia {
         _tipo = tipo;
     }
 
+    public String getNombre()
+    {
+        Nombre nom  = (Nombre)_valor;
+        return nom.get_nombre();
+    }
+
     @Override
     public boolean evaluarSemantica() {
         return false;

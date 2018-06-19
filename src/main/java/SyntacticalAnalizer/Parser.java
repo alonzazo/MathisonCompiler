@@ -1688,134 +1688,173 @@ class CUP$Parser$actions {
                 }
 
     public boolean verificarExistencias() throws SemanticError
-        {
-            boolean todoBien = true;
-            LinkedList cola = new LinkedList();
-            cola.addLast(raiz.getHijoMasIzq());
-            HashMap<String,Tipo> metodosNativos = new HashMap<String,Tipo>();
-            metodosNativos.put("raiz",Tipo.NUMERICO);
-            while (cola.size() != 0 && todoBien) //Mientras la cola no esté vacía
             {
-                Componente aux = (Componente) cola.removeFirst();
-                HashMap<String, Nombre> tabla = aux.getTblSimbolosLocales();
-                Componente hijo = aux.getHijoMasIzq();
-                while (hijo != null && todoBien) //Mientras tenga hijos
+                boolean todoBien = true;
+                LinkedList cola = new LinkedList();
+                cola.addLast(raiz.getHijoMasIzq());
+                HashMap<String,Tipo> metodosNativos = new HashMap<String,Tipo>();
+                metodosNativos.put("raiz",Tipo.NUMERICO);
+                while (cola.size() != 0 && todoBien) //Mientras la cola no esté vacía
                 {
-
-                    if(hijo instanceof Variable)
+                    boolean tieneDevolver = false;
+                    Componente aux = (Componente) cola.removeFirst();
+                    HashMap<String, Nombre> tabla = aux.getTblSimbolosLocales();
+                    Componente hijo = aux.getHijoMasIzq();
+                    while (hijo != null && todoBien) //Mientras tenga hijos
                     {
-                        String nombre = ((Variable) hijo).get_nombre();
-                        if(!tabla.containsKey(nombre))
+
+                        if(hijo instanceof Variable)
                         {
-                            Componente iterPadres = aux;
-                            while (iterPadres != null)
+                            String nombre = ((Variable) hijo).get_nombre();
+                            if(!tabla.containsKey(nombre))
                             {
-                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
+                                Componente iterPadres = aux;
+                                while (iterPadres != null)
                                 {
-                                    iterPadres = iterPadres.getPadre();
-                                }else break;
-                            }
-                            if(iterPadres == null)
-                            {
-                                todoBien = false;
-                                throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
+                                    if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
+                                    {
+                                        iterPadres = iterPadres.getPadre();
+                                    }else break;
+                                }
+                                if(iterPadres == null)
+                                {
+                                    todoBien = false;
+                                    throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
+                                }
                             }
                         }
-                    }
-                    if(hijo instanceof Asignacion)
-                    {
-                        String nombre = ((Asignacion) hijo).get_nombre();
-                        if(!tabla.containsKey(nombre))
+                        if(hijo instanceof Asignacion)
                         {
-                            Componente iterPadres = aux;
-                            while (iterPadres != null)
+                            String nombre = ((Asignacion) hijo).get_nombre();
+                            if(!tabla.containsKey(nombre))
                             {
-                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
+                                Componente iterPadres = aux;
+                                while (iterPadres != null)
                                 {
-                                    iterPadres = iterPadres.getPadre();
-                                }else break;
-                            }
-                            if(iterPadres == null)
-                            {
-                                todoBien = false;
-                                throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
-                            }
+                                    if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
+                                    {
+                                        iterPadres = iterPadres.getPadre();
+                                    }else break;
+                                }
+                                if(iterPadres == null)
+                                {
+                                    todoBien = false;
+                                    throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
+                                }
 
-                            Asignacion asig = (Asignacion) hijo;
-                            if (metodosNativos.containsKey(asig.get_nombre())) throw new SemanticError("Palabra reservada para método nativo: " + asig.get_nombre());
-                            else asig.setTipo(iterPadres.getTblSimbolosLocales().get(nombre).get_tipo());
-                            if(!((Asignacion) hijo).evaluarSemantica()){
-                                throw new SemanticError("Tipo de dato no compatible");
+                                Asignacion asig = (Asignacion) hijo;
+                                if (metodosNativos.containsKey(asig.get_nombre())) throw new SemanticError("Palabra reservada para método nativo: " + asig.get_nombre());
+                                else asig.setTipo(iterPadres.getTblSimbolosLocales().get(nombre).get_tipo());
+                                if(!((Asignacion) hijo).evaluarSemantica()){
+                                    throw new SemanticError("Tipo de dato no compatible");
+                                }
+                            }
+                            else //Si lo tiene, debe buscar que se declaró antes de usarlo
+                            {
+                                Variable simbolo = (Variable) tabla.get(nombre);
+                                if(hijo.getOrdenAparicion() < simbolo.getOrdenAparicion())
+                                    throw new SemanticError("Variable todavia no declarada: " + nombre);
+                                /*ExpresionGenerico ex = ((Asignacion) hijo).get_expresion();
+                                Tipo t = tabla.get(nombre).get_tipo();
+                                Componente h = (Asignacion) hijo;
+                                if(!tipoDatosCorrecto( ex, t, h)){
+                                    throw new SemanticError("Tipo de dato no compatible");
+                                }*/
+
+                                //Se hace verificacion de tipos
+                                Asignacion asig = (Asignacion) hijo;
+                                if (metodosNativos.containsKey(asig.get_nombre())) throw new SemanticError("Palabra reservada para método nativo: " + asig.get_nombre());
+                                else asig.setTipo(tabla.get(nombre).get_tipo());
+                                if(!((Asignacion) hijo).evaluarSemantica()){
+                                    throw new SemanticError("Tipo de dato no compatible");
+                                }
                             }
                         }
-                        else //Si lo tiene, debe buscar que se declaró antes de usarlo
-                        {
-                            Variable simbolo = (Variable) tabla.get(nombre);
-                            if(hijo.getOrdenAparicion() < simbolo.getOrdenAparicion())
-                                throw new SemanticError("Variable todavia no declarada: " + nombre);
-                            /*ExpresionGenerico ex = ((Asignacion) hijo).get_expresion();
-                            Tipo t = tabla.get(nombre).get_tipo();
-                            Componente h = (Asignacion) hijo;
-                            if(!tipoDatosCorrecto( ex, t, h)){
-                                throw new SemanticError("Tipo de dato no compatible");
+
+                    if (hijo instanceof LlamadaMetodo){
+                        //String nombre = ((LlamadaMetodo) hijo).getNombre();
+                        LlamadaMetodo metodo = (LlamadaMetodo) hijo;
+                        if (!metodosNativos.containsKey(metodo.getNombre())){
+                            /*if(!tabla.containsKey(nombre))
+                            {
+                                Componente iterPadres = aux;
+                                while (iterPadres != null)
+                                {
+                                    if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Metodo))
+                                    {
+                                        iterPadres = iterPadres.getPadre();
+                                    }else break;
+                                }
+                                if(iterPadres == null)
+                                {
+                                    todoBien = false;
+                                    throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
+                                }
                             }*/
+                            metodo.evaluarSemantica();
+                        }else {
 
-                            //Se hace verificacion de tipos
-                            Asignacion asig = (Asignacion) hijo;
-                            if (metodosNativos.containsKey(asig.get_nombre())) throw new SemanticError("Palabra reservada para método nativo: " + asig.get_nombre());
-                            else asig.setTipo(tabla.get(nombre).get_tipo());
-                            if(!((Asignacion) hijo).evaluarSemantica()){
-                                throw new SemanticError("Tipo de dato no compatible");
-                            }
+                            metodo.setTipo(Tipo.NUMERICO);
+                            metodo.evaluarSemantica();
+
                         }
                     }
-
-                if (hijo instanceof LlamadaMetodo){
-                    //String nombre = ((LlamadaMetodo) hijo).getNombre();
-                    LlamadaMetodo metodo = (LlamadaMetodo) hijo;
-                    if (!metodosNativos.containsKey(metodo.getNombre())){
-                        /*if(!tabla.containsKey(nombre))
-                        {
-                            Componente iterPadres = aux;
-                            while (iterPadres != null)
-                            {
-                                if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Metodo))
-                                {
-                                    iterPadres = iterPadres.getPadre();
-                                }else break;
-                            }
-                            if(iterPadres == null)
-                            {
-                                todoBien = false;
-                                throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
-                            }
-                        }*/
-                        metodo.evaluarSemantica();
-                    }else {
-
-                        metodo.setTipo(Tipo.NUMERICO);
-                        metodo.evaluarSemantica();
-
+                    if(hijo instanceof Devolver)
+                    {
+                      tieneDevolver = true;
+                      Componente iterPadre = aux;
+                      while (!(iterPadre instanceof Metodo)) //Hasta que llegue al metodo
+                        iterPadre = iterPadre.getPadre();
+                      Metodo metodo = (Metodo)iterPadre;
+                      if(metodo.get_tipo() == null) //No devuelve nada
+                        throw new SemanticError("Sentencia devolver en metodo " + metodo.get_nombre() + " que no devuelve nada");
+                      Devolver devolver = (Devolver) hijo;
+                      if(devolver.get_tipo() != null)
+                      {
+                          if(metodo.get_tipo() != devolver.get_tipo())
+                              throw new SemanticError("Tipo de retorno equivocado en metodo " + metodo.get_nombre());
+                      }
+                      else
+                      {
+                          String nombre = devolver.getNombre();
+                          Boolean estaEnPadre = false;
+                          if(!tabla.containsKey(nombre))
+                          {
+                              Componente iterPadres = aux;
+                              while (iterPadres != null && !estaEnPadre)
+                              {
+                                  if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
+                                      iterPadres = iterPadres.getPadre();
+                                  else
+                                      estaEnPadre = true;
+                              }
+                              if(iterPadres == null)
+                              {
+                                  throw new SemanticError("Se intenta devolver una referencia no declarada en metodo " + metodo.get_nombre() + ": " + nombre);
+                              }
+                          }
+                          if(tabla.containsKey(nombre) || estaEnPadre)
+                          {
+                              Nombre referencia = tabla.get(nombre);
+                              if(metodo.get_tipo() != referencia.get_tipo())
+                                  throw new SemanticError("Tipo de retorno equivocado en metodo " + metodo.get_nombre());
+                          }
+                      }
+                    }
+                    cola.addLast(hijo);
+                    hijo = hijo.getHermanoDerecho();
+                }
+                if(aux instanceof Metodo) //Revisa si es un método y le faltó Devolver
+                {
+                    Metodo metodo = (Metodo)aux;
+                    if(metodo.get_tipo() != null && !tieneDevolver)
+                    {
+                        throw new SemanticError("Sentencia de retorno faltante en metodo " + metodo.get_nombre());
                     }
                 }
-                if(hijo instanceof Devolver)
-                {
-                  Componente iterPadre = aux;
-                  while (!(iterPadre instanceof Metodo)) //Hasta que llegue al metodo
-                    iterPadre = iterPadre.getPadre();
-                  Metodo metodo = (Metodo)iterPadre;
-                  if(metodo.get_tipo() == null) //No devuelve nada
-                    throw new SemanticError("Sentencia devolver en metodo " + metodo.get_nombre() + " que no devuelve nada");
-                  Devolver devolver = (Devolver) hijo;
-                  if(metodo.get_tipo() != devolver.get_tipo())
-                    throw new SemanticError("Tipo de retorno equivocado en metodo " + metodo.get_nombre());
-                }
-                cola.addLast(hijo);
-                hijo = hijo.getHermanoDerecho();
             }
+            return todoBien;
         }
-        return todoBien;
-    }
 
 
   private final Parser parser;

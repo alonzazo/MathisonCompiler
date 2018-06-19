@@ -1,7 +1,8 @@
-privado num hola()
+privado num hola(cad yy)
 {
     //zzz = 666
     num x = 7
     num zzz
-    devolver 777.7
+    bool jeje
+    devolver zzz
 }
