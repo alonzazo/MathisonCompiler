@@ -131,7 +131,7 @@ public class Asignacion extends Sentencia {
                 return false;
             }
             //System.out.println(iter.toString());
-            iter = (ExpresionGenerico) iter.getHermanoDerecho();
+            iter = (Expresion) iter.getHermanoDerecho();
         }while(iter != null);
         return true;
     }

@@ -239,9 +239,10 @@ action code {:
                     }
 
                 if (hijo instanceof LlamadaMetodo){
-                    String nombre = ((LlamadaMetodo) hijo).getNombre();
-                    if (!metodosNativos.containsKey(nombre)){
-                        if(!tabla.containsKey(nombre))
+                    //String nombre = ((LlamadaMetodo) hijo).getNombre();
+                    LlamadaMetodo metodo = (LlamadaMetodo) hijo;
+                    if (!metodosNativos.containsKey(metodo.getNombre())){
+                        /*if(!tabla.containsKey(nombre))
                         {
                             Componente iterPadres = aux;
                             while (iterPadres != null)
@@ -256,9 +257,13 @@ action code {:
                                 todoBien = false;
                                 throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
                             }
-                        }
+                        }*/
+                        metodo.evaluarSemantica();
                     }else {
-                        ((LlamadaMetodo) hijo).setTipo(Tipo.NUMERICO);
+
+                        metodo.setTipo(Tipo.NUMERICO);
+                        metodo.evaluarSemantica();
+
                     }
                 }
                 cola.addLast(hijo);
@@ -266,74 +271,6 @@ action code {:
             }
         }
         return todoBien;
-    }
-
-
-
-    public boolean tipoCorrectoParametros(ExpresionGenerico param, Tipo tipoEsperado, Componente padre) throws SemanticError {
-        if (param.getTipo() != null){
-            if(!param.getTipo().equals(tipoEsperado)){
-                return false;
-            }
-        } else if (param.getNombre() != null){
-            HashMap<String, Nombre> tabla = padre.getTblSimbolosLocales();
-            Componente aux = padre;
-
-            if(param.esMetodo()){ // si es una llamada a metodo
-                Tipo t = null;
-                boolean esta = aux.getTblSimbolosLocales().containsKey(param.getNombre());
-                Nombre var = aux.getTblSimbolosLocales().get(param.getNombre());
-                if(var != null){
-                    t = var.get_tipo();
-                }
-                do {
-                    if (!esta || !(var instanceof Metodo) || t != tipoEsperado ) {
-                        if((aux = aux.getPadre()) != null){
-                            esta = aux.getTblSimbolosLocales().containsKey(param.getNombre());
-                            var = aux.getTblSimbolosLocales().get(param.getNombre());
-                            if(var != null){
-                                t = var.get_tipo();
-                            }
-                        }else{
-                            aux = null;
-                        }
-                    }else{
-                        break;
-                    }
-                } while (aux != null);
-                if(aux == null) {
-                    throw new SemanticError("Tipos no compatibles");
-                }
-            } else { // si es una variable
-                Tipo t = null;
-                boolean esta = aux.getTblSimbolosLocales().containsKey(param.getNombre());
-                Nombre var = aux.getTblSimbolosLocales().get(param.getNombre());
-                if(var != null){
-                    t = var.get_tipo();
-                }
-                do {
-                    if (!esta || !(var instanceof Variable) || t != tipoEsperado ) {
-                        if((aux = aux.getPadre()) != null){
-                            esta = aux.getTblSimbolosLocales().containsKey(param.getNombre());
-                            var = aux.getTblSimbolosLocales().get(param.getNombre());
-                            if(var != null){
-                                t = var.get_tipo();
-                            }
-                        }else{
-                            aux = null;
-                        }
-                    }else{
-                        break;
-                    }
-                } while (aux != null);
-                if(aux == null) {
-                    throw new SemanticError("Tipos no compatibles");
-                }
-            }
-        } else {
-            return false;
-        }
-        return true;
     }
 
 :}
@@ -622,14 +559,14 @@ c_vista ::= PUBLICO
           | PRIVADO
           ;
 
-lista_parametros ::= c_tipo_primitivo variable_arreglo:v COMA lista_parametros:lp
-                    {: lp.add(v); RESULT = lp; :}
+lista_parametros ::= c_tipo_primitivo:t variable_arreglo:v COMA lista_parametros:lp
+                    {: v.setTipo((Tipo)t); ((LinkedList<Variable>)lp).addFirst(v); RESULT = lp; :}
                    | VAR:w variable_arreglo:v COMA lista_parametros:lp
-                    {: lp.add(v); RESULT = lp; :}
-                   | c_tipo_primitivo variable_arreglo:v
-                    {: List<Variable> lp = new LinkedList<Variable>(); lp.add(v); RESULT = lp; :}
+                    {: v.setTipo(Tipo.NO_PRIMITIVO); ((LinkedList<Variable>)lp).addFirst(v); RESULT = lp; :}
+                   | c_tipo_primitivo:t variable_arreglo:v
+                    {: List<Variable> lp = new LinkedList<Variable>(); v.setTipo((Tipo)t); lp.add(v); RESULT = lp; :}
                    | VAR:w variable_arreglo:v
-                    {: List<Variable> lp = new LinkedList<Variable>(); lp.add(v); RESULT = lp; :}
+                    {: List<Variable> lp = new LinkedList<Variable>(); v.setTipo(Tipo.NO_PRIMITIVO); lp.add(v); RESULT = lp; :}
 
                     //--------------------------------------------------------Gramáticas erróneas
                     //ERROR: FALTAN COMAS
@@ -641,8 +578,8 @@ variable_arreglo ::= VAR:v
                     {: RESULT = new Variable(v); :}
                    | VAR:v CORCHETEABIERTO CORCHETECERRADO
                    {: RESULT = new Variable(v,null,true); :}
-                   | VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO
-                   {: RESULT = new Variable(v,null,true); :}
+                   | VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total:e CORCHETECERRADO
+                   {: RESULT = new Variable(v,null,e,true); :}
 
                    //--------------------------------------------------------Gramáticas erróneas
                    //ERROR: FALTA DE CORCHETES

@@ -4,9 +4,8 @@ public class Variable extends ExpresionGenerico implements Nombre{
 
 
     private boolean _arreglo;
-    private String _nombre;
-    private Tipo _tipo;
     private int _tamano;
+    private Expresion _expresionTamano;
     private Object _valor;
 
     public Variable(){
@@ -24,6 +23,13 @@ public class Variable extends ExpresionGenerico implements Nombre{
         this._arreglo = _arreglo;
         this._nombre = _nombre;
         this._tipo = _tipo;
+    }
+
+    public Variable(String _nombre, Tipo _tipo, Expresion _expresionTamano, boolean _arreglo) {
+        this._arreglo = _arreglo;
+        this._nombre = _nombre;
+        this._tipo = _tipo;
+        this._expresionTamano = _expresionTamano;
     }
 
     @Override

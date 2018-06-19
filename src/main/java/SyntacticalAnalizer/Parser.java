@@ -1769,9 +1769,10 @@ class CUP$Parser$actions {
                     }
 
                 if (hijo instanceof LlamadaMetodo){
-                    String nombre = ((LlamadaMetodo) hijo).getNombre();
-                    if (!metodosNativos.containsKey(nombre)){
-                        if(!tabla.containsKey(nombre))
+                    //String nombre = ((LlamadaMetodo) hijo).getNombre();
+                    LlamadaMetodo metodo = (LlamadaMetodo) hijo;
+                    if (!metodosNativos.containsKey(metodo.getNombre())){
+                        /*if(!tabla.containsKey(nombre))
                         {
                             Componente iterPadres = aux;
                             while (iterPadres != null)
@@ -1786,9 +1787,13 @@ class CUP$Parser$actions {
                                 todoBien = false;
                                 throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
                             }
-                        }
+                        }*/
+                        metodo.evaluarSemantica();
                     }else {
-                        ((LlamadaMetodo) hijo).setTipo(Tipo.NUMERICO);
+
+                        metodo.setTipo(Tipo.NUMERICO);
+                        metodo.evaluarSemantica();
+
                     }
                 }
                 cola.addLast(hijo);
@@ -1796,74 +1801,6 @@ class CUP$Parser$actions {
             }
         }
         return todoBien;
-    }
-
-
-
-    public boolean tipoCorrectoParametros(ExpresionGenerico param, Tipo tipoEsperado, Componente padre) throws SemanticError {
-        if (param.getTipo() != null){
-            if(!param.getTipo().equals(tipoEsperado)){
-                return false;
-            }
-        } else if (param.getNombre() != null){
-            HashMap<String, Nombre> tabla = padre.getTblSimbolosLocales();
-            Componente aux = padre;
-
-            if(param.esMetodo()){ // si es una llamada a metodo
-                Tipo t = null;
-                boolean esta = aux.getTblSimbolosLocales().containsKey(param.getNombre());
-                Nombre var = aux.getTblSimbolosLocales().get(param.getNombre());
-                if(var != null){
-                    t = var.get_tipo();
-                }
-                do {
-                    if (!esta || !(var instanceof Metodo) || t != tipoEsperado ) {
-                        if((aux = aux.getPadre()) != null){
-                            esta = aux.getTblSimbolosLocales().containsKey(param.getNombre());
-                            var = aux.getTblSimbolosLocales().get(param.getNombre());
-                            if(var != null){
-                                t = var.get_tipo();
-                            }
-                        }else{
-                            aux = null;
-                        }
-                    }else{
-                        break;
-                    }
-                } while (aux != null);
-                if(aux == null) {
-                    throw new SemanticError("Tipos no compatibles");
-                }
-            } else { // si es una variable
-                Tipo t = null;
-                boolean esta = aux.getTblSimbolosLocales().containsKey(param.getNombre());
-                Nombre var = aux.getTblSimbolosLocales().get(param.getNombre());
-                if(var != null){
-                    t = var.get_tipo();
-                }
-                do {
-                    if (!esta || !(var instanceof Variable) || t != tipoEsperado ) {
-                        if((aux = aux.getPadre()) != null){
-                            esta = aux.getTblSimbolosLocales().containsKey(param.getNombre());
-                            var = aux.getTblSimbolosLocales().get(param.getNombre());
-                            if(var != null){
-                                t = var.get_tipo();
-                            }
-                        }else{
-                            aux = null;
-                        }
-                    }else{
-                        break;
-                    }
-                } while (aux != null);
-                if(aux == null) {
-                    throw new SemanticError("Tipos no compatibles");
-                }
-            }
-        } else {
-            return false;
-        }
-        return true;
     }
 
 
@@ -2518,13 +2455,16 @@ class CUP$Parser$actions {
           case 41: // lista_parametros ::= c_tipo_primitivo variable_arreglo COMA lista_parametros 
             {
               List<Variable> RESULT =null;
+		int tleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)).left;
+		int tright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)).right;
+		Object t = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-3)).value;
 		int vleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
 		int vright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
 		Variable v = (Variable)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		int lpleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int lpright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		List<Variable> lp = (List<Variable>)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 lp.add(v); RESULT = lp; 
+		 v.setTipo((Tipo)t); ((LinkedList<Variable>)lp).addFirst(v); RESULT = lp; 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("lista_parametros",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2542,7 +2482,7 @@ class CUP$Parser$actions {
 		int lpleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int lpright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		List<Variable> lp = (List<Variable>)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 lp.add(v); RESULT = lp; 
+		 v.setTipo(Tipo.NO_PRIMITIVO); ((LinkedList<Variable>)lp).addFirst(v); RESULT = lp; 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("lista_parametros",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2551,10 +2491,13 @@ class CUP$Parser$actions {
           case 43: // lista_parametros ::= c_tipo_primitivo variable_arreglo 
             {
               List<Variable> RESULT =null;
+		int tleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int tright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		Object t = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		int vleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int vright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Variable v = (Variable)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 List<Variable> lp = new LinkedList<Variable>(); lp.add(v); RESULT = lp; 
+		 List<Variable> lp = new LinkedList<Variable>(); v.setTipo((Tipo)t); lp.add(v); RESULT = lp; 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("lista_parametros",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2569,7 +2512,7 @@ class CUP$Parser$actions {
 		int vleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int vright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Variable v = (Variable)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 List<Variable> lp = new LinkedList<Variable>(); lp.add(v); RESULT = lp; 
+		 List<Variable> lp = new LinkedList<Variable>(); v.setTipo(Tipo.NO_PRIMITIVO); lp.add(v); RESULT = lp; 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("lista_parametros",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2626,7 +2569,10 @@ class CUP$Parser$actions {
 		int vleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)).left;
 		int vright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)).right;
 		String v = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-3)).value;
-		 RESULT = new Variable(v,null,true); 
+		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		Expresion e = (Expresion)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		 RESULT = new Variable(v,null,e,true); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("variable_arreglo",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
