@@ -6,6 +6,28 @@
     <!-- set global properties for this build -->
     <target name="Compile CupFile">
         <java jar="java-cup-11b.jar" args="-interface -parser Parser ${source}" fork="true"/>
+        <replace file="Parser.java">
+            <replacetoken><![CDATA[CUP$Parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);]]></replacetoken>
+            <replacevalue><![CDATA[//--------------------------------------------------------POST-ACTIONS
+              Programa raizReal = new Programa();
+              raizReal.setHijoMasIzq(raiz);
+              raiz = raizReal;
+              try{
+                llenarTabla();
+                System.out.println(imprimirArbol());
+                verificarExistencias();
+              }catch (SemanticError ex){
+                System.out.println(ex.getMessage());
+              }
+              //---------------------------------------------------------------------
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);]]></replacevalue>
+        </replace>
+        <move todir="../../java/SyntacticalAnalizer">
+            <fileset dir=".">
+                <include name="Parser.java"/>
+                <include name="sym.java"/>
+            </fileset>
+        </move>
     </target>
 
 </project>

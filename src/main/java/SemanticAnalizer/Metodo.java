@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Metodo extends ComponenteConcreto implements Nombre {
-
+public class Metodo extends ComponenteConcreto implements Nombre
+{
     private String _nombre;
     private Tipo _tipo;
     private List<Variable> _parametros;
@@ -45,22 +45,24 @@ public class Metodo extends ComponenteConcreto implements Nombre {
 
     @Override
     public String get_nombre() {
-        return null;
-    }
-
-    @Override
-    public Tipo get_tipo() {
-        return null;
-    }
-
-    public List<Variable> getParametros() {
-        return new LinkedList<Variable>();
+        return _nombre;
     }
 
     @Override
     public String toString() {
         return "Metodo{" +
                 "_nombre='" + _nombre + '\'' +
+                ", _tipo=" + _tipo +
                 '}';
     }
+
+    @Override
+    public Tipo get_tipo() {
+        return _tipo;
+    }
+
+    public List<Variable> getParametros() {
+        return _parametros;
+    }
+
 }

@@ -1,51 +1,7 @@
-/*
-privado proc comer(num cantidad)
+privado num hola(num yy)
 {
-    bool lleno = FALSO
-}
-*/
-
-publico num sumar(num n1, num n2){
-
-    num n4 = 0
-    num n3 = n1 + n2
-    /*SI (FALSO)
-    {
-        n1 = n2
-    }*/
-
-    mientras(n4 < n3) HACER
-    {
-        n1 = n1 + n2
-        n2 = n1 - n2
-        n1 = n1 - n2
+    mientras ( 5 < 9 Y yy() > 3) hacer {
+        imprimir(yy)
     }
-
-    /*
-    PARA n3 DESDE n1 HASTA n2 AVANCE 1
-    {
-        n4 = n4 + n3
-    }
-    */
+    devolver 5
 }
-
-
-publico clase Carl
-{
-    num x = 7 + -(-metodo())
-    bool lul = !metboo() Y VERDADERO
-}
-
-/*
-publico clase Dani{
-    num de_amor
-    bool estaFraseEsUnaMentira
-    cad ben = "fiestón"
-    publico num enfiestarACharly(num birras, cad alcohol){
-        cad miercoles = "curveolas"
-        cad perro = perro + perro
-        numeritoNOdeclarado = 4
-        otroPeroBooleano = (verdadero Y falso) O falso
-    }
-}
-*/

@@ -4,15 +4,23 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Asignacion extends Sentencia {
-
-    private Object _valor;
     private String _nombre;
+    private Object _valor;
+    private Expresion _expresion;
+    private Tipo _tipo;
 
-    public Asignacion(){
+    public Tipo getTipo() {
+        return _tipo;
     }
 
-    public Asignacion(String nombre,Object valor){
-        _valor = valor;
+    public void setTipo(Tipo _tipo) {
+        this._tipo = _tipo;
+    }
+
+    public Asignacion(){ }
+
+    public Asignacion(String nombre)
+    {
         _nombre = nombre;
     }
 
@@ -32,13 +40,24 @@ public class Asignacion extends Sentencia {
         this._nombre = _nombre;
     }
 
+    public Expresion get_expresion() {
+        return _expresion;
+    }
+
+    public void set_expresion(Expresion expresion) {
+        this._expresion = expresion;
+    }
+
     @Override
-    public boolean evaluarSemantica() {
-        return false;
+    public boolean evaluarSemantica() throws SemanticError{
+        Expresion e = _expresion instanceof Operacion ? ((Operacion) _expresion).get_primeraHoja() : _expresion;
+        return tipoDatosCorrecto(e,_tipo,this);
     }
 
     @Override
     public String toString() {
         return "Asignacion{" +  _nombre + '}';
     }
+
+
 }

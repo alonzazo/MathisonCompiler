@@ -7,7 +7,15 @@ public abstract class ComponenteConcreto implements Componente{
     protected Componente _padre;
     protected Componente _hijoMasIzq;
     protected Componente _hermanoDerecho;
+    protected int ordenAparicion;
     protected HashMap<String, Nombre> _tblSimbolosLocales;
+
+    @Override
+    public Componente getUltimoHermano(){
+        Componente i = this;
+        while (i.getHermanoDerecho() != null) i = i.getHermanoDerecho();
+        return i;
+    }
 
     @Override
     public Componente getPadre() {
@@ -45,7 +53,7 @@ public abstract class ComponenteConcreto implements Componente{
             _hermanoDerecho = hermano;
             Componente i = _hermanoDerecho;
             while ( i.getHermanoDerecho() != null ){
-                i = _hermanoDerecho;
+                i = i.getHermanoDerecho();
             }
             _ultimoHijo = i;
         }
@@ -55,8 +63,8 @@ public abstract class ComponenteConcreto implements Componente{
     /**
      *  Coloca un hijo lo más izquierdo del componente actual. Si no hay hijo se coloca como ultimo hijo, si ya
      *  tiene hijos los liga a este y pone este como el más izquierdo.
-     * @param hijo Hijo por colocar
-     * @return Hijo colocado
+     *  @param hijo Hijo por colocar
+     *  @return Hijo colocado
      */
     @Override
     public Componente setHijoMasIzq( Componente hijo ) {
@@ -97,5 +105,23 @@ public abstract class ComponenteConcreto implements Componente{
     @Override
     public HashMap<String, Nombre> getTblSimbolosLocales() {
         return _tblSimbolosLocales;
+    }
+
+    @Override
+    public void setOrdenAparicion(int aparicion)
+    {
+        ordenAparicion = aparicion;
+    }
+
+    @Override
+    public int getOrdenAparicion()
+    {
+        return ordenAparicion;
+    }
+
+    @Override
+    public void setTblSimbolosLocales(HashMap<String, Nombre> tabla)
+    {
+        _tblSimbolosLocales = tabla;
     }
 }
