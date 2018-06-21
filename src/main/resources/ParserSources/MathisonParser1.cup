@@ -273,6 +273,10 @@ action code {:
                         Para para = (Para)hijo;
                         todoBien = para.evaluarCondicion();
                     }
+                    if (hijo instanceof Si){
+                        Si si = (Si)hijo;
+                        todoBien = si.evaluarCondicion();
+                    }
                     if(hijo instanceof Devolver)
                     {
                         tieneDevolver = true;
@@ -318,7 +322,7 @@ action code {:
 
                     if(hijo instanceof Mientras)
                     {
-                        Mientras mientras = (Mientras) hijo;
+                        /*Mientras mientras = (Mientras) hijo;
                         Componente cond = mientras.get_condicion();
                         while (cond != null)
                         {
@@ -350,11 +354,14 @@ action code {:
                                 }
                             }
                             cond = cond.getHermanoDerecho();
-                        }
+                        }*/
+                        Mientras mientras = (Mientras) hijo;
+                        todoBien = mientras.evaluarCondicion();
                     }
 
                     cola.addLast(hijo);
                     hijo = hijo.getHermanoDerecho();
+
                 }
                 if(aux instanceof Metodo) //Revisa si es un método y le faltó Devolver
                 {
@@ -571,7 +578,7 @@ non terminal Estructura c_estructuras;
 non terminal Para c_para;//-------------------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal Mientras c_mientras;//-----------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal Si c_si;//-----------------------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
-non terminal Sino c_sino;//-------------------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
+non terminal Si c_sino;//-------------------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal Revisar c_revisar;//-------------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal c_revisar_casos;
 
@@ -756,8 +763,8 @@ c_estructuras ::= c_para:p
                 {: RESULT = m;:}
                 | c_si:s
                 {: RESULT = s;:}
-                | c_revisar:r
-                {: RESULT = r;:}
+                //| c_revisar:r
+                //{: RESULT = r;:}
                 | c_sino:sn
                 {: RESULT = sn;:}
                 ;
@@ -772,10 +779,10 @@ c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total:desde HASTA c
 
 c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total:e PARENTESISCERRADO
                HACER LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-               {: RESULT = new Mientras(ls); RESULT.set_condicion((Componente) e);:}//TODO Revisar las expresiones de los MIENTRAS
+               {: RESULT = new Mientras(ls); RESULT.set_condicion((Expresion) e);:}//TODO Revisar las expresiones de los MIENTRAS
              | HACER LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO MIENTRAS
                PARENTESISABIERTO c_asignacion_expresion_Booleana_Total:e PARENTESISCERRADO
-               {: RESULT = new Mientras(ls); RESULT.set_condicion((Componente) e);:}
+               {: RESULT = new Mientras(ls); RESULT.set_condicion((Expresion) e);:}
              ;
 
 c_si ::= //SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO c_sino
@@ -784,14 +791,14 @@ c_si ::= //SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESIS
           {: RESULT = new Si(exp, ls);:}//TODO Revisar las expresiones de los SI
        ;
 
-c_sino ::= SINO c_si
-           {: RESULT = new Sino();:}
-         | SINO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-           {: RESULT = new Sino(ls);:}
+c_sino ::= //SINO c_si
+           //{: RESULT = new Sino();:}
+          c_si:si SINO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
+           {: Sino sino = new Sino(ls); si.setHermanoDerecho(sino);RESULT = si;:}
          ;
 //POR DECISIÓN SE QUITÓ
 c_revisar ::= REVISAR PARENTESISABIERTO VAR:v PARENTESISCERRADO LLAVEABIERTO c_revisar_casos LLAVECERRADO //TODO: Revisar los casos de las REVISIONES
-              {: RESULT = new Revisar();:}
+              {: RESULT = new Revisar(); report_fatal_error("La verga",((Parser) this.parser).stack.peek());:}
             ;
 
 c_revisar_casos ::= CASO c_expresion_numerica DOSPUNTOS c_lista_sentencias SALIR
@@ -803,7 +810,7 @@ c_lista_sentencias ::= c_asignacion:a c_lista_sentencias:ls
                      | c_declaracion:d c_lista_sentencias:ls
                      {: d.setHermanoDerecho(ls); RESULT = d; :}
                      | c_estructuras:e c_lista_sentencias:ls
-                     {: e.setHermanoDerecho(ls); RESULT = e; :}
+                     {: e.getUltimoHermano().setHermanoDerecho(ls); RESULT = e; :}
                      | c_expresion_llamado_metodo:m c_lista_sentencias:ls
                      {: m.setHermanoDerecho(ls); RESULT = m; :}
                      | c_funciones_reservadas:f c_lista_sentencias:ls
@@ -974,8 +981,8 @@ c_asignacion_expresion_Booleana_Total ::= c_expresion_booleana:e            {:RE
                                         ;
 
 
-c_expresion_booleana::= c_expresion_booleana:e  Y c_expresion_booleana:f                {: RESULT = new Operacion(Operacion.TipoOperador.Y, e, f, Tipo.BOOLEANO);:}
-                      | c_expresion_booleana:e O c_expresion_booleana:f                 {: RESULT = new Operacion(Operacion.TipoOperador.O, e, f, Tipo.BOOLEANO);:}
+c_expresion_booleana::= c_expresion_booleana:e  Y c_expresion_booleana:f                {: RESULT = new Operacion(Operacion.TipoOperador.Y, e, f);:}
+                      | c_expresion_booleana:e O c_expresion_booleana:f                 {: RESULT = new Operacion(Operacion.TipoOperador.O, e, f);:}
                       | DISTINTO c_expresion_booleana:e                                 {: RESULT = e;:}%prec NEGACION //TODO token DISTINTO no es !
                       | DISTINTO c_variable_o_llamadoMetodo:m                           {: RESULT = (Expresion)m;:}%prec NEGACION
 

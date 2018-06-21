@@ -1,8 +1,7 @@
-privado num hola(cad yy)
+privado num hola(num yy)
 {
-    //zzz = 666
-    num x = 7
-    num zzz
-    bool jeje
-    devolver zzz
+    mientras ( 5 < 9 Y yy() > 3) hacer {
+        imprimir(yy)
+    }
+    devolver 5
 }

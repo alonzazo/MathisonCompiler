@@ -1,7 +1,7 @@
 
 
 publico num[] cribaEratostenes(num n){
-    bool hola = verdadero
+
 	num limite = raiz(n)
 	num[n] numeros 	                        //Vector de num de tamaño n
 	numeros[i] = 0
@@ -13,6 +13,7 @@ publico num[] cribaEratostenes(num n){
 	num marcado = 0
 	para num i desde 2 hasta n avance 1
 	{
+
 		si (numeros[i] == 0) 			//Revisa si está marcado
         {
 			resultado[marcado] = i  	//Está sin marcar

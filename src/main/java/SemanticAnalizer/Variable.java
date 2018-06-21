@@ -12,6 +12,24 @@ public class Variable extends ExpresionGenerico implements Nombre{
         System.out.println("Variable");
     }
 
+    @Override
+    public Tipo evaluarTipo() throws SemanticError{
+        //Se busca en las tablas de simbolos la referencia
+        Componente i = this._padre;
+        for (; !i.getTblSimbolosLocales().containsKey(getNombre()); i = i.getPadre());          //-----**------
+
+        if (i == null)
+            throw new SemanticError("Referencia no declarada en " + this._padre.toString() + ": " + getNombre());
+
+        //Se checkean la referencia encontrada si es realmente una Variable
+        if (i.getTblSimbolosLocales().get(getNombre()) instanceof Variable){
+            _tipo = i.getTblSimbolosLocales().get(getNombre()).get_tipo();
+        }else
+            throw new SemanticError("Referencia a variable " + getNombre() + " no declarada");
+
+        return _tipo;
+    }
+
     public Variable(boolean _arreglo, String _nombre, Tipo _tipo, int _tamano) {
         this._arreglo = _arreglo;
         this._nombre = _nombre;

@@ -50,7 +50,8 @@ public class Asignacion extends Sentencia {
 
     @Override
     public boolean evaluarSemantica() throws SemanticError{
-        return tipoDatosCorrecto(_expresion,_tipo,this);
+        Expresion e = _expresion instanceof Operacion ? ((Operacion) _expresion).get_primeraHoja() : _expresion;
+        return tipoDatosCorrecto(e,_tipo,this);
     }
 
     @Override

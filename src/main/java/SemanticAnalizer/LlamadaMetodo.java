@@ -87,6 +87,24 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
     }
 
     @Override
+    public Tipo evaluarTipo() throws SemanticError{
+        //Se busca en las tablas de simbolos la referencia
+        Componente i = this._padre;
+        for (; !i.getTblSimbolosLocales().containsKey(getNombre()); i = i.getPadre());          //-----**------
+
+        if (i == null)
+            throw new SemanticError("Referencia no declarada en " + this._padre.toString() + ": " + getNombre());
+
+        //Se checkean la referencia encontrada si es realmente un Metodo
+        if (i.getTblSimbolosLocales().get(getNombre()) instanceof Metodo){
+            _tipo = i.getTblSimbolosLocales().get(getNombre()).get_tipo();
+        }else
+            throw new SemanticError("Referencia a método " + getNombre() + "() no declarada");
+
+        return _tipo;
+    }
+
+    @Override
     public Tipo get_tipo() {
         return _tipo;
     }

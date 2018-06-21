@@ -1,12 +1,14 @@
 package SemanticAnalizer;
 
+import java.util.LinkedList;
+
 public class Operacion extends ComponenteConcreto implements Expresion {
 
     public enum TipoOperador {
         SUMA, RESTA, MULTIPLICACION, DIVISION,  // OP. NUMERICOS
         IGUAL, DISTINTO,                        // OP. IDENTIDAD
-        MAYORQUE, MAYOROIGUAL,                  // OP. LOGICOS NUMERICOS
-        MENORQUE, MENOROIGUAL,                  // OP. LOGICOS NUMERICOS
+        MAYORQUE, MAYOROIGUAL,                  // OP. LOGICOS COMPARACION
+        MENORQUE, MENOROIGUAL,                  // OP. LOGICOS COMPARACION
         Y, O                                    // OP. LOGICOS
     }
 
@@ -91,6 +93,43 @@ public class Operacion extends ComponenteConcreto implements Expresion {
             _ultimaHoja = expDerecha;
             expIzquierda.setHermanoDerecho(expDerecha);
         }
+    }
+
+    @Override
+    public Tipo evaluarTipo() throws SemanticError {
+        if ( _tipoSalida == null ){
+            if ( _tipoOperacion == TipoOperador.SUMA ){
+                if (_expIzq.evaluarTipo() == Tipo.NUMERICO && _expDer.evaluarTipo() == Tipo.NUMERICO)
+                    return Tipo.NUMERICO;
+                else if ( (_expIzq.evaluarTipo() == Tipo.NUMERICO || _expIzq.evaluarTipo() == Tipo.CADENA) &&
+                        (_expDer.evaluarTipo() == Tipo.NUMERICO || _expDer.evaluarTipo() == Tipo.CADENA))
+                    return Tipo.CADENA;
+                else
+                    throw new SemanticError("Tipo de expresión inválido:\n" + _expDer.toString() + _expIzq.toString());
+            } else if ( _tipoOperacion == TipoOperador.RESTA || _tipoOperacion == TipoOperador.MULTIPLICACION || _tipoOperacion == TipoOperador.DIVISION){
+                if (_expIzq.evaluarTipo() == Tipo.NUMERICO && _expDer.evaluarTipo() == Tipo.NUMERICO)
+                    return Tipo.NUMERICO;
+                else
+                    throw new SemanticError("Tipo de expresión inválido: Se esperaba Numerico\n" + _expDer.toString() + _expIzq.toString());
+            } else if (_tipoOperacion == TipoOperador.MENORQUE || _tipoOperacion == TipoOperador.MENOROIGUAL || _tipoOperacion == TipoOperador.MAYORQUE || _tipoOperacion == TipoOperador.MAYOROIGUAL){
+                if (_expIzq.evaluarTipo() == Tipo.NUMERICO && _expDer.evaluarTipo() == Tipo.NUMERICO)
+                    return Tipo.BOOLEANO;
+                else
+                    throw new SemanticError("Tipo de expresión inválido: Se esperaba Numerico\n" + _expDer.toString() + _expIzq.toString());
+            } else if (_tipoOperacion == TipoOperador.IGUAL || _tipoOperacion == TipoOperador.DISTINTO){
+                if (_expIzq.evaluarTipo() == _expDer.evaluarTipo())
+                    return Tipo.BOOLEANO;
+                throw new SemanticError("Tipo de expresión incomparables:\n" + _expDer.toString() + _expIzq.toString());
+            } else if (_tipoOperacion == TipoOperador.Y || _tipoOperacion == TipoOperador.O){
+                if (_expIzq.evaluarTipo() == Tipo.BOOLEANO && _expDer.evaluarTipo() == Tipo.BOOLEANO)
+                    return Tipo.BOOLEANO;
+                else
+                    throw new SemanticError("Tipo de expresión inválido: Se esperaba Booleano\n" + _expDer.toString() + _expIzq.toString());
+            } else {
+                throw new SemanticError("Operación sin operador");
+            }
+        }
+        return _tipoSalida;
     }
 
     public Tipo get_tipoSalida() {

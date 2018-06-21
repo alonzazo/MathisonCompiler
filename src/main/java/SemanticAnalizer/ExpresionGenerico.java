@@ -63,4 +63,9 @@ public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
     public void setNombre(String _nombre) {
         this._nombre = _nombre;
     }
+
+    @Override
+    public Tipo evaluarTipo() throws SemanticError{
+        return getTipo();
+    }
 }

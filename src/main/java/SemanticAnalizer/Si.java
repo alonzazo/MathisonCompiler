@@ -1,8 +1,6 @@
 package SemanticAnalizer;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 public class Si extends Estructura {
 
@@ -18,8 +16,18 @@ public class Si extends Estructura {
 
     @Override
     public boolean evaluarCondicion() throws SemanticError {
-        return tipoDatosCorrecto(_expresion, Tipo.BOOLEANO, this);
+        setPadreExpresiones();
+        return _expresion.evaluarTipo() == Tipo.BOOLEANO;
     }
+
+    private void setPadreExpresiones(){
+        if (_expresion instanceof Operacion)
+            for (Componente i = ((Operacion) _expresion).get_primeraHoja(); i != null; i = i.getHermanoDerecho())
+                i.setPadre(this);
+        else
+            _expresion.setPadre(this);
+    }
+
 
     private boolean tipoCorrectoParametros(Expresion primero, Tipo tipoEsperado, Componente padre) throws SemanticError {
         HashMap<String,Tipo> metodosNativos = new HashMap<String,Tipo>();

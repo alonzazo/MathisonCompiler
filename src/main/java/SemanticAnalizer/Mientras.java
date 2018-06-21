@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Mientras extends Estructura {
 
-    private Componente _condicion;
+    private Expresion _condicion;
 
     public Mientras(){
 
@@ -16,18 +16,27 @@ public class Mientras extends Estructura {
         _hijoMasIzq = sentencias;
     }
 
-    public Componente get_condicion()
+    public Expresion get_condicion()
     {
         return _condicion;
     }
 
-    public void set_condicion(Componente condicion)
+    public void set_condicion(Expresion condicion)
     {
         _condicion = condicion;
     }
 
     @Override
     public boolean evaluarCondicion() throws SemanticError {
-        return false;
+        setPadreExpresiones();
+        return _condicion.evaluarTipo() == Tipo.BOOLEANO;
+    }
+
+    private void setPadreExpresiones(){
+        if (_condicion instanceof Operacion)
+            for (Componente i = ((Operacion) _condicion).get_primeraHoja(); i != null; i = i.getHermanoDerecho())
+                i.setPadre(this);
+        else
+            _condicion.setPadre(this);
     }
 }
