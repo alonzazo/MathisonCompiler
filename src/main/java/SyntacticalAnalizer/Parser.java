@@ -1753,7 +1753,7 @@ class CUP$Parser$actions {
                             {
                                 Variable simbolo = (Variable) tabla.get(nombre);
                                 if(hijo.getOrdenAparicion() < simbolo.getOrdenAparicion())
-                                    throw new SemanticError("Variable no declarada: " + nombre);
+                                    throw new SemanticError("Variable todavia no declarada: " + nombre);
                                 /*ExpresionGenerico ex = ((Asignacion) hijo).get_expresion();
                                 Tipo t = tabla.get(nombre).get_tipo();
                                 Componente h = (Asignacion) hijo;

@@ -7,16 +7,6 @@ import java.util.List;
 
 public abstract class Estructura extends ComponenteConcreto {
 
-    public enum TipoEstructura {
-        SI,
-        SINO,
-        MIENTRAS,
-        PARA
-    }
-
-    protected TipoEstructura _tipoEstructura;
-    protected Object _condicion;
-
     public Estructura(){
 
     }
