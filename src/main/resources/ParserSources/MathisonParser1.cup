@@ -780,8 +780,8 @@ c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total:
 
 c_si ::= //SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO c_sino
          //{: RESULT = new Si(ls);:}
-           SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-          {: RESULT = new Si(ls);:}//TODO Revisar las expresiones de los SI
+           SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total:exp PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
+          {: RESULT = new Si(exp, ls);:}//TODO Revisar las expresiones de los SI
        ;
 
 c_sino ::= SINO c_si
@@ -856,36 +856,36 @@ c_expresion_variable ::= variable_arreglo:v                                     
                        | PARENTESISABIERTO c_expresion_variable:v PARENTESISCERRADO {:RESULT = v;:}
                        ;
 
-c_expresion_variable_igual ::= c_expresion_numerica:e IGUAL c_expresion_numerica:f                      {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e;:}
-                             | c_expresion_booleana:e  IGUAL c_expresion_booleana:f                     {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e; :}
-                             | c_expresion_booleana:e  IGUAL c_variable_o_llamadoMetodo:m               {: e.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = e; :}
+c_expresion_variable_igual ::= c_expresion_numerica:e IGUAL c_expresion_numerica:f                      {: RESULT = new Operacion(Operacion.TipoOperador.IGUAL, e, f);:}
+                             | c_expresion_booleana:e  IGUAL c_expresion_booleana:f                     {: RESULT = new Operacion(Operacion.TipoOperador.IGUAL, e, f);:}
+                             | c_expresion_booleana:e  IGUAL c_variable_o_llamadoMetodo:m               {: RESULT = new Operacion(Operacion.TipoOperador.IGUAL, e, (Expresion) m);:}
                              //| c_variable_o_llamadoMetodo:m  IGUAL c_asignacion_booleana:e              {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)e); RESULT = ex;:}
 
-                             | c_variable_o_llamadoMetodo:m IGUAL c_expresion_numerica:e                {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)e); RESULT = ex; :}
-                             | c_expresion_numerica:e IGUAL c_variable_o_llamadoMetodo:m                {: e.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = e; :}
-                             | c_variable_o_llamadoMetodo:m IGUAL c_variable_o_llamadoMetodo:n          {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = ex; :}
+                             | c_variable_o_llamadoMetodo:m IGUAL c_expresion_numerica:e                {: RESULT = new Operacion(Operacion.TipoOperador.IGUAL, (Expresion) m, e);:}
+                             | c_expresion_numerica:e IGUAL c_variable_o_llamadoMetodo:m                {: RESULT = new Operacion(Operacion.TipoOperador.IGUAL, e, (Expresion) m);:}
+                             | c_variable_o_llamadoMetodo:m IGUAL c_variable_o_llamadoMetodo:n          {: RESULT = new Operacion(Operacion.TipoOperador.IGUAL, (Expresion) m, (Expresion) n);:}
                              ;
 
-c_expresion_variable_distinto ::=c_expresion_numerica:e DISTINTO c_expresion_numerica:f                 {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e; :}
-                              |  c_expresion_booleana:e  DISTINTO c_expresion_booleana:f                {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e; :}
-                              | c_expresion_booleana:e  DISTINTO c_variable_o_llamadoMetodo:m           {: e.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = e; :}
+c_expresion_variable_distinto ::=c_expresion_numerica:e DISTINTO c_expresion_numerica:f                 {: RESULT = new Operacion(Operacion.TipoOperador.DISTINTO, e, f);:}
+                              |  c_expresion_booleana:e  DISTINTO c_expresion_booleana:f                {: RESULT = new Operacion(Operacion.TipoOperador.DISTINTO, e, f);:}
+                              | c_expresion_booleana:e  DISTINTO c_variable_o_llamadoMetodo:m           {: RESULT = new Operacion(Operacion.TipoOperador.DISTINTO, e, (Expresion) m);:}
                               //| c_variable_o_llamadoMetodo:m  DISTINTO c_asignacion_booleana:e          {: Componente ex = (Componente)m; ex.getUltimoHermano().setHermanoDerecho((Componente)e); RESULT = ex;:}
-                              |  c_variable_o_llamadoMetodo:m DISTINTO c_expresion_numerica:e           {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)e); RESULT = ex; :}
-                               | c_expresion_numerica:e DISTINTO c_variable_o_llamadoMetodo:m           {: e.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = e; :}
-                               | c_variable_o_llamadoMetodo:m DISTINTO c_variable_o_llamadoMetodo:n     {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = ex; :}
+                              |  c_variable_o_llamadoMetodo:m DISTINTO c_expresion_numerica:e           {: RESULT = new Operacion(Operacion.TipoOperador.DISTINTO, (Expresion) m, e);:}
+                               | c_expresion_numerica:e DISTINTO c_variable_o_llamadoMetodo:m           {: RESULT = new Operacion(Operacion.TipoOperador.DISTINTO, e, (Expresion) m);:}
+                               | c_variable_o_llamadoMetodo:m DISTINTO c_variable_o_llamadoMetodo:n     {: RESULT = new Operacion(Operacion.TipoOperador.DISTINTO, (Expresion) m, (Expresion) n);:}
                                ;
 
-c_expresion_variable_mayorque ::= c_asignacion_expresion_Numerica_Total:e MAYORQUE c_asignacion_expresion_Numerica_Total:f  {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e; :}
+c_expresion_variable_mayorque ::= c_asignacion_expresion_Numerica_Total:e MAYORQUE c_asignacion_expresion_Numerica_Total:f  {: RESULT = new Operacion(Operacion.TipoOperador.MAYORQUE, e, f);:}
                                 ;
 
 
-c_expresion_variable_mayoroigual ::= c_asignacion_expresion_Numerica_Total:e MAYOROIGUAL c_asignacion_expresion_Numerica_Total:f {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e; :}
+c_expresion_variable_mayoroigual ::= c_asignacion_expresion_Numerica_Total:e MAYOROIGUAL c_asignacion_expresion_Numerica_Total:f {: RESULT = new Operacion(Operacion.TipoOperador.MAYOROIGUAL, e, f);:}
                                    ;
 
-c_expresion_variable_menorque ::= c_asignacion_expresion_Numerica_Total:e MENORQUE c_asignacion_expresion_Numerica_Total:f {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e; :}
+c_expresion_variable_menorque ::= c_asignacion_expresion_Numerica_Total:e MENORQUE c_asignacion_expresion_Numerica_Total:f {: RESULT = new Operacion(Operacion.TipoOperador.MENORQUE, e, f);:}
                                 ;
 
-c_expresion_variable_menoroigual ::= c_asignacion_expresion_Numerica_Total:e MENOROIGUAL c_asignacion_expresion_Numerica_Total:f {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e; :}
+c_expresion_variable_menoroigual ::= c_asignacion_expresion_Numerica_Total:e MENOROIGUAL c_asignacion_expresion_Numerica_Total:f {: RESULT = new Operacion(Operacion.TipoOperador.MENOROIGUAL, e, f);:}
                                    ;
 
 c_expresion_variable_comparacion ::= c_expresion_variable_igual:e           {:RESULT = e;:}
@@ -924,45 +924,45 @@ c_asignacion_expresion_Numerica_Total ::= c_expresion_numerica:e        {:RESULT
                                         ;
 
 
-c_expresion_numerica  ::= c_expresion_numerica:e SUMA c_expresion_numerica:f            {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e;//System.out.println("c_expresion_numerica SUMA c_expresion_numerica");:}
-                        | c_expresion_numerica:e RESTA c_expresion_numerica:f           {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e; //System.out.println("c_expresion_numerica RESTA c_expresion_numerica");:}
-                        | c_expresion_numerica:e MULTIPLICACION c_expresion_numerica:f  {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e;//System.out.println("c_expresion_numerica MULTIPLICACION c_expresion_numerica");:}
-                        | c_expresion_numerica:e DIVISION c_expresion_numerica:f        {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e;//System.out.println("c_expresion_numerica DIVISION c_expresion_numerica");:}
+c_expresion_numerica  ::= c_expresion_numerica:e SUMA c_expresion_numerica:f            {: RESULT = new Operacion(Operacion.TipoOperador.SUMA, e, f, Tipo.NUMERICO);:}
+                        | c_expresion_numerica:e RESTA c_expresion_numerica:f           {: RESULT = new Operacion(Operacion.TipoOperador.RESTA, e, f, Tipo.NUMERICO);:}
+                        | c_expresion_numerica:e MULTIPLICACION c_expresion_numerica:f  {: RESULT = new Operacion(Operacion.TipoOperador.MULTIPLICACION, e, f, Tipo.NUMERICO);:}
+                        | c_expresion_numerica:e DIVISION c_expresion_numerica:f        {: RESULT = new Operacion(Operacion.TipoOperador.DIVISION, e, f, Tipo.NUMERICO);:}
                         | RESTA c_expresion_numerica:e                                  {:RESULT = e;:} %prec NEGATIVO
                         | RESTA c_variable_o_llamadoMetodo:m                            {:RESULT = (LlamadaMetodo)m;:} %prec NEGATIVO
 
                         //Una variable + otra cosa
 
-                        | c_variable_o_llamadoMetodo:m SUMA c_expresion_numerica:f          {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
-                        | c_expresion_numerica:f SUMA c_variable_o_llamadoMetodo:m          {: f.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = f; :}
+                        | c_variable_o_llamadoMetodo:m SUMA c_expresion_numerica:f          {: RESULT = new Operacion(Operacion.TipoOperador.SUMA, (Expresion) m, f, Tipo.NUMERICO);:}
+                        | c_expresion_numerica:f SUMA c_variable_o_llamadoMetodo:m          {: RESULT = new Operacion(Operacion.TipoOperador.SUMA, f, (Expresion) m, Tipo.NUMERICO);:}
 
-                        | c_variable_o_llamadoMetodo:m RESTA c_expresion_numerica:f         {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
-                        | c_expresion_numerica:f RESTA c_variable_o_llamadoMetodo:m         {: f.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = f; :}
+                        | c_variable_o_llamadoMetodo:m RESTA c_expresion_numerica:f         {: RESULT = new Operacion(Operacion.TipoOperador.RESTA, (Expresion) m, f, Tipo.NUMERICO);:}
+                        | c_expresion_numerica:f RESTA c_variable_o_llamadoMetodo:m         {: RESULT = new Operacion(Operacion.TipoOperador.RESTA, f, (Expresion) m, Tipo.NUMERICO);:}
 
-                        | c_variable_o_llamadoMetodo:m MULTIPLICACION c_expresion_numerica:f{: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
-                        | c_expresion_numerica:f MULTIPLICACION c_variable_o_llamadoMetodo:m{: f.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = f; :}
+                        | c_variable_o_llamadoMetodo:m MULTIPLICACION c_expresion_numerica:f{: RESULT = new Operacion(Operacion.TipoOperador.MULTIPLICACION, (Expresion) m, f, Tipo.NUMERICO);:}
+                        | c_expresion_numerica:f MULTIPLICACION c_variable_o_llamadoMetodo:m{: RESULT = new Operacion(Operacion.TipoOperador.MULTIPLICACION, f, (Expresion) m, Tipo.NUMERICO);:}
 
-                        | c_variable_o_llamadoMetodo:m DIVISION c_expresion_numerica:f      {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
-                        | c_expresion_numerica:f DIVISION c_variable_o_llamadoMetodo:m      {: f.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = f; :}
+                        | c_variable_o_llamadoMetodo:m DIVISION c_expresion_numerica:f      {: RESULT = new Operacion(Operacion.TipoOperador.DIVISION, (Expresion) m, f, Tipo.NUMERICO);:}
+                        | c_expresion_numerica:f DIVISION c_variable_o_llamadoMetodo:m      {: RESULT = new Operacion(Operacion.TipoOperador.DIVISION, f, (Expresion) m, Tipo.NUMERICO);:}
 
                         //Dos variables
 
-                        | c_variable_o_llamadoMetodo:m SUMA c_variable_o_llamadoMetodo:n    {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = ex; :}//Esta operación contempla la concatenación de cadenas y la suma de literales numéricos.
-                        | c_variable_o_llamadoMetodo:m RESTA c_variable_o_llamadoMetodo:n   {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = ex; :}
-                        | c_variable_o_llamadoMetodo:m MULTIPLICACION c_variable_o_llamadoMetodo:n  {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = ex; :}
-                        | c_variable_o_llamadoMetodo:m DIVISION c_variable_o_llamadoMetodo:n    {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = ex; :}
+                        | c_variable_o_llamadoMetodo:m SUMA c_variable_o_llamadoMetodo:n    {: RESULT = new Operacion(Operacion.TipoOperador.SUMA, (Expresion) m, (Expresion) n, Tipo.NUMERICO);:}
+                        | c_variable_o_llamadoMetodo:m RESTA c_variable_o_llamadoMetodo:n   {: RESULT = new Operacion(Operacion.TipoOperador.RESTA, (Expresion) m, (Expresion) n, Tipo.NUMERICO);:}
+                        | c_variable_o_llamadoMetodo:m MULTIPLICACION c_variable_o_llamadoMetodo:n  {: RESULT = new Operacion(Operacion.TipoOperador.MULTIPLICACION, (Expresion) m, (Expresion) n, Tipo.NUMERICO);:}
+                        | c_variable_o_llamadoMetodo:m DIVISION c_variable_o_llamadoMetodo:n    {: RESULT = new Operacion(Operacion.TipoOperador.DIVISION, (Expresion) m, (Expresion) n, Tipo.NUMERICO);:}
 
                         //Terminos
-                        | NUMERO:v                                                      {: RESULT = new ExpresionGenerico(Tipo.NUMERICO);:}  //{:System.out.println("Numero " + v);:}
+                        | NUMERO:v                                                      {:RESULT = new ExpresionGenerico(sym.terminalNames[((Symbol)((Parser) this.parser).stack.peek()).sym],Tipo.NUMERICO,(Symbol)((Parser) this.parser).stack.peek());:}
                         | PARENTESISABIERTO c_expresion_numerica:e PARENTESISCERRADO    {: RESULT = e;:}
                         ;
 
 /*------------------------------Sintaxis de tipo cadena ------------------------------*/
-c_expresion_cadena ::= c_expresion_cadena:e SUMA c_expresion_cadena:f               {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e;//System.out.println("c_expresion_numerica SUMA c_expresion_numerica");:}
+c_expresion_cadena ::= c_expresion_cadena:e SUMA c_expresion_cadena:f               {: RESULT = new Operacion(Operacion.TipoOperador.SUMA, e, f, Tipo.CADENA);:} //SIEMPRE HAY CASTING IMPLICITOS
                      //Una variable + otra cosa
-                     | c_variable_o_llamadoMetodo:m SUMA c_expresion_cadena:f       {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
-                     | c_expresion_cadena:f SUMA c_variable_o_llamadoMetodo:m       {: f.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = f; :}
-                     | CADENA:v                                                     {: RESULT = new ExpresionGenerico(Tipo.CADENA);//System.out.println("Cadena " + v);:}
+                     | c_variable_o_llamadoMetodo:m SUMA c_expresion_cadena:f       {: RESULT = new Operacion(Operacion.TipoOperador.SUMA, (Expresion) m, f, Tipo.CADENA);:}
+                     | c_expresion_cadena:f SUMA c_variable_o_llamadoMetodo:m       {: RESULT = new Operacion(Operacion.TipoOperador.SUMA, f, (Expresion) m, Tipo.CADENA);:}
+                     | CADENA:v                                                     {:RESULT = new ExpresionGenerico(sym.terminalNames[((Symbol)((Parser) this.parser).stack.peek()).sym],Tipo.CADENA,(Symbol)((Parser) this.parser).stack.peek());:}
                      //|c_nombre_metodo
                      | PARENTESISABIERTO c_expresion_cadena:e PARENTESISCERRADO     {: RESULT = e;:}
                      ;
@@ -974,28 +974,28 @@ c_asignacion_expresion_Booleana_Total ::= c_expresion_booleana:e            {:RE
                                         ;
 
 
-c_expresion_booleana::= c_expresion_booleana:e  Y c_expresion_booleana:f                {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e; :}
-                      | c_expresion_booleana:e O c_expresion_booleana:f                 {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e; :}
-                      | DISTINTO c_expresion_booleana:e                                 {: RESULT = e;:}%prec NEGACION
+c_expresion_booleana::= c_expresion_booleana:e  Y c_expresion_booleana:f                {: RESULT = new Operacion(Operacion.TipoOperador.Y, e, f, Tipo.BOOLEANO);:}
+                      | c_expresion_booleana:e O c_expresion_booleana:f                 {: RESULT = new Operacion(Operacion.TipoOperador.O, e, f, Tipo.BOOLEANO);:}
+                      | DISTINTO c_expresion_booleana:e                                 {: RESULT = e;:}%prec NEGACION //TODO token DISTINTO no es !
                       | DISTINTO c_variable_o_llamadoMetodo:m                           {: RESULT = (Expresion)m;:}%prec NEGACION
 
 
                       //Una variables o más + otra cosa
 
-                      | c_variable_o_llamadoMetodo:m Y c_expresion_booleana:f           {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
-                      | c_expresion_booleana:f Y c_variable_o_llamadoMetodo:m           {: f.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = f; :}
+                      | c_variable_o_llamadoMetodo:m Y c_expresion_booleana:f           {: RESULT = new Operacion(Operacion.TipoOperador.Y, (Expresion) m, f);:}
+                      | c_expresion_booleana:f Y c_variable_o_llamadoMetodo:m           {: RESULT = new Operacion(Operacion.TipoOperador.Y, f, (Expresion) m);:}
 
-                      | c_variable_o_llamadoMetodo:m O c_expresion_booleana:f           {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
-                      | c_expresion_booleana:f O c_variable_o_llamadoMetodo:m           {: f.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = f; :}
+                      | c_variable_o_llamadoMetodo:m O c_expresion_booleana:f           {: RESULT = new Operacion(Operacion.TipoOperador.O, (Expresion) m, f);:}
+                      | c_expresion_booleana:f O c_variable_o_llamadoMetodo:m           {: RESULT = new Operacion(Operacion.TipoOperador.O, f, (Expresion) m);:}
 
                       //Dos variables o más + otra cosa
 
-                      | c_variable_o_llamadoMetodo:m Y c_variable_o_llamadoMetodo:n         {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = ex; :}
-                      | c_variable_o_llamadoMetodo:m O c_variable_o_llamadoMetodo:n         {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)n); RESULT = ex; :}
+                      | c_variable_o_llamadoMetodo:m Y c_variable_o_llamadoMetodo:n         {: RESULT = new Operacion(Operacion.TipoOperador.Y, (Expresion) m, (Expresion) n);:}
+                      | c_variable_o_llamadoMetodo:m O c_variable_o_llamadoMetodo:n         {: RESULT = new Operacion(Operacion.TipoOperador.O, (Expresion) m, (Expresion) n);:}
 
                       | c_expresion_variable_comparacion:e                           {:RESULT = e;:}
-                      | VERDADERO                                                   {:RESULT = new ExpresionGenerico(Tipo.BOOLEANO);:}
-                      | FALSO                                                       {:RESULT = new ExpresionGenerico(Tipo.BOOLEANO);:}
+                      | VERDADERO                                                   {:RESULT = new ExpresionGenerico(sym.terminalNames[((Symbol)((Parser) this.parser).stack.peek()).sym],Tipo.BOOLEANO,(Symbol)((Parser) this.parser).stack.peek());:}
+                      | FALSO                                                       {:RESULT = new ExpresionGenerico(sym.terminalNames[((Symbol)((Parser) this.parser).stack.peek()).sym],Tipo.BOOLEANO,(Symbol)((Parser) this.parser).stack.peek());:}
                       | PARENTESISABIERTO c_expresion_booleana:e PARENTESISCERRADO  {:RESULT = e;:}
                       ;
 

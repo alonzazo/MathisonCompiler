@@ -11,7 +11,8 @@ public class Si extends Estructura {
     public Si(){
     }
 
-    public Si(Componente sentencias){
+    public Si(Expresion expresion, Componente sentencias){
+        _expresion = expresion;
         _hijoMasIzq = sentencias;
     }
 
