@@ -404,7 +404,28 @@ parser code {:
         try {
         //--------------------------------------------------------INICIO DE INTERVENCIÓN
             //Intervención para no tomar como entrada los parámetros del programa
-            System.out.println("Escriba la dirección del archivo que desea analizar:");
+            System.out.println(
+                                "  __  __           _     _       _\n" +
+                                " |  \\/  |   __ _  | |_  | |__   (_)  ___    ___    _ __\n" +
+                                " | |\\/| |  / _` | | __| | '_ \\  | | / __|  / _ \\  | '_ \\\n" +
+                                " | |  | | | (_| | | |_  | | | | | | \\__ \\ | (_) | | | | |\n" +
+                                " |_|  |_|  \\__,_|  \\__| |_| |_| |_| |___/  \\___/  |_| |_|\n" +
+                                "                               PROGRAMACIÓN PARA HISPANOS"
+                        );
+
+            System.out.println("\n" +
+                                "  *********************ACCESO*RAPIDO********************\n" +
+                                "  * [1] Compilar 'Criba de Eratostenes'                *\n" +
+                                "  * [2] Compilar 'Sucesion de Fibonacci'               *\n" +
+                                "  * [3] Compilar 'Triangulo'                           *\n" +
+                                "  ******************************************************\n" +
+                                "Digite una opcion o escriba la direccion del archivo a compilar..."
+
+            );
+            String[] direcciones = {"Codes/eratostenes.mathison",
+                                    "Codes/fibonacci.mathison",
+                                    "Codes/triangulo.mathison"
+                                   };
             Scanner scan = new Scanner(System.in);
             args = scan.nextLine().split(" ");
             //--------------------------------------------------------FIN DE INTERVENCIÓN
@@ -431,6 +452,11 @@ parser code {:
 
                   //String path = Lexer.class.getResource(args[i]).getPath();
                   //java.io.FileInputStream stream = new java.io.FileInputStream(path);
+
+                  if (args[i].equals("1")) args[i] = direcciones[0];
+                  else if (args[i].equals("2")) args[i] = direcciones[1];
+                  else if (args[i].equals("3")) args[i] = direcciones[2];
+
 
                   //Se utiliza getResource para como root la carpeta Resources como Root
                     java.io.Reader reader = new java.io.InputStreamReader(Parser.class.getResourceAsStream("../" + args[i]), encodingName);
