@@ -275,46 +275,84 @@ action code {:
                     }
                     if(hijo instanceof Devolver)
                     {
-                      tieneDevolver = true;
-                      Componente iterPadre = aux;
-                      while (!(iterPadre instanceof Metodo)) //Hasta que llegue al metodo
-                        iterPadre = iterPadre.getPadre();
-                      Metodo metodo = (Metodo)iterPadre;
-                      if(metodo.get_tipo() == null) //No devuelve nada
-                        throw new SemanticError("Sentencia devolver en metodo " + metodo.get_nombre() + " que no devuelve nada");
-                      Devolver devolver = (Devolver) hijo;
-                      if(devolver.get_tipo() != null)
-                      {
-                          if(metodo.get_tipo() != devolver.get_tipo())
-                              throw new SemanticError("Tipo de retorno equivocado en metodo " + metodo.get_nombre());
-                      }
-                      else
-                      {
-                          String nombre = devolver.getNombre();
-                          Boolean estaEnPadre = false;
-                          if(!tabla.containsKey(nombre))
-                          {
-                              Componente iterPadres = aux;
-                              while (iterPadres != null && !estaEnPadre)
-                              {
-                                  if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
-                                      iterPadres = iterPadres.getPadre();
-                                  else
-                                      estaEnPadre = true;
-                              }
-                              if(iterPadres == null)
-                              {
-                                  throw new SemanticError("Se intenta devolver una referencia no declarada en metodo " + metodo.get_nombre() + ": " + nombre);
-                              }
-                          }
-                          if(tabla.containsKey(nombre) || estaEnPadre)
-                          {
-                              Nombre referencia = tabla.get(nombre);
-                              if(metodo.get_tipo() != referencia.get_tipo())
-                                  throw new SemanticError("Tipo de retorno equivocado en metodo " + metodo.get_nombre());
-                          }
-                      }
+                        tieneDevolver = true;
+                        Componente iterPadre = aux;
+                        while (!(iterPadre instanceof Metodo)) //Hasta que llegue al metodo
+                            iterPadre = iterPadre.getPadre();
+                        Metodo metodo = (Metodo)iterPadre;
+                        if(metodo.get_tipo() == null) //No devuelve nada
+                           throw new SemanticError("Sentencia devolver en metodo " + metodo.get_nombre() + " que no devuelve nada");
+                        Devolver devolver = (Devolver) hijo;
+                        if(devolver.get_tipo() != null)
+                        {
+                            if(metodo.get_tipo() != devolver.get_tipo())
+                                throw new SemanticError("Tipo de retorno equivocado en metodo " + metodo.get_nombre());
+                        }
+                        else
+                        {
+                            String nombre = devolver.getNombre();
+                            Boolean estaEnPadre = false;
+                            if(!tabla.containsKey(nombre))
+                            {
+                                Componente iterPadres = aux;
+                                while (iterPadres != null && !estaEnPadre)
+                                {
+                                    if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
+                                        iterPadres = iterPadres.getPadre();
+                                    else
+                                        estaEnPadre = true;
+                                }
+                                if(iterPadres == null)
+                                {
+                                    throw new SemanticError("Se intenta devolver una referencia no declarada en metodo " + metodo.get_nombre() + ": " + nombre);
+                                }
+                            }
+                            if(tabla.containsKey(nombre) || estaEnPadre)
+                            {
+                                Nombre referencia = tabla.get(nombre);
+                                if(metodo.get_tipo() != referencia.get_tipo())
+                                    throw new SemanticError("Tipo de retorno equivocado en metodo " + metodo.get_nombre());
+                            }
+                        }
                     }
+
+                    if(hijo instanceof Mientras)
+                    {
+                        Mientras mientras = (Mientras) hijo;
+                        Componente cond = mientras.get_condicion();
+                        while (cond != null)
+                        {
+                            if(cond instanceof Nombre)
+                            {
+                                Boolean estaEnPadre = false;
+                                Nombre nom = (Nombre) cond;
+                                String nombre = nom.get_nombre();
+                                if(!tabla.containsKey(nombre))
+                                {
+                                    Componente iterPadres = aux;
+                                    while (iterPadres != null && !estaEnPadre)
+                                    {
+                                        if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
+                                            iterPadres = iterPadres.getPadre();
+                                        else
+                                            estaEnPadre = true;
+                                    }
+                                    if(iterPadres == null)
+                                    {
+                                        throw new SemanticError("Referencia no declarada en condicion del mientras: " + nombre);
+                                    }
+                                }
+                                if(tabla.containsKey(nombre) || estaEnPadre)
+                                {
+                                    Nombre referencia = tabla.get(nombre);
+                                    if(nom.get_tipo() != referencia.get_tipo())
+                                        throw new SemanticError("Referencia desconocida en condicion del mientras: " + nom.get_nombre());
+                                }
+                            }
+                            cond = cond.getHermanoDerecho();
+                        }
+                    }
+
                     cola.addLast(hijo);
                     hijo = hijo.getHermanoDerecho();
                 }
@@ -706,12 +744,12 @@ c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total:desde HASTA c
             {: Asignacion a = new Asignacion(v); a.set_expresion(desde); Declaracion decl = new Declaracion(v, Tipo.NUMERICO); decl.setHermanoDerecho(a); a.setHermanoDerecho(ls); RESULT = new Para(v, decl, desde, hasta, avance);:}
          ;
 
-c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
+c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total:e PARENTESISCERRADO
                HACER LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-               {: RESULT = new Mientras(ls);:}//TODO Revisar las expresiones de los MIENTRAS
+               {: RESULT = new Mientras(ls, e);:}//TODO Revisar las expresiones de los MIENTRAS
              | HACER LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO MIENTRAS
-               PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO
-               {: RESULT = new Mientras(ls);:}
+               PARENTESISABIERTO c_asignacion_expresion_Booleana_Total:e PARENTESISCERRADO
+               {: RESULT = new Mientras(ls, e);:}
              ;
 
 c_si ::= //SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO c_sino
@@ -894,10 +932,6 @@ c_expresion_numerica  ::= c_expresion_numerica:e SUMA c_expresion_numerica:f    
                         ;
 
 /*------------------------------Sintaxis de tipo cadena ------------------------------*/
-//TODO Expresiones de cadena deberia soportar llamadasMetodos simples.
-c_asignacion_expresion_Cadena_total ::= c_expresion_cadena:e {: RESULT = e;:}  //Cuando al menos una no es una variable
-                                      ;
-
 c_expresion_cadena ::= c_expresion_cadena:e SUMA c_expresion_cadena:f               {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e;//System.out.println("c_expresion_numerica SUMA c_expresion_numerica");:}
                      //Una variable + otra cosa
                      | c_variable_o_llamadoMetodo:m SUMA c_expresion_cadena:f       {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
