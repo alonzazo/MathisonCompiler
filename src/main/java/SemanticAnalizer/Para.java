@@ -42,6 +42,8 @@ public class Para extends Estructura
 
     @Override
     public boolean evaluarCondicion() throws SemanticError {
-        return false;
+        return tipoDatosCorrecto(_desde, Tipo.NUMERICO, this) &&
+                tipoDatosCorrecto(_hasta, Tipo.NUMERICO, this) &&
+                tipoDatosCorrecto(_avance, Tipo.NUMERICO, this);
     }
 }

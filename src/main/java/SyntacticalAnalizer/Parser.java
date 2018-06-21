@@ -1753,7 +1753,7 @@ class CUP$Parser$actions {
                             {
                                 Variable simbolo = (Variable) tabla.get(nombre);
                                 if(hijo.getOrdenAparicion() < simbolo.getOrdenAparicion())
-                                    throw new SemanticError("Variable todavia no declarada: " + nombre);
+                                    throw new SemanticError("Variable no declarada: " + nombre);
                                 /*ExpresionGenerico ex = ((Asignacion) hijo).get_expresion();
                                 Tipo t = tabla.get(nombre).get_tipo();
                                 Componente h = (Asignacion) hijo;
@@ -1795,9 +1795,13 @@ class CUP$Parser$actions {
                         }else {
 
                             metodo.setTipo(Tipo.NUMERICO);
-                            metodo.evaluarSemantica();
+                            todoBien = metodo.evaluarSemantica();
 
                         }
+                    }
+                    if (hijo instanceof Para){
+                        Para para = (Para)hijo;
+                        todoBien = para.evaluarCondicion();
                     }
                     if(hijo instanceof Devolver)
                     {
@@ -1897,6 +1901,7 @@ class CUP$Parser$actions {
               }catch (SemanticError ex){
                 System.out.println(ex.getMessage());
               }
+              //---------------------------------------------------------------------
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           /* ACCEPT */
@@ -4225,7 +4230,7 @@ RESULT = p;
 		int vleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int vright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		String v = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new ExpresionGenerico(Tipo.CADENA);//System.out.println("Cadena " + v);
+		 RESULT = new ExpresionGenerico(Tipo.CADENA);//System.out.println("Cadena " + v);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_expresion_cadena",25, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

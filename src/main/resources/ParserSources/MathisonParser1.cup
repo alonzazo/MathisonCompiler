@@ -265,9 +265,13 @@ action code {:
                         }else {
 
                             metodo.setTipo(Tipo.NUMERICO);
-                            metodo.evaluarSemantica();
+                            todoBien = metodo.evaluarSemantica();
 
                         }
+                    }
+                    if (hijo instanceof Para){
+                        Para para = (Para)hijo;
+                        todoBien = para.evaluarCondicion();
                     }
                     if(hijo instanceof Devolver)
                     {
@@ -662,7 +666,7 @@ c_expresion_llamado_metodo ::= VAR:v PARENTESISABIERTO c_lleno_parametros:p PARE
                             //|  VAR:v PARENTESISABIERTO c_lleno_parametros   {: report_error("FATAL: Falta apertura de paréntesis (\" ( \") en llamada a método:\t" + v, null);:}
                              ;
 
-c_lleno_parametros ::= c_hay_parametro:p {:RESULT = p;:}//TODO Revisar la lista de parametrso en llamadas a metodos
+c_lleno_parametros ::= c_hay_parametro:p {:RESULT = p;:}
                      | PARENTESISABIERTO c_lleno_parametros:p PARENTESISCERRADO {:RESULT = p;:}
                      |  {:RESULT = null; :}
                      ;
@@ -787,7 +791,7 @@ c_llamadoMetodo ::= c_expresion_llamado_metodo:m                            {: R
 c_expresion_variable ::= variable_arreglo:v                                         {:RESULT = v;:}
                        | PARENTESISABIERTO c_expresion_variable:v PARENTESISCERRADO {:RESULT = v;:}
                        ;
-//TODO Agregar solo reducciones y linkeo de variables o llamados a métodos al arbol
+
 c_expresion_variable_igual ::= c_expresion_numerica:e IGUAL c_expresion_numerica:f                      {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e;:}
                              | c_expresion_booleana:e  IGUAL c_expresion_booleana:f                     {: e.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = e; :}
                              | c_expresion_booleana:e  IGUAL c_variable_o_llamadoMetodo:m               {: e.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = e; :}
@@ -898,7 +902,7 @@ c_expresion_cadena ::= c_expresion_cadena:e SUMA c_expresion_cadena:f           
                      //Una variable + otra cosa
                      | c_variable_o_llamadoMetodo:m SUMA c_expresion_cadena:f       {: Expresion ex = (Expresion)m; ex.getUltimoHermano().setHermanoDerecho((Componente)f); RESULT = ex; :}
                      | c_expresion_cadena:f SUMA c_variable_o_llamadoMetodo:m       {: f.getUltimoHermano().setHermanoDerecho((Componente)m); RESULT = f; :}
-                     | CADENA:v                                                     {:RESULT = new ExpresionGenerico(Tipo.CADENA);//System.out.println("Cadena " + v);:}
+                     | CADENA:v                                                     {: RESULT = new ExpresionGenerico(Tipo.CADENA);//System.out.println("Cadena " + v);:}
                      //|c_nombre_metodo
                      | PARENTESISABIERTO c_expresion_cadena:e PARENTESISCERRADO     {: RESULT = e;:}
                      ;
