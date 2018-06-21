@@ -342,7 +342,7 @@ action code {:
                                 {
                                     Nombre referencia = tabla.get(nombre);
                                     if(nom.get_tipo() != referencia.get_tipo())
-                                        throw new SemanticError("Referencia desconocida en condicion del mientras: " + nom.get_nombre());
+                                        throw new SemanticError("Tipo equivocado en condicion del mientras: " + nom.get_nombre());
                                 }
                             }
                             cond = cond.getHermanoDerecho();
@@ -742,10 +742,10 @@ c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total:desde HASTA c
 
 c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total:e PARENTESISCERRADO
                HACER LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-               {: RESULT = new Mientras(ls, e);:}//TODO Revisar las expresiones de los MIENTRAS
+               {: RESULT = new Mientras(ls); RESULT.set_condicion((Componente) e);:}//TODO Revisar las expresiones de los MIENTRAS
              | HACER LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO MIENTRAS
                PARENTESISABIERTO c_asignacion_expresion_Booleana_Total:e PARENTESISCERRADO
-               {: RESULT = new Mientras(ls, e);:}
+               {: RESULT = new Mientras(ls); RESULT.set_condicion((Componente) e);:}
              ;
 
 c_si ::= //SI PARENTESISABIERTO c_asignacion_expresion_Booleana_Total PARENTESISCERRADO LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO c_sino
