@@ -8,9 +8,9 @@ Debido a que Costa Rica es un país hispanohablante se nota cómo la brecha
 idiomática influye negativamente en el interés de las personas a adentrarse en el
 mundo tecnológico desde temprana edad.
 
-##Ejemplos
+## Ejemplos
 
-###Criba de Eratóstenes
+### Criba de Eratóstenes
 
 ```
 publico num[] cribaEratostenes(num n){
@@ -43,7 +43,7 @@ publico num[] cribaEratostenes(num n){
 }
 ```
 
-###Sucesion de Fibonacci
+### Sucesion de Fibonacci
 
 ```
 num fiboRec ( num n ) {
