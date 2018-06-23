@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.LinkedList;
 import SemanticAnalizer.*;
+import java.lang.System.exit;
 
 action code {:
     //public HashMap<String, Object> tablaSimbolos = new HashMap<String, Object>();
@@ -192,6 +193,13 @@ action code {:
                                     throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
                                 }
                             }
+                        }
+                        if (hijo instanceof Declaracion){
+                            Declaracion decl = (Declaracion)hijo;
+                            try {
+                                decl.evaluarIndice();
+                            } catch (SemanticError e){ throw new SemanticError("Indice inválido en declaración: " + decl.get_nombre() + "\n" + e.getMessage());}
+
                         }
                         if(hijo instanceof Asignacion)
                         {
@@ -425,70 +433,77 @@ parser code {:
                                 "  * [1] Compilar 'Criba de Eratostenes'                *\n" +
                                 "  * [2] Compilar 'Sucesion de Fibonacci'               *\n" +
                                 "  * [3] Compilar 'Triangulo'                           *\n" +
-                                "  ******************************************************\n" +
-                                "Digite una opcion o escriba la direccion del archivo a compilar..."
+                                "  ******************************************************\n"
 
             );
             String[] direcciones = {"Codes/eratostenes.mathison",
                                     "Codes/fibonacci.mathison",
                                     "Codes/triangulo.mathison"
                                    };
-            Scanner scan = new Scanner(System.in);
-            args = scan.nextLine().split(" ");
-            //--------------------------------------------------------FIN DE INTERVENCIÓN
+            while (true){
+                System.out.println("\nDigite una opcion o escriba la direccion del archivo a compilar...");
+                Scanner scan = new Scanner(System.in);
+                args = scan.nextLine().split(" ");
+                //--------------------------------------------------------FIN DE INTERVENCIÓN
 
-            if (args.length == 0) {
-              System.out.println("Usage : java Lexer [ --encoding <name> ] <inputfile(s)>");
-            }
-            else {
-              int firstFilePos = 0;
-              String encodingName = "UTF-8";
-              if (args[0].equals("--encoding")) {
-                firstFilePos = 2;
-                encodingName = args[1];
-                try {
-                  java.nio.charset.Charset.forName(encodingName); // Side-effect: is encodingName valid?
-                } catch (Exception e) {
-                  System.out.println("Invalid encoding '" + encodingName + "'");
-                  return;
+                if (args.length == 0) {
+                    System.out.println("Usage : java Lexer [ --encoding <name> ] <inputfile(s)>");
                 }
-              }
-              for (int i = firstFilePos; i < args.length; i++) {
-                Lexer lexer = null;
-                try {
+                else {
+                    int firstFilePos = 0;
+                    String encodingName = "UTF-8";
+                    if (args[0].equals("--encoding")) {
+                        firstFilePos = 2;
+                        encodingName = args[1];
+                        try {
+                            java.nio.charset.Charset.forName(encodingName); // Side-effect: is encodingName valid?
+                        } catch (Exception e) {
+                            System.out.println("Invalid encoding '" + encodingName + "'");
+                            return;
+                        }
+                    }
+                    for (int i = firstFilePos; i < args.length; i++) {
+                        Lexer lexer = null;
+                        try {
 
-                  //String path = Lexer.class.getResource(args[i]).getPath();
-                  //java.io.FileInputStream stream = new java.io.FileInputStream(path);
+                            //String path = Lexer.class.getResource(args[i]).getPath();
+                            //java.io.FileInputStream stream = new java.io.FileInputStream(path);
 
-                  if (args[i].equals("1")) args[i] = direcciones[0];
-                  else if (args[i].equals("2")) args[i] = direcciones[1];
-                  else if (args[i].equals("3")) args[i] = direcciones[2];
+                            if (args[i].equals("1")) args[i] = direcciones[0];
+                            else if (args[i].equals("2")) args[i] = direcciones[1];
+                            else if (args[i].equals("3")) args[i] = direcciones[2];
+                            else if (args[i].equals("salir")) exit(1);
 
 
-                  //Se utiliza getResource para como root la carpeta Resources como Root
-                    java.io.Reader reader = new java.io.InputStreamReader(Parser.class.getResourceAsStream("../" + args[i]), encodingName);
-                    lexer = new Lexer(reader);
-                                        //--------------------------------------------------------Aplicacion de PARSER
-                                      Parser asin = new Parser(lexer);
-                                        Object result = asin.parse().value;
+                            //Se utiliza getResource para como root la carpeta Resources como Root
+                            java.io.Reader reader = new java.io.InputStreamReader(Parser.class.getResourceAsStream("../" + args[i]), encodingName);
+                            lexer = new Lexer(reader);
+                            //--------------------------------------------------------Aplicacion de PARSER
+                            Parser asin = new Parser(lexer);
+                            System.out.println("-------------------INICIO-DE-COMPILACIÓN--------------------------");
+                            Object result = asin.parse().value;
+                            System.out.println("----------------------FIN-DE-COMPILACIÓN--------------------------");
+                        }
+                        catch (java.io.FileNotFoundException e) {
+                            System.out.println("File not found : \""+args[i]+"\"");
+                        }
+                        catch (java.io.IOException e) {
+                            System.out.println("IO error scanning file \""+args[i]+"\"");
+                            System.out.println(e);
+                        }
+                        catch (Exception e) {
+                            System.out.println("Unexpected exception:");
+                            e.printStackTrace();
+                        }
+                    }
                 }
-                catch (java.io.FileNotFoundException e) {
-                  System.out.println("File not found : \""+args[i]+"\"" + e.getMessage());
-                }
-                catch (java.io.IOException e) {
-                  System.out.println("IO error scanning file \""+args[i]+"\"");
-                  System.out.println(e);
-                }
-                catch (Exception e) {
-                  System.out.println("Unexpected exception:");
-                  e.printStackTrace();
-                }
-              }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
+
+
 :};
    
 /* ------------Declaracion de simbolos terminales y no terminales---------- */
@@ -540,7 +555,8 @@ non terminal List<Variable> lista_parametros;
 non terminal Variable variable_arreglo;//-------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 non terminal c_vista,  c_tipo_metodo, c_declaracion_metodo;
 non terminal Declaracion c_declaracion;//-------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
-non terminal c_tipo, c_tipo_primitivo, c_tipo_arreglo;
+non terminal c_tipo, c_tipo_primitivo;
+non terminal ArregloPOJO c_tipo_arreglo;//-------------------------------------------------------------------------------------------------------------------OBJETO ASIGNADO
 
 non terminal Variable c_expresion_variable;
 
@@ -631,9 +647,9 @@ clase ::= c_vista CLASE VAR:v LLAVEABIERTO cuerpo_clase LLAVECERRADO {: RESULT =
         ;
 
 c_metodo ::= c_vista c_tipo_arreglo:t VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
-           {: RESULT = new Metodo(v, (Tipo) t, lp, ls); //System.out.println("METODO " + v);:}
+           {: RESULT = new Metodo(v, t, lp, ls); //System.out.println("METODO " + v);:}
            | c_vista c_tipo_arreglo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
-           {: RESULT = new Metodo(v, (Tipo) t, ls); //System.out.println("METODO " + v);:}
+           {: RESULT = new Metodo(v, t, ls); //System.out.println("METODO " + v);:}
            | c_vista c_tipo_primitivo:t VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
            {: RESULT = new Metodo(v, (Tipo) t, lp, ls); //System.out.println("METODO " + v);:}
            | c_vista VAR:w VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
@@ -643,13 +659,13 @@ c_metodo ::= c_vista c_tipo_arreglo:t VAR:v PARENTESISABIERTO lista_parametros:l
            | c_vista VAR:w VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
            {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO, ls); //System.out.println("METODO " + v);:}
            | c_vista PROC VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
-           {: RESULT = new Metodo(v, null, lp, ls); //System.out.println("METODO " + v);:}
+           {: RESULT = new Metodo(v, lp, ls); //System.out.println("METODO " + v);:}
            | c_vista PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
-           {: RESULT = new Metodo(v, null, ls); //System.out.println("METODO " + v);:}
+           {: RESULT = new Metodo(v, ls); //System.out.println("METODO " + v);:}
            | c_tipo_arreglo:t VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
-           {: RESULT = new Metodo(v, (Tipo) t, lp, ls); //System.out.println("METODO " + v);:}
+           {: RESULT = new Metodo(v, t, lp, ls); //System.out.println("METODO " + v);:}
            | c_tipo_arreglo:t VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
-           {: RESULT = new Metodo(v, (Tipo) t, ls); System.out.println("METODO " + v);:}
+           {: RESULT = new Metodo(v, t, ls); System.out.println("METODO " + v);:}
            | c_tipo_primitivo:t VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
            {: RESULT = new Metodo(v, (Tipo) t, lp, ls); //System.out.println("METODO " + v);:}
            | VAR:w VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
@@ -659,9 +675,9 @@ c_metodo ::= c_vista c_tipo_arreglo:t VAR:v PARENTESISABIERTO lista_parametros:l
            | VAR:w VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
            {: RESULT = new Metodo(v, Tipo.NO_PRIMITIVO, ls); //System.out.println("METODO " + v);:}
            | PROC VAR:v PARENTESISABIERTO lista_parametros:lp PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
-           {: RESULT = new Metodo(v, null, lp, ls); //System.out.println("METODO " + v);:}
+           {: RESULT = new Metodo(v, lp, ls); //System.out.println("METODO " + v);:}
            | PROC VAR:v PARENTESISABIERTO PARENTESISCERRADO LLAVEABIERTO cuerpo_metodo:ls LLAVECERRADO
-           {: RESULT = new Metodo(v, null, ls); //System.out.println("METODO " + v);:}
+           {: RESULT = new Metodo(v, ls); //System.out.println("METODO " + v);:}
 
            //--------------------------------------------------------Gramáticas erróneas
            // ERROR: Llave inicial faltante
@@ -705,9 +721,9 @@ lista_parametros ::= c_tipo_primitivo:t variable_arreglo:v COMA lista_parametros
 variable_arreglo ::= VAR:v
                     {: RESULT = new Variable(v); :}
                    | VAR:v CORCHETEABIERTO CORCHETECERRADO
-                   {: RESULT = new Variable(v,null,true); :}
+                   {: RESULT = new Variable(v,true); :} //TODO Esta produccion es innecesaria
                    | VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total:e CORCHETECERRADO
-                   {: RESULT = new Variable(v,null,e,true); :}
+                   {: RESULT = new Variable(v,e,true); :}
 
                    //--------------------------------------------------------Gramáticas erróneas
                    //ERROR: FALTA DE CORCHETES
@@ -825,9 +841,9 @@ c_declaracion ::= c_tipo_primitivo:t VAR:v                                      
                 //TODOold Agregar el nombre de la clase
                 | c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO                          {: RESULT = new Declaracion(v,(Tipo) t,true); //System.out.println("Declaración de arreglo" + v);:}
                 | VAR:w VAR:v CORCHETEABIERTO CORCHETECERRADO                                       {: RESULT = new Declaracion(v, Tipo.NO_PRIMITIVO, true, w); //System.out.println("Declaración de arreglo" + v);:}
-                | c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO  {: RESULT = new Declaracion(v,(Tipo) t, true); //System.out.println("Declaración de arreglo" + v);:}
-                | VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO, true, w); //System.out.println("Declaración de arreglo" + v);:}
-                | c_tipo_arreglo:t VAR:v                                                              {: RESULT = new Declaracion(v,(Tipo)t, true); //System.out.println("Declaración de arreglo" + v);:}
+                | c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total:e CORCHETECERRADO  {: RESULT = new Declaracion(v,(Tipo) t, e); //System.out.println("Declaración de arreglo" + v);:}
+                | VAR:w VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total:e CORCHETECERRADO {: RESULT = new Declaracion(v,Tipo.NO_PRIMITIVO, e, w); //System.out.println("Declaración de arreglo" + v);:}
+                | c_tipo_arreglo:t VAR:v                                                              {: RESULT = new Declaracion(v,t, true); //System.out.println("Declaración de arreglo" + v);:}
                 //TODOold Checkear los no primitivos de los arreglos
                 ;
 
@@ -842,10 +858,10 @@ c_tipo_primitivo ::= CAD                                                    {: R
                   | BOOL                                                    {: RESULT = Tipo.BOOLEANO;:}
                   ;
 
-c_tipo_arreglo ::=  c_tipo_primitivo:t CORCHETEABIERTO CORCHETECERRADO      {: RESULT = t;:}
-                |   VAR:w CORCHETEABIERTO CORCHETECERRADO                   {: RESULT = Tipo.NO_PRIMITIVO;:}                    //Pasar por alguna parte el nombre del tipo
-                |   c_tipo_primitivo:t CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = t;:}
-                |   VAR:w CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO {: RESULT = Tipo.NO_PRIMITIVO;:}//Pasar por alguna parte el nombre del tipo
+c_tipo_arreglo ::=  c_tipo_primitivo:t CORCHETEABIERTO CORCHETECERRADO      {: RESULT = new ArregloPOJO((Tipo)t);:}
+                |   VAR:w CORCHETEABIERTO CORCHETECERRADO                   {: RESULT = new ArregloPOJO(Tipo.NO_PRIMITIVO, w);:}                    //Pasar por alguna parte el nombre del tipo
+                |   c_tipo_primitivo:t CORCHETEABIERTO c_asignacion_expresion_Numerica_Total:e CORCHETECERRADO {: RESULT = new ArregloPOJO((Tipo)t, e);:}
+                |   VAR:w CORCHETEABIERTO c_asignacion_expresion_Numerica_Total:e CORCHETECERRADO {: RESULT = new ArregloPOJO(Tipo.NO_PRIMITIVO, w, e);:}//Pasar por alguna parte el nombre del tipo
                 ;
 
 /*-------------------------Sintaxis de las variables y operaciones con variables------------------------*/
@@ -909,12 +925,14 @@ c_asignacion ::=    c_tipo_primitivo:t VAR:v c_asignacion_prima:o
                     {:RESULT = new Declaracion(v, (Tipo)t); Asignacion asignacion = new Asignacion(v); RESULT.setHermanoDerecho(asignacion); asignacion.set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
                 |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO CORCHETECERRADO c_asignacion_prima:o
                     {:RESULT = new Declaracion(v, (Tipo)t); Asignacion asignacion = new Asignacion(v); RESULT.setHermanoDerecho(asignacion); asignacion.set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
-                |   c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o//TODO Checkear la expresion del indice
-                    {:RESULT = new Declaracion(v, (Tipo)t); Asignacion asignacion = new Asignacion(v); RESULT.setHermanoDerecho(asignacion); asignacion.set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
-                |   c_tipo_arreglo:t VAR:v c_asignacion_prima:o
-                    {:RESULT = new Declaracion(v, (Tipo)t); Asignacion asignacion = new Asignacion(v); RESULT.setHermanoDerecho(asignacion); asignacion.set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
-                |   VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total CORCHETECERRADO c_asignacion_prima:o
-                    {:RESULT = new Asignacion(v); ((Asignacion)RESULT).set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
+                |   //Ejemplo: num nombreTrivial[5] = 3 + 5 <- no tiene sentido         TODO Definir si esto tendría validez
+                    c_tipo_primitivo:t VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total:e CORCHETECERRADO c_asignacion_prima:o//TODO Checkear la expresion del indice
+                    {:RESULT = new Declaracion(v, (Tipo)t,e); Asignacion asignacion = new Asignacion(v,e); RESULT.setHermanoDerecho(asignacion); asignacion.set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
+                |   //Ejemplo: num[6] nombreTrivial = 6 + 9 <- no tiene sentido         TODO Definir si esto tendría validez
+                    c_tipo_arreglo:t VAR:v c_asignacion_prima:o                         //TODO Faltan producciones para la definicion de arreglos
+                    {:RESULT = new Declaracion(v, t, true); Asignacion asignacion = new Asignacion(v,t.get_expresionTamano()); RESULT.setHermanoDerecho(asignacion); asignacion.set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
+                |   VAR:v CORCHETEABIERTO c_asignacion_expresion_Numerica_Total:e CORCHETECERRADO c_asignacion_prima:o
+                    {:RESULT = new Asignacion(v,e); ((Asignacion)RESULT).set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
                 |   VAR:v c_asignacion_prima:o
                     {:RESULT = new Asignacion(v); ((Asignacion)RESULT).set_expresion(o); //System.out.println(RESULT.get_expresion().toString());:}
                ;
@@ -940,24 +958,24 @@ c_expresion_numerica  ::= c_expresion_numerica:e SUMA c_expresion_numerica:f    
 
                         //Una variable + otra cosa
 
-                        | c_variable_o_llamadoMetodo:m SUMA c_expresion_numerica:f          {: RESULT = new Operacion(Operacion.TipoOperador.SUMA, (Expresion) m, f, Tipo.NUMERICO);:}
-                        | c_expresion_numerica:f SUMA c_variable_o_llamadoMetodo:m          {: RESULT = new Operacion(Operacion.TipoOperador.SUMA, f, (Expresion) m, Tipo.NUMERICO);:}
+                        | c_variable_o_llamadoMetodo:m SUMA c_expresion_numerica:f          {: RESULT = new Operacion(Operacion.TipoOperador.SUMA, (Expresion) m, f);:}
+                        | c_expresion_numerica:f SUMA c_variable_o_llamadoMetodo:m          {: RESULT = new Operacion(Operacion.TipoOperador.SUMA, f, (Expresion) m);:}
 
-                        | c_variable_o_llamadoMetodo:m RESTA c_expresion_numerica:f         {: RESULT = new Operacion(Operacion.TipoOperador.RESTA, (Expresion) m, f, Tipo.NUMERICO);:}
-                        | c_expresion_numerica:f RESTA c_variable_o_llamadoMetodo:m         {: RESULT = new Operacion(Operacion.TipoOperador.RESTA, f, (Expresion) m, Tipo.NUMERICO);:}
+                        | c_variable_o_llamadoMetodo:m RESTA c_expresion_numerica:f         {: RESULT = new Operacion(Operacion.TipoOperador.RESTA, (Expresion) m, f);:}
+                        | c_expresion_numerica:f RESTA c_variable_o_llamadoMetodo:m         {: RESULT = new Operacion(Operacion.TipoOperador.RESTA, f, (Expresion) m);:}
 
-                        | c_variable_o_llamadoMetodo:m MULTIPLICACION c_expresion_numerica:f{: RESULT = new Operacion(Operacion.TipoOperador.MULTIPLICACION, (Expresion) m, f, Tipo.NUMERICO);:}
-                        | c_expresion_numerica:f MULTIPLICACION c_variable_o_llamadoMetodo:m{: RESULT = new Operacion(Operacion.TipoOperador.MULTIPLICACION, f, (Expresion) m, Tipo.NUMERICO);:}
+                        | c_variable_o_llamadoMetodo:m MULTIPLICACION c_expresion_numerica:f{: RESULT = new Operacion(Operacion.TipoOperador.MULTIPLICACION, (Expresion) m, f);:}
+                        | c_expresion_numerica:f MULTIPLICACION c_variable_o_llamadoMetodo:m{: RESULT = new Operacion(Operacion.TipoOperador.MULTIPLICACION, f, (Expresion) m);:}
 
-                        | c_variable_o_llamadoMetodo:m DIVISION c_expresion_numerica:f      {: RESULT = new Operacion(Operacion.TipoOperador.DIVISION, (Expresion) m, f, Tipo.NUMERICO);:}
-                        | c_expresion_numerica:f DIVISION c_variable_o_llamadoMetodo:m      {: RESULT = new Operacion(Operacion.TipoOperador.DIVISION, f, (Expresion) m, Tipo.NUMERICO);:}
+                        | c_variable_o_llamadoMetodo:m DIVISION c_expresion_numerica:f      {: RESULT = new Operacion(Operacion.TipoOperador.DIVISION, (Expresion) m, f);:}
+                        | c_expresion_numerica:f DIVISION c_variable_o_llamadoMetodo:m      {: RESULT = new Operacion(Operacion.TipoOperador.DIVISION, f, (Expresion) m);:}
 
                         //Dos variables
 
-                        | c_variable_o_llamadoMetodo:m SUMA c_variable_o_llamadoMetodo:n    {: RESULT = new Operacion(Operacion.TipoOperador.SUMA, (Expresion) m, (Expresion) n, Tipo.NUMERICO);:}
-                        | c_variable_o_llamadoMetodo:m RESTA c_variable_o_llamadoMetodo:n   {: RESULT = new Operacion(Operacion.TipoOperador.RESTA, (Expresion) m, (Expresion) n, Tipo.NUMERICO);:}
-                        | c_variable_o_llamadoMetodo:m MULTIPLICACION c_variable_o_llamadoMetodo:n  {: RESULT = new Operacion(Operacion.TipoOperador.MULTIPLICACION, (Expresion) m, (Expresion) n, Tipo.NUMERICO);:}
-                        | c_variable_o_llamadoMetodo:m DIVISION c_variable_o_llamadoMetodo:n    {: RESULT = new Operacion(Operacion.TipoOperador.DIVISION, (Expresion) m, (Expresion) n, Tipo.NUMERICO);:}
+                        | c_variable_o_llamadoMetodo:m SUMA c_variable_o_llamadoMetodo:n    {: RESULT = new Operacion(Operacion.TipoOperador.SUMA, (Expresion) m, (Expresion) n);:}
+                        | c_variable_o_llamadoMetodo:m RESTA c_variable_o_llamadoMetodo:n   {: RESULT = new Operacion(Operacion.TipoOperador.RESTA, (Expresion) m, (Expresion) n);:}
+                        | c_variable_o_llamadoMetodo:m MULTIPLICACION c_variable_o_llamadoMetodo:n  {: RESULT = new Operacion(Operacion.TipoOperador.MULTIPLICACION, (Expresion) m, (Expresion) n);:}
+                        | c_variable_o_llamadoMetodo:m DIVISION c_variable_o_llamadoMetodo:n    {: RESULT = new Operacion(Operacion.TipoOperador.DIVISION, (Expresion) m, (Expresion) n);:}
 
                         //Terminos
                         | NUMERO:v                                                      {:RESULT = new ExpresionGenerico(sym.terminalNames[((Symbol)((Parser) this.parser).stack.peek()).sym],Tipo.NUMERICO,(Symbol)((Parser) this.parser).stack.peek());:}

@@ -1,12 +1,14 @@
 package SemanticAnalizer;
 
+import java_cup.runtime.Symbol;
+
 public class Variable extends ExpresionGenerico implements Nombre{
 
 
     private boolean _arreglo;
     private int _tamano;
     private Expresion _expresionTamano;
-    private Object _valor;
+    private Symbol _valor;
 
     public Variable(){
         System.out.println("Variable");
@@ -16,7 +18,9 @@ public class Variable extends ExpresionGenerico implements Nombre{
     public Tipo evaluarTipo() throws SemanticError{
         //Se busca en las tablas de simbolos la referencia
         Componente i = this._padre;
-        for (; !i.getTblSimbolosLocales().containsKey(getNombre()); i = i.getPadre());          //-----**------
+        while(i != null && (i.getTblSimbolosLocales() == null || !i.getTblSimbolosLocales().containsKey(getNombre()))){
+             i = i.getPadre();
+        }
 
         if (i == null)
             throw new SemanticError("Referencia no declarada en " + this._padre.toString() + ": " + getNombre());
@@ -26,6 +30,13 @@ public class Variable extends ExpresionGenerico implements Nombre{
             _tipo = i.getTblSimbolosLocales().get(getNombre()).get_tipo();
         }else
             throw new SemanticError("Referencia a variable " + getNombre() + " no declarada");
+
+        try{
+            evaluarIndice();
+        }
+        catch (SemanticError e){
+            throw new SemanticError("Indice invalido: \n" + e.getMessage());
+        }
 
         return _tipo;
     }
@@ -42,6 +53,19 @@ public class Variable extends ExpresionGenerico implements Nombre{
         this._nombre = _nombre;
         this._tipo = _tipo;
     }
+
+    public Variable(String _nombre, boolean _arreglo) {
+        this._arreglo = _arreglo;
+        this._nombre = _nombre;
+    }
+
+    public Variable(String _nombre, Expresion expresionTamano, boolean _arreglo) {
+        this._arreglo = _arreglo;
+        this._nombre = _nombre;
+        this._expresionTamano = expresionTamano;
+    }
+
+
 
     public Variable(String _nombre, Tipo _tipo, Expresion _expresionTamano, boolean _arreglo) {
         this._arreglo = _arreglo;
@@ -82,7 +106,7 @@ public class Variable extends ExpresionGenerico implements Nombre{
         this._tamano = _tamano;
     }
 
-    public Variable(String nombre, Object valor){
+    public Variable(String nombre, Symbol valor){
         _nombre = nombre;
         _valor = valor;
         System.out.println("Variable" + nombre);
@@ -92,11 +116,37 @@ public class Variable extends ExpresionGenerico implements Nombre{
         return _nombre;
     }
 
+    public Expresion get_expresionTamano() {
+        return _expresionTamano;
+    }
+
+    public void set_expresionTamano(Expresion _expresionTamano) {
+        this._expresionTamano = _expresionTamano;
+    }
+
+    public boolean evaluarIndice() throws SemanticError {
+        if (_arreglo == true && _expresionTamano != null){
+            setPadreExpresiones();
+            return _expresionTamano.evaluarTipo() == Tipo.NUMERICO;
+        }
+
+        else
+            return true; //Si la asginacion no es a un arreglo
+    }
+
+    private void setPadreExpresiones(){
+        if (_expresionTamano instanceof Operacion)
+            for (Componente i = ((Operacion) _expresionTamano).get_primeraHoja(); i != null; i = i.getHermanoDerecho())
+                i.setPadre(this);
+        else
+            _expresionTamano.setPadre(this);
+    }
+
     public Tipo get_tipo(){
         return  _tipo;
     }
 
-    public Object get_valor(){
+    public Symbol get_valor(){
         return _valor;
     }
 
@@ -112,7 +162,7 @@ public class Variable extends ExpresionGenerico implements Nombre{
         this._tipo = _tipo;
     }
 
-    public void set_valor(Object _valor) {
+    public void set_valor(Symbol _valor) {
         //TODO Agregar restricciones
         this._valor = _valor;
     }

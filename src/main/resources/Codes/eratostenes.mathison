@@ -4,7 +4,6 @@ publico num[] cribaEratostenes(num n){
 
 	num limite = raiz(n)
 	num[n] numeros 	                        //Vector de num de tamaño n
-	numeros[i] = 0
 	num[] resultado	                        //Vector de num sin tamaño definido
 	para num i desde 0 hasta n avance 1		//Un ciclo for
 	{
@@ -28,9 +27,4 @@ publico num[] cribaEratostenes(num n){
 		}
 	}
 	devolver resultado
-}
-
-num comer(num n){
-    num r = 3
-    imprimir("Hola")
 }

@@ -9,13 +9,15 @@ public class Declaracion extends ComponenteConcreto {
     private boolean _arreglo;
     private String _nombre;
     private int _tamano;
-    private LinkedList<Symbol> _expresionTamano;
+    private Expresion  _expresionTamano;
     private Tipo _tipo;
     private String _nombreTipo;
 
     public Declaracion(String _nombre, Tipo _tipo) {
         this._nombre = _nombre;
         this._tipo = _tipo;
+        _expresionTamano = null;
+        this._arreglo = false;
     }
 
     public Declaracion(String _nombre, Tipo _tipo, String _nombreTipo) {
@@ -23,22 +25,30 @@ public class Declaracion extends ComponenteConcreto {
         this._tipo = _tipo;
         if (_tipo == Tipo.NO_PRIMITIVO)
             this._nombreTipo = _nombreTipo;
+        _expresionTamano = null;
+        this._arreglo = false;
     }
 
-    @Override
-    public String toString() {
-        return "Declaracion{" +
-                "_arreglo=" + _arreglo +
-                ", _nombre='" + _nombre + '\'' +
-                ", _tamano=" + _tamano +
-                ", _expresionTamano=" + _expresionTamano +
-                ", _tipo=" + _tipo +
-                '}';
+    public Declaracion(String _nombre, Tipo _tipo, String nombreTipo, Expresion expresionTamano) {
+        this._nombre = _nombre;
+        this._tipo = _tipo;
+        if (_tipo == Tipo.NO_PRIMITIVO)
+            _nombreTipo = nombreTipo;
+        _expresionTamano = expresionTamano;
+        _arreglo = true;
     }
 
     public Declaracion(String _nombre, Tipo _tipo, boolean _arreglo) {
         this._nombre = _nombre;
         this._tipo = _tipo;
+        this._arreglo = _arreglo;
+    }
+
+    public Declaracion(String _nombre, ArregloPOJO _tipo, boolean _arreglo) {
+        this._nombre = _nombre;
+        this._tipo = _tipo.get_tipo();
+        this._expresionTamano = _tipo.get_expresionTamano();
+        this._nombreTipo = _tipo.get_nombreTipo();
         this._arreglo = _arreglo;
     }
 
@@ -50,6 +60,26 @@ public class Declaracion extends ComponenteConcreto {
             this._nombreTipo = _nombreTipo;
     }
 
+
+    public Declaracion(String _nombre, Tipo _tipo, Expresion expresionTamano, String _nombreTipo) {
+        this._nombre = _nombre;
+        this._tipo = _tipo;
+        _expresionTamano = expresionTamano;
+        this._arreglo = false;
+        if (_tipo == Tipo.NO_PRIMITIVO)
+            this._nombreTipo = _nombreTipo;
+    }
+
+    public Declaracion(String _nombre, Tipo _tipo, Expresion expresionTamano) {
+        this._nombre = _nombre;
+        this._tipo = _tipo;
+        _expresionTamano = expresionTamano;
+        this._arreglo = false;
+        if (_tipo == Tipo.NO_PRIMITIVO)
+            this._nombreTipo = _nombreTipo;
+    }
+
+
     public int get_tamano() {
         return _tamano;
     }
@@ -58,11 +88,11 @@ public class Declaracion extends ComponenteConcreto {
         this._tamano = _tamano;
     }
 
-    public LinkedList<Symbol> get_expresionTamano() {
+    public Expresion get_expresionTamano() {
         return _expresionTamano;
     }
 
-    public void set_expresionTamano(LinkedList<Symbol> _expresionTamano) {
+    public void set_expresionTamano(Expresion _expresionTamano) {
         this._expresionTamano = _expresionTamano;
     }
 
@@ -88,5 +118,34 @@ public class Declaracion extends ComponenteConcreto {
 
     public void set_tipo(Tipo _tipo) {
         this._tipo = _tipo;
+    }
+
+    public boolean evaluarIndice() throws SemanticError {
+        if (is_arreglo() && _expresionTamano != null){
+            setPadreExpresiones();
+            return _expresionTamano.evaluarTipo() == Tipo.NUMERICO;
+        }
+        else
+            return true;
+
+    }
+
+    private void setPadreExpresiones(){
+        if (_expresionTamano instanceof Operacion)
+            for (Componente i = ((Operacion) _expresionTamano).get_primeraHoja(); i != null; i = i.getHermanoDerecho())
+                i.setPadre(this);
+        else
+            _expresionTamano.setPadre(this);
+    }
+
+    @Override
+    public String toString() {
+        return "Declaracion{" +
+                "_arreglo=" + _arreglo +
+                ", _nombre='" + _nombre + '\'' +
+                ", _tamano=" + _tamano +
+                ", _expresionTamano=" + _expresionTamano +
+                ", _tipo=" + _tipo +
+                '}';
     }
 }
