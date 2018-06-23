@@ -9,7 +9,9 @@ idiomática influye negativamente en el interés de las personas a adentrarse en
 mundo tecnológico desde temprana edad.
 
 ##Ejemplos
+
 ###Criba de Eratóstenes
+
 ```
 publico num[] cribaEratostenes(num n){
 
@@ -40,7 +42,9 @@ publico num[] cribaEratostenes(num n){
 	devolver resultado
 }
 ```
+
 ###Sucesion de Fibonacci
+
 ```
 num fiboRec ( num n ) {
     num resultado
@@ -58,7 +62,9 @@ num fiboRec ( num n ) {
 	devolver resultado
 }
 ```
+
 ### Impresión de un triángulo en ASCII
+
 ```
 publico proc imprimirTriangulo(num n)
 {
