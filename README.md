@@ -7,14 +7,6 @@ Lenguaje de programación dirigido a la enseñanza de programación en poblacion
 Debido a que Costa Rica es un país hispanohablante se nota cómo la brecha
 idiomática influye negativamente en el interés de las personas a adentrarse en el
 mundo tecnológico desde temprana edad.
-El principal problema se encuentra en asociar la palabra con el funcionamiento,
-en donde por otra parte, si se estudiara desde el idioma nativo sería más profundo el
-entendimiento.
-
-Mathison trata de innovar eliminando la brecha idiomática, incorporando
-palabras reservadas en la lengua española, logrando una mejor comprensión y
-motivación de los jóvenes que no dominan el inglés.
-
 
 ## Instrucciones paso a paso para ejecutar el programa
 Requisitos:
