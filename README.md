@@ -8,6 +8,79 @@ Debido a que Costa Rica es un país hispanohablante se nota cómo la brecha
 idiomática influye negativamente en el interés de las personas a adentrarse en el
 mundo tecnológico desde temprana edad.
 
+##Ejemplos
+###Criba de Eratóstenes
+```
+publico num[] cribaEratostenes(num n){
+
+	num limite = raiz(n)
+	num[n] numeros 	                        //Vector de num de tamaño n
+	num[] resultado	                        //Vector de num sin tamaño definido
+	para num i desde 0 hasta n avance 1		//Un ciclo for
+	{
+        numeros[i] = 0
+    }
+	num marcado = 0
+	para num i desde 2 hasta n avance 1
+	{
+
+		si (numeros[i] == 0) 			//Revisa si está marcado
+        {
+			resultado[marcado] = i  	//Está sin marcar
+		    marcado = marcado + 1	    //Aumente en uno este num
+		}					            //Marcar múltiplos
+        si(i < limite)
+		{
+            para num j desde i hasta limite avance i
+			{
+                numeros[j] = i
+			}
+		}
+	}
+	devolver resultado
+}
+```
+###Sucesion de Fibonacci
+```
+num fiboRec ( num n ) {
+    num resultado
+    si ( n <= 1 ) //CASO BASE
+	{
+        imprimir (1)
+	    resultado = 1
+    }
+    sino          //CASO TRIVIAL
+	{
+        num enesimo = fiboRec ( n - 1 ) + fiboRec ( n - 2 )
+	    imprimir (enesimo)
+	    resultado = enesimo
+	}
+	devolver resultado
+}
+```
+### Impresión de un triángulo en ASCII
+```
+publico proc imprimirTriangulo(num n)
+{
+	imprimir("Digite el caracter que desea imprimir en un triangulo")
+	cad c
+	leer(c)
+	imprimir("Digite el numero de filas que desea que tenga el triangulo")
+	//num n
+	leer(n)
+	cad fila = ""
+	para num i desde 1 hasta n avance 1
+    {
+        para num j desde 1 hasta i avance 1
+        {
+            fila = fila + c
+            imprimir(fila)
+        }
+        imprimir("\n")
+
+    }
+}
+```
 ## Instrucciones paso a paso para ejecutar el programa
 Requisitos:
 - Tener instalado Java (La usada fue la versiòn 8)
