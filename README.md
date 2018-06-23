@@ -20,22 +20,21 @@ publico num[] cribaEratostenes(num n){
 	num[] resultado	                        //Vector de num sin tamaño definido
 	para num i desde 0 hasta n avance 1		//Un ciclo for
 	{
-        numeros[i] = 0
-    }
+        	numeros[i] = 0
+    	}
 	num marcado = 0
 	para num i desde 2 hasta n avance 1
 	{
-
 		si (numeros[i] == 0) 			//Revisa si está marcado
-        {
+        	{
 			resultado[marcado] = i  	//Está sin marcar
-		    marcado = marcado + 1	    //Aumente en uno este num
+			marcado = marcado + 1	    //Aumente en uno este num
 		}					            //Marcar múltiplos
-        si(i < limite)
+        	si(i < limite)
 		{
-            para num j desde i hasta limite avance i
+            		para num j desde i hasta limite avance i
 			{
-                numeros[j] = i
+                		numeros[j] = i
 			}
 		}
 	}
@@ -48,18 +47,18 @@ publico num[] cribaEratostenes(num n){
 ```
 num fiboRec ( num n ) {
     num resultado
-    si ( n <= 1 ) //CASO BASE
-	{
+    si ( n <= 1 ) //CASO BASE 
+    {
         imprimir (1)
-	    resultado = 1
+	resultado = 1
     }
     sino          //CASO TRIVIAL
-	{
+    {
         num enesimo = fiboRec ( n - 1 ) + fiboRec ( n - 2 )
-	    imprimir (enesimo)
-	    resultado = enesimo
-	}
-	devolver resultado
+	imprimir (enesimo)
+	resultado = enesimo
+    }
+    devolver resultado
 }
 ```
 
@@ -76,15 +75,15 @@ publico proc imprimirTriangulo(num n)
 	leer(n)
 	cad fila = ""
 	para num i desde 1 hasta n avance 1
-    {
-        para num j desde 1 hasta i avance 1
-        {
-            fila = fila + c
-            imprimir(fila)
-        }
-        imprimir("\n")
+    	{
+        	para num j desde 1 hasta i avance 1
+        	{
+            		fila = fila + c
+            		imprimir(fila)
+        	}
+        	imprimir("\n")
 
-    }
+    	}
 }
 ```
 ## Instrucciones paso a paso para ejecutar el programa
