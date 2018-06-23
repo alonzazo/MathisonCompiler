@@ -120,6 +120,24 @@ public class Declaracion extends ComponenteConcreto {
         this._tipo = _tipo;
     }
 
+    public boolean evaluarIndice() throws SemanticError {
+        if (is_arreglo() && _expresionTamano != null){
+            setPadreExpresiones();
+            return _expresionTamano.evaluarTipo() == Tipo.NUMERICO;
+        }
+        else
+            return true;
+
+    }
+
+    private void setPadreExpresiones(){
+        if (_expresionTamano instanceof Operacion)
+            for (Componente i = ((Operacion) _expresionTamano).get_primeraHoja(); i != null; i = i.getHermanoDerecho())
+                i.setPadre(this);
+        else
+            _expresionTamano.setPadre(this);
+    }
+
     @Override
     public String toString() {
         return "Declaracion{" +

@@ -18,7 +18,9 @@ public class Variable extends ExpresionGenerico implements Nombre{
     public Tipo evaluarTipo() throws SemanticError{
         //Se busca en las tablas de simbolos la referencia
         Componente i = this._padre;
-        for (; !i.getTblSimbolosLocales().containsKey(getNombre()); i = i.getPadre());          //-----**------
+        while(i != null && (i.getTblSimbolosLocales() == null || !i.getTblSimbolosLocales().containsKey(getNombre()))){
+             i = i.getPadre();
+        }
 
         if (i == null)
             throw new SemanticError("Referencia no declarada en " + this._padre.toString() + ": " + getNombre());
@@ -28,6 +30,13 @@ public class Variable extends ExpresionGenerico implements Nombre{
             _tipo = i.getTblSimbolosLocales().get(getNombre()).get_tipo();
         }else
             throw new SemanticError("Referencia a variable " + getNombre() + " no declarada");
+
+        try{
+            evaluarIndice();
+        }
+        catch (SemanticError e){
+            throw new SemanticError("Indice invalido: \n" + e.getMessage());
+        }
 
         return _tipo;
     }
@@ -113,6 +122,24 @@ public class Variable extends ExpresionGenerico implements Nombre{
 
     public void set_expresionTamano(Expresion _expresionTamano) {
         this._expresionTamano = _expresionTamano;
+    }
+
+    public boolean evaluarIndice() throws SemanticError {
+        if (_arreglo == true && _expresionTamano != null){
+            setPadreExpresiones();
+            return _expresionTamano.evaluarTipo() == Tipo.NUMERICO;
+        }
+
+        else
+            return true; //Si la asginacion no es a un arreglo
+    }
+
+    private void setPadreExpresiones(){
+        if (_expresionTamano instanceof Operacion)
+            for (Componente i = ((Operacion) _expresionTamano).get_primeraHoja(); i != null; i = i.getHermanoDerecho())
+                i.setPadre(this);
+        else
+            _expresionTamano.setPadre(this);
     }
 
     public Tipo get_tipo(){

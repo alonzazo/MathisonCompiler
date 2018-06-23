@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.LinkedList;
 import SemanticAnalizer.*;
+import static java.lang.System.exit;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -1429,6 +1430,7 @@ public class Parser extends java_cup.runtime.lr_parser {
                             if (args[i].equals("1")) args[i] = direcciones[0];
                             else if (args[i].equals("2")) args[i] = direcciones[1];
                             else if (args[i].equals("3")) args[i] = direcciones[2];
+                            else if (args[i].equals("salir")) exit(1);
 
 
                             //Se utiliza getResource para como root la carpeta Resources como Root
@@ -1441,14 +1443,11 @@ public class Parser extends java_cup.runtime.lr_parser {
                             System.out.println("----------------------FIN-DE-COMPILACIÓN--------------------------");
                         }
                         catch (java.io.FileNotFoundException e) {
-                            System.out.println("File not found : \""+args[i]+"\"" + e.getMessage());
+                            System.out.println("File not found : \""+args[i]+"\"");
                         }
                         catch (java.io.IOException e) {
                             System.out.println("IO error scanning file \""+args[i]+"\"");
                             System.out.println(e);
-                        }
-                        catch (java.lang.NullPointerException e) {
-                            System.out.println("File not found : \""+args[i]+"\"");
                         }
                         catch (Exception e) {
                             System.out.println("Unexpected exception:");
@@ -1647,6 +1646,13 @@ class CUP$Parser$actions {
                                     throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
                                 }
                             }
+                        }
+                        if (hijo instanceof Declaracion){
+                            Declaracion decl = (Declaracion)hijo;
+                            try {
+                                decl.evaluarIndice();
+                            } catch (SemanticError e){ throw new SemanticError("Indice inválido en declaración: " + decl.get_nombre() + "\n" + e.getMessage());}
+
                         }
                         if(hijo instanceof Asignacion)
                         {
