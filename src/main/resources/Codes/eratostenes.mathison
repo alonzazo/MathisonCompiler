@@ -29,8 +29,3 @@ publico num[] cribaEratostenes(num n){
 	}
 	devolver resultado
 }
-
-num comer(num n){
-    num r = 3
-    imprimir("Hola")
-}
