@@ -1,8 +1,8 @@
 # MathisonCompiler
 Lenguaje de programación dirigido a la enseñanza de programación en poblaciones hispanohablantes.
 
-Proyecto de pregrado | Universidad de Costa Rica |
-O. Azofeifa, B, Blanco, C.Portuguez & D. Varela
+`Proyecto de pregrado` `Universidad de Costa Rica`
+`O. Azofeifa, B, Blanco, C.Portuguez & D. Varela`
 
 Debido a que Costa Rica es un país hispanohablante se nota cómo la brecha
 idiomática influye negativamente en el interés de las personas a adentrarse en el
