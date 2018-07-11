@@ -30,4 +30,25 @@ public class Clase extends ComponenteConcreto implements Nombre {
     public String toString() {
         return "Clase{" +  _nombre + '}';
     }
+
+    @Override
+    public boolean evaluarSemantica() throws SemanticError {
+        //Agregamos a tablas de simbolos.
+        agregarATablaSimbolos();
+
+        //Evaluamos las demás componentes: Recorrido por anchura primero.
+        if (this.getHermanoDerecho() != null)
+            this.getHermanoDerecho().evaluarSemantica();
+        if (this.getHijoMasIzq() != null)
+            this.getHijoMasIzq().evaluarSemantica();
+        return true;
+    }
+
+    private void agregarATablaSimbolos() throws SemanticError{
+        if (Programa.getInstance().getTblSimbolos().containsKey(this.get_nombre()) && this.getPadre().getTblSimbolosLocales().get(this.get_nombre()) instanceof Clase )
+            System.out.println("ADVERTENCIA: Nombre de clase duplicada en contexto principal: " + this.get_nombre());
+
+        //Agregamos entrada
+        Programa.getInstance().getTblSimbolos().put(this.get_nombre(),this);
+    }
 }

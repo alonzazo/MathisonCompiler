@@ -3,6 +3,7 @@ package SemanticAnalizer;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Metodo extends ComponenteConcreto implements Nombre
 {
@@ -11,6 +12,7 @@ public class Metodo extends ComponenteConcreto implements Nombre
     private String _nombreTipo;
     private List<Variable> _parametros;
     private boolean _arreglo;
+
 
     public Metodo(){
         _nombre = "";
@@ -121,4 +123,48 @@ public class Metodo extends ComponenteConcreto implements Nombre
     public void set_arreglo(boolean _arreglo) {
         this._arreglo = _arreglo;
     }
+
+    @Override
+    public boolean evaluarSemantica() throws SemanticError {
+
+        //Agregamos a tablas de simbolos.
+        agregarATablaSimbolos();
+
+        //Evaluamos las demás componentes: Recorrido por anchura primero.
+        if (this.getHermanoDerecho() != null)
+            this.getHermanoDerecho().evaluarSemantica();
+        if (this.getHijoMasIzq() != null)
+            this.getHijoMasIzq().evaluarSemantica();
+        return true;
+    }
+
+    private void agregarATablaSimbolos() throws SemanticError{
+        //Manejamos las excepciones cuando los nombres ya existen.
+        if (this.getPadre().getTblSimbolosLocales().containsKey(this.get_nombre()) && this.getPadre().getTblSimbolosLocales().get(this.get_nombre()) instanceof Metodo)
+            System.out.println("ADVERTENCIA: Nombre de método duplicado en contexto local: " + this.get_nombre());
+        if (Programa.getInstance().getTblSimbolos().containsKey(this.get_nombre()) && this.getPadre().getTblSimbolosLocales().get(this.get_nombre()) instanceof Metodo )
+            System.out.println("ADVERTENCIA: Nombre de método duplicado en contexto principal: " + this.get_nombre());
+
+        //Agregamos entrada
+        if (this.getPadre() == null)
+            Programa.getInstance().getTblSimbolos().put(this.get_nombre(),this);
+        else
+            this.getPadre().getTblSimbolosLocales().put(this.get_nombre(),this);
+
+        //Agregamos los parámetros a la dabla de simbolos local.
+        agregarParametrosATablaSimbolos();
+    }
+
+    private void agregarParametrosATablaSimbolos() {
+        if(_parametros != null)
+        {
+            _parametros.forEach( variable ->  {
+                    if (_tblSimbolosLocales.containsKey(variable.getNombre()))
+                        System.out.println("ADVERTENCIA: Nombre de parámetro repetido: " + variable.getNombre() + " -> Parámetro sustituido");
+                    _tblSimbolosLocales.put(variable.getNombre(),variable);
+            });
+        }
+    }
+
+
 }

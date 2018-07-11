@@ -9,13 +9,9 @@
         <replace file="Parser.java">
             <replacetoken><![CDATA[CUP$Parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);]]></replacetoken>
             <replacevalue><![CDATA[//--------------------------------------------------------POST-ACTIONS
-              Programa raizReal = new Programa();
-              raizReal.setHijoMasIzq(raiz);
-              raiz = raizReal;
               try{
-                llenarTabla();
-                System.out.println(imprimirArbol());
-                verificarExistencias();
+                Programa.getInstance().evaluarSemantica();
+                System.out.println(Programa.getInstance().toString());
               }catch (SemanticError ex){
                 System.out.println(ex.getMessage());
               }

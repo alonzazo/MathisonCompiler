@@ -1471,10 +1471,8 @@ class CUP$Parser$actions {
 
     //public HashMap<String, Object> tablaSimbolos = new HashMap<String, Object>();
 
-    //Se declaran las variables de control del árbol semántico.
-    public Componente raiz = new Programa();
 
-    public String imprimirArbol() {
+    /*public String imprimirArbol() {
             //Recorrido en profundidad primero
             if (raiz == null) return "";
             return toStringAux("", 0,  raiz);
@@ -1501,7 +1499,7 @@ class CUP$Parser$actions {
             text = toStringAux(text, indexLevel, actual.getHermanoDerecho());
         }
         return text;
-    }
+    }*/
 
     public boolean existeSimbolo(String nombre, Componente compActual, HashMap<String,Nombre> tabla){
         boolean existe = false;
@@ -1867,13 +1865,9 @@ class CUP$Parser$actions {
 		Componente start_val = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		RESULT = start_val;
               //--------------------------------------------------------POST-ACTIONS
-              Programa raizReal = new Programa();
-              raizReal.setHijoMasIzq(raiz);
-              raiz = raizReal;
               try{
-                llenarTabla();
-                System.out.println(imprimirArbol());
-                verificarExistencias();
+                Programa.getInstance().evaluarSemantica();
+                System.out.println(Programa.getInstance().toString());
               }catch (SemanticError ex){
                 System.out.println(ex.getMessage());
               }
@@ -1894,7 +1888,7 @@ class CUP$Parser$actions {
 		int pleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int pright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Componente p = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 c.setHermanoDerecho(p); RESULT = c; raiz = RESULT;
+		 c.setHermanoDerecho(p); RESULT = c; Programa.getInstance().setRaiz(RESULT);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1906,7 +1900,7 @@ class CUP$Parser$actions {
 		int cleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int cright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Clase c = (Clase)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = c; raiz = RESULT;
+		 RESULT = c; Programa.getInstance().setRaiz(RESULT);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1921,7 +1915,7 @@ class CUP$Parser$actions {
 		int pleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int pright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Componente p = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 m.setHermanoDerecho(p); RESULT = m;  raiz = RESULT;
+		 m.setHermanoDerecho(p); RESULT = m;  Programa.getInstance().setRaiz(RESULT);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1933,7 +1927,7 @@ class CUP$Parser$actions {
 		int mleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int mright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Metodo m = (Metodo)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = m; raiz = RESULT;
+		 RESULT = m; Programa.getInstance().setRaiz(RESULT);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

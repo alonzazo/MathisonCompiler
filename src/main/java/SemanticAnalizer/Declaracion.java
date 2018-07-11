@@ -148,4 +148,33 @@ public class Declaracion extends ComponenteConcreto {
                 ", _tipo=" + _tipo +
                 '}';
     }
+
+    @Override
+    public boolean evaluarSemantica() throws SemanticError {
+        //Agregamos a tablas de simbolos.
+        agregarATablaSimbolos();
+
+        //Evaluamos la expresion del indice
+        try {
+            evaluarIndice();
+        }
+        catch (SemanticError e){
+            throw new SemanticError("Indice inválido en declaración: " + get_nombre() + "\n" + e.getMessage());
+        }
+
+        //Evaluamos las demás componentes: Recorrido por anchura primero.
+        if (this.getHermanoDerecho() != null)
+            this.getHermanoDerecho().evaluarSemantica();
+        if (this.getHijoMasIzq() != null)
+            this.getHijoMasIzq().evaluarSemantica();
+        return true;
+    }
+
+    private void agregarATablaSimbolos() throws SemanticError{
+        //Manejamos las excepciones cuando los nombres ya existen.
+        if (this.getPadre().getTblSimbolosLocales().containsKey(this.get_nombre()) && this.getPadre().getTblSimbolosLocales().get(this.get_nombre()) instanceof Variable)
+            System.out.println("ADVERTENCIA: Declaración repetida en contexto local: " + this.get_nombre() + "-> Declaracion sustituida");
+
+        this.getPadre().getTblSimbolosLocales().put(this.get_nombre(),new Variable(get_nombre(), get_tipo(), is_arreglo()));
+    }
 }

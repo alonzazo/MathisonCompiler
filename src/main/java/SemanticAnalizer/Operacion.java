@@ -165,6 +165,11 @@ public class Operacion extends ComponenteConcreto implements Expresion {
     }
 
     @Override
+    public boolean evaluarSemantica() throws SemanticError {
+        return false;
+    }
+
+    @Override
     public String getNombre() {
         return null;
     }

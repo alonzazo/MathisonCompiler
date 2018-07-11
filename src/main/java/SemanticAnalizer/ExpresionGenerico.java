@@ -68,4 +68,9 @@ public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
     public Tipo evaluarTipo() throws SemanticError{
         return getTipo();
     }
+
+    @Override
+    public boolean evaluarSemantica() throws SemanticError {
+        return true;
+    }
 }

@@ -20,5 +20,6 @@ public interface Componente {
     public void setOrdenAparicion(int aparicion);
     public int getOrdenAparicion();
     public HashMap< String, Nombre > getTblSimbolosLocales();
+    boolean evaluarSemantica() throws SemanticError;
 
 }

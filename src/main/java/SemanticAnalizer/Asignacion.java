@@ -1,8 +1,5 @@
 package SemanticAnalizer;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-
 public class Asignacion extends Sentencia {
     private String _nombre;
     private Object _valor;
@@ -56,14 +53,50 @@ public class Asignacion extends Sentencia {
 
     @Override
     public boolean evaluarSemantica() throws SemanticError{
-        Expresion e = _expresion instanceof Operacion ? ((Operacion) _expresion).get_primeraHoja() : _expresion;
-        return tipoDatosCorrecto(e,_tipo,this) && evaluarIndice();
+        verificarExistencias();
+
+        evaluarIndice();
+        evaluarExpresion();
+
+        //Evaluamos las demás componentes:
+        if (this.getHermanoDerecho() != null)
+            this.getHermanoDerecho().evaluarSemantica();
+
+        return true;
+    }
+
+    private boolean verificarExistencias() throws SemanticError{
+        //Checkeamos si estamos asignando a una palabra reservada.
+        if (Programa.getInstance().getMetodosNativos().containsKey(_nombre))
+            throw new SemanticError("Palabra reservada para método nativo: " + _nombre);
+
+        //Buscamos alguna tabla de simbolos que lo contenga
+        Componente padreActual = getPadre();
+        for (; padreActual != null; padreActual = padreActual.getPadre())
+            if (padreActual.getTblSimbolosLocales().containsKey(_nombre))
+                break;
+
+        if (padreActual == null) throw new SemanticError("Referencia no declarada en " + padreActual.toString() + ": " + _nombre);
+
+        //Seteamos el tipo
+        setTipo(padreActual.getTblSimbolosLocales().get(_nombre).get_tipo());
+
+        return true;
+    }
+
+    private boolean evaluarExpresion() throws SemanticError {
+        try{
+            setPadreExpresiones();
+            return _expresion.evaluarTipo() == _tipo;
+        }catch (SemanticError e){
+            throw new SemanticError("Expresión inválido en " + this.toString() + "\n" + e.getMessage());
+        }
     }
 
     public boolean evaluarIndice() throws SemanticError {
         try{
             if (_expresionIndice != null) {
-                setPadreExpresiones();
+                setPadreExpresionesIndice();
                 return _expresionIndice.evaluarTipo() == Tipo.NUMERICO;
             }
             else
@@ -75,6 +108,14 @@ public class Asignacion extends Sentencia {
     }
 
     private void setPadreExpresiones(){
+        if (_expresion instanceof Operacion)
+            for (Componente i = ((Operacion) _expresion).get_primeraHoja(); i != null; i = i.getHermanoDerecho())
+                i.setPadre(this);
+        else
+            _expresion.setPadre(this);
+    }
+
+    private void setPadreExpresionesIndice(){
         if (_expresionIndice instanceof Operacion)
             for (Componente i = ((Operacion) _expresionIndice).get_primeraHoja(); i != null; i = i.getHermanoDerecho())
                 i.setPadre(this);

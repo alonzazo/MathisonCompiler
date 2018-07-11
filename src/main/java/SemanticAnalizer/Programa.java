@@ -6,17 +6,22 @@ import java.util.List;
 
 public class Programa {
 
-    private Componente raiz;
-
     private static Programa instance;
 
+    private Componente raiz;
+    private HashMap<String, Nombre> tblSimbolos;
+    private HashMap<String,Tipo> metodosNativos = new HashMap<>();
+
     private Programa(){
+        metodosNativos.put("raiz",Tipo.NUMERICO);
     }
 
     public static Programa getInstance(){
         if (instance == null) instance = new Programa();
         return instance;
     }
+
+    public static void resetInstance(){instance = new Programa();}
 
     public Componente getRaiz() {
         return raiz;
@@ -26,9 +31,25 @@ public class Programa {
         this.raiz = raiz;
     }
 
+    public HashMap<String, Nombre> getTblSimbolos() {
+        return tblSimbolos;
+    }
+
+    public void setTblSimbolos(HashMap<String, Nombre> tblSimbolos) {
+        this.tblSimbolos = tblSimbolos;
+    }
+
+    public HashMap<String, Tipo> getMetodosNativos() {
+        return metodosNativos;
+    }
+
+    public void setMetodosNativos(HashMap<String, Tipo> metodosNativos) {
+        this.metodosNativos = metodosNativos;
+    }
+
     @Override
     public String toString() {
-        return "Programa";
+        return imprimirArbol();
     }
 
     public String imprimirArbol() {
@@ -58,5 +79,17 @@ public class Programa {
             text = toStringAux(text, indexLevel, actual.getHermanoDerecho());
         }
         return text;
+    }
+
+    public boolean evaluarSemantica() throws SemanticError {
+        return raiz.evaluarSemantica();
+    }
+
+    public String compilar() throws SemanticError {
+        return "";
+    }
+
+    public String compilar(String path) throws SemanticError {
+        return "";
     }
 }
