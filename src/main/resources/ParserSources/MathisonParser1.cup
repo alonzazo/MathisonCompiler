@@ -629,13 +629,13 @@ precedence left PARENTESISABIERTO,PARENTESISCERRADO;
 start with programa;
 
 programa ::= clase:c programa:p
-           {: c.setHermanoDerecho(p); RESULT = c; raiz = RESULT;:}
+           {: c.setHermanoDerecho(p); RESULT = c; Programa.getInstance().setRaiz(RESULT);:}
            | clase:c
-           {: RESULT = c; raiz = RESULT;:}
+           {: RESULT = c; Programa.getInstance().setRaiz(RESULT);:}
            | c_metodo:m programa:p
-           {: m.setHermanoDerecho(p); RESULT = m;  raiz = RESULT;:}
+           {: m.setHermanoDerecho(p); RESULT = m;  Programa.getInstance().setRaiz(RESULT);:}
            | c_metodo:m
-           {: RESULT = m; raiz = RESULT;:}
+           {: RESULT = m; Programa.getInstance().setRaiz(RESULT);:}
            ;
 /* ------------------------------ Sintaxis de la estructura de un programa ------------------------------*/
 

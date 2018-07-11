@@ -4,51 +4,59 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Programa extends ComponenteConcreto{
+public class Programa {
 
-    public List<Clase> _listaClases;
-    public List<Metodo> _listaMetodos;
+    private Componente raiz;
 
-    public Programa(){
-        System.out.println("Programa ");
-        _listaClases = new LinkedList<Clase>();
-        _listaMetodos = new LinkedList<Metodo>();
+    private static Programa instance;
+
+    private Programa(){
     }
 
-    public Programa(Clase c){
-        _listaClases = new LinkedList<Clase>();
-        _listaMetodos = new LinkedList<Metodo>();
-        _listaClases.add(c);
+    public static Programa getInstance(){
+        if (instance == null) instance = new Programa();
+        return instance;
     }
 
-    public Programa(Metodo m){
-        _listaMetodos = new LinkedList<Metodo>();
-        _listaClases = new LinkedList<Clase>();
-        _listaMetodos.add(m);
+    public Componente getRaiz() {
+        return raiz;
     }
 
-    @Override
-    public Componente getHermanoDerecho() {
-        return null;
-    }
-
-    @Override
-    public HashMap<String, Nombre> getTblSimbolosLocales() {
-        return _tblSimbolosLocales;
-    }
-
-    @Override
-    public Componente getPadre() {
-        return null;
-    }
-
-    @Override
-    public Componente setHermanoDerecho(Componente hermanoDer) {
-        return  null;
+    public void setRaiz(Componente raiz) {
+        this.raiz = raiz;
     }
 
     @Override
     public String toString() {
         return "Programa";
+    }
+
+    public String imprimirArbol() {
+        //Recorrido en profundidad primero
+        if (raiz == null) return "";
+        return toStringAux("", 0,  raiz);
+    }
+
+    private String toStringAux(String text,int indexLevel, Componente actual){
+        if (actual == null) return text;
+
+        text += '\n';
+        for (int i = 0; i < indexLevel; i++) text += "|\t";
+
+        text += actual.toString();
+
+        if (actual.getTblSimbolosLocales() != null  && !actual.getTblSimbolosLocales().isEmpty()) {
+            text += '\n';
+            for (int i = 0; i < indexLevel; i++) text += "|\t";
+            text += "TABLA SIMBOLOS: " + actual.getTblSimbolosLocales().toString();
+        }
+
+        if ( actual.getHijoMasIzq() != null){
+            text = toStringAux(text, indexLevel + 1, actual.getHijoMasIzq());
+        }
+        if ( actual.getHermanoDerecho() != null ){
+            text = toStringAux(text, indexLevel, actual.getHermanoDerecho());
+        }
+        return text;
     }
 }
