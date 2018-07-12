@@ -163,7 +163,6 @@ public class Variable extends ExpresionGenerico implements Nombre{
     }
 
     public void set_valor(Symbol _valor) {
-        //TODO Agregar restricciones
         this._valor = _valor;
     }
 }
