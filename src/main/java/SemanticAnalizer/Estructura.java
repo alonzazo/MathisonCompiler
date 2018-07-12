@@ -14,6 +14,11 @@ public abstract class Estructura extends ComponenteConcreto {
     //Evalúa semánticamente la condición de la estructura
     public abstract boolean evaluarCondicion() throws SemanticError;
 
+    protected void setPadreDeMisHijos(){
+    for (Componente hijoActual = getHijoMasIzq(); hijoActual != null; hijoActual = hijoActual.getHermanoDerecho())
+        hijoActual.setPadre(this);
+    }
+
     protected boolean tipoDatosCorrecto(Expresion primero, Tipo tipoEsperado, Componente padre) throws SemanticError {
         HashMap<String,Tipo> metodosNativos = new HashMap<String,Tipo>();
         metodosNativos.put("raiz",Tipo.NUMERICO);

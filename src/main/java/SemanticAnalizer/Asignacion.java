@@ -1,5 +1,7 @@
 package SemanticAnalizer;
 
+import java.util.HashMap;
+
 public class Asignacion extends Sentencia {
     private String _nombre;
     private Object _valor;
@@ -54,9 +56,13 @@ public class Asignacion extends Sentencia {
     @Override
     public boolean evaluarSemantica() throws SemanticError{
         verificarExistencias();
+        _tblSimbolosLocales = new HashMap<>();
 
-        evaluarIndice();
-        evaluarExpresion();
+        //Se evalúa el indice y la expresión
+        if (!evaluarIndice())
+            throw new SemanticError("Resultado final de expresión no era de tipo esperado:\nTipo esperado: " + _tipo.toString() + " Expresión de tipo: " + _expresionIndice.evaluarTipo());
+        if (!evaluarExpresion())
+            throw new SemanticError("Resultado final de expresión en índice no era de tipo esperado:\nTipo esperado: " + Tipo.NUMERICO + " Expresión de tipo: " + _expresionIndice.evaluarTipo());
 
         //Evaluamos las demás componentes:
         if (this.getHermanoDerecho() != null)
@@ -76,7 +82,7 @@ public class Asignacion extends Sentencia {
             if (padreActual.getTblSimbolosLocales().containsKey(_nombre))
                 break;
 
-        if (padreActual == null) throw new SemanticError("Referencia no declarada en " + padreActual.toString() + ": " + _nombre);
+        if (padreActual == null) throw new SemanticError("Referencia no declarada en " + getPadre().toString() + ": " + _nombre);
 
         //Seteamos el tipo
         setTipo(padreActual.getTblSimbolosLocales().get(_nombre).get_tipo());
@@ -86,7 +92,7 @@ public class Asignacion extends Sentencia {
 
     private boolean evaluarExpresion() throws SemanticError {
         try{
-            setPadreExpresiones();
+            _expresion.setPadre(this);
             return _expresion.evaluarTipo() == _tipo;
         }catch (SemanticError e){
             throw new SemanticError("Expresión inválido en " + this.toString() + "\n" + e.getMessage());

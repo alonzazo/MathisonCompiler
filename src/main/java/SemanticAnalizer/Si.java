@@ -20,6 +20,27 @@ public class Si extends Estructura {
         return _expresion.evaluarTipo() == Tipo.BOOLEANO;
     }
 
+    @Override
+    public boolean evaluarSemantica() throws SemanticError {
+        setPadreDeMisHijos();
+
+        _tblSimbolosLocales = new HashMap<>();
+
+        if (!evaluarCondicion())
+            throw new SemanticError("Expresión de tipo inesperada en estructura SI: \nTipo esperado: " + Tipo.BOOLEANO + " Tipo dado: " + _expresion.evaluarTipo());
+
+        //Evaluamos las demás sentencias, en este caso hacemos profundidad primero.
+        if (this.getHijoMasIzq() != null)
+            getHijoMasIzq().evaluarSemantica();
+        else
+            System.out.println("ADVERTENCIA: Estructura SI sin sentencias -> SE IGNORARÁ");
+
+        if (this.getHermanoDerecho() != null)
+            getHermanoDerecho().evaluarSemantica();
+
+        return false;
+    }
+
     private void setPadreExpresiones(){
         if (_expresion instanceof Operacion)
             for (Componente i = ((Operacion) _expresion).get_primeraHoja(); i != null; i = i.getHermanoDerecho())

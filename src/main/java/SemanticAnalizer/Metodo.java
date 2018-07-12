@@ -12,6 +12,7 @@ public class Metodo extends ComponenteConcreto implements Nombre
     private String _nombreTipo;
     private List<Variable> _parametros;
     private boolean _arreglo;
+    private boolean _tieneDevolver;
 
 
     public Metodo(){
@@ -124,8 +125,22 @@ public class Metodo extends ComponenteConcreto implements Nombre
         this._arreglo = _arreglo;
     }
 
+    public boolean is_tieneDevolver() {
+        return _tieneDevolver;
+    }
+
+    public void set_tieneDevolver(boolean _tieneDevolver) {
+        this._tieneDevolver = _tieneDevolver;
+    }
+
+    private void setPadreDeMisHijos(){
+        for (Componente hijoActual = getHijoMasIzq(); hijoActual != null; hijoActual = hijoActual.getHermanoDerecho())
+            hijoActual.setPadre(this);
+    }
+
     @Override
     public boolean evaluarSemantica() throws SemanticError {
+        setPadreDeMisHijos();
 
         //Agregamos a tablas de simbolos.
         agregarATablaSimbolos();
@@ -135,19 +150,26 @@ public class Metodo extends ComponenteConcreto implements Nombre
             this.getHermanoDerecho().evaluarSemantica();
         if (this.getHijoMasIzq() != null)
             this.getHijoMasIzq().evaluarSemantica();
+
+        //Revisamos si se encontraron sentencias DEVOLVER en el método
+        if (_tipo != null){
+            if (!_tieneDevolver)
+                throw new SemanticError("Se esperaba al menos una sentencia DEVOLVER en método " + _nombre +"()");
+        }
+        //NOTA: No revisamos el caso cuando son procedimientos porque en la clase DEVOLVER se hace la verificación
         return true;
     }
 
     private void agregarATablaSimbolos() throws SemanticError{
         //Manejamos las excepciones cuando los nombres ya existen.
-        if (this.getPadre().getTblSimbolosLocales().containsKey(this.get_nombre()) && this.getPadre().getTblSimbolosLocales().get(this.get_nombre()) instanceof Metodo)
+        if (this.getPadre() != null && this.getPadre().getTblSimbolosLocales().containsKey(this.get_nombre()) && this.getPadre().getTblSimbolosLocales().get(this.get_nombre()) instanceof Metodo)
             System.out.println("ADVERTENCIA: Nombre de método duplicado en contexto local: " + this.get_nombre());
-        if (Programa.getInstance().getTblSimbolos().containsKey(this.get_nombre()) && this.getPadre().getTblSimbolosLocales().get(this.get_nombre()) instanceof Metodo )
+        if (Programa.getInstance().getTblSimbolosLocales().containsKey(this.get_nombre()) && this.getPadre().getTblSimbolosLocales().get(this.get_nombre()) instanceof Metodo )
             System.out.println("ADVERTENCIA: Nombre de método duplicado en contexto principal: " + this.get_nombre());
 
         //Agregamos entrada
         if (this.getPadre() == null)
-            Programa.getInstance().getTblSimbolos().put(this.get_nombre(),this);
+            Programa.getInstance().getTblSimbolosLocales().put(this.get_nombre(),this);
         else
             this.getPadre().getTblSimbolosLocales().put(this.get_nombre(),this);
 
@@ -156,6 +178,7 @@ public class Metodo extends ComponenteConcreto implements Nombre
     }
 
     private void agregarParametrosATablaSimbolos() {
+        _tblSimbolosLocales = new HashMap<>();
         if(_parametros != null)
         {
             _parametros.forEach( variable ->  {

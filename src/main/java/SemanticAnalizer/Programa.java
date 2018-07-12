@@ -4,12 +4,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Programa {
+public class Programa extends ComponenteConcreto{
 
     private static Programa instance;
 
     private Componente raiz;
-    private HashMap<String, Nombre> tblSimbolos;
     private HashMap<String,Tipo> metodosNativos = new HashMap<>();
 
     private Programa(){
@@ -29,14 +28,6 @@ public class Programa {
 
     public void setRaiz(Componente raiz) {
         this.raiz = raiz;
-    }
-
-    public HashMap<String, Nombre> getTblSimbolos() {
-        return tblSimbolos;
-    }
-
-    public void setTblSimbolos(HashMap<String, Nombre> tblSimbolos) {
-        this.tblSimbolos = tblSimbolos;
     }
 
     public HashMap<String, Tipo> getMetodosNativos() {
@@ -82,6 +73,9 @@ public class Programa {
     }
 
     public boolean evaluarSemantica() throws SemanticError {
+        for (Componente componente = raiz; componente != null; componente = componente.getHermanoDerecho())
+            componente.setPadre(this);
+        _tblSimbolosLocales = new HashMap<>();
         return raiz.evaluarSemantica();
     }
 

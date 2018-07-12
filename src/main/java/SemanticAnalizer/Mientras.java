@@ -39,4 +39,23 @@ public class Mientras extends Estructura {
         else
             _condicion.setPadre(this);
     }
+
+    @Override
+    public boolean evaluarSemantica() throws SemanticError {
+        setPadreDeMisHijos();
+
+        if (!evaluarCondicion())
+            throw new SemanticError("Se esperaba expresión booleana en estructura MIENTRAS:\nTipo esperado: " + Tipo.BOOLEANO + " Tipo dado: " + _condicion.evaluarTipo());
+
+        //Evaluamos las demás sentencias, en este caso hacemos profundidad primero.
+        if (this.getHijoMasIzq() != null)
+            getHijoMasIzq().evaluarSemantica();
+        else
+            System.out.println("ADVERTENCIA: Estructura PARA sin sentencias -> Se considerarán los segmentos DESDE, HASTA, AVANCE.");
+
+        if (this.getHermanoDerecho() != null)
+            getHermanoDerecho().evaluarSemantica();
+
+        return true;
+    }
 }

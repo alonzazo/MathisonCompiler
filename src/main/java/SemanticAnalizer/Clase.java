@@ -31,8 +31,15 @@ public class Clase extends ComponenteConcreto implements Nombre {
         return "Clase{" +  _nombre + '}';
     }
 
+    private void setPadreDeMisHijos(){
+        for (Componente hijoActual = getHijoMasIzq(); hijoActual != null; hijoActual = hijoActual.getHermanoDerecho())
+            hijoActual.setPadre(this);
+    }
+
     @Override
     public boolean evaluarSemantica() throws SemanticError {
+        setPadreDeMisHijos();
+
         //Agregamos a tablas de simbolos.
         agregarATablaSimbolos();
 
@@ -45,10 +52,10 @@ public class Clase extends ComponenteConcreto implements Nombre {
     }
 
     private void agregarATablaSimbolos() throws SemanticError{
-        if (Programa.getInstance().getTblSimbolos().containsKey(this.get_nombre()) && this.getPadre().getTblSimbolosLocales().get(this.get_nombre()) instanceof Clase )
+        if (Programa.getInstance().getTblSimbolosLocales().containsKey(this.get_nombre()) && this.getPadre().getTblSimbolosLocales().get(this.get_nombre()) instanceof Clase )
             System.out.println("ADVERTENCIA: Nombre de clase duplicada en contexto principal: " + this.get_nombre());
 
         //Agregamos entrada
-        Programa.getInstance().getTblSimbolos().put(this.get_nombre(),this);
+        Programa.getInstance().getTblSimbolosLocales().put(this.get_nombre(),this);
     }
 }

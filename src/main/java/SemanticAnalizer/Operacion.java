@@ -178,4 +178,11 @@ public class Operacion extends ComponenteConcreto implements Expresion {
     public Tipo getTipo() {
         return null;
     }
+
+    @Override
+    public Componente setPadre(Componente padre) {
+        _expIzq.setPadre(padre);
+        _expDer.setPadre(padre);
+        return super.setPadre(padre);
+    }
 }
