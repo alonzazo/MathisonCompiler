@@ -133,5 +133,8 @@ public class Asignacion extends Sentencia {
         return "Asignacion{" +  _nombre + '}';
     }
 
-
+    @Override
+    public String compilar() throws SemanticError {
+        return _hermanoDerecho.compilar();
+    }
 }

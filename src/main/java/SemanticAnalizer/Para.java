@@ -87,4 +87,9 @@ public class Para extends Estructura
 
         return true;
     }
+
+    @Override
+    public String compilar() throws SemanticError {
+        return _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
+    }
 }

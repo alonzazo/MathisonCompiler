@@ -20,4 +20,10 @@ public class Leer extends Sentencia {
     public String toString() {
         return "Leer{" + _variable +'}';
     }
+
+    //@Override
+    public String compilar() throws SemanticError {
+        //TODO compilar de Leer.
+        return null;
+    }
 }

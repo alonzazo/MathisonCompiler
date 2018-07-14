@@ -177,4 +177,11 @@ public class Declaracion extends ComponenteConcreto {
 
         this.getPadre().getTblSimbolosLocales().put(this.get_nombre(),new Variable(get_nombre(), get_tipo(), is_arreglo()));
     }
+
+    @Override
+    public String compilar() throws SemanticError {
+        if (_hermanoDerecho != null)
+            return _hermanoDerecho.compilar();
+        return "";
+    }
 }

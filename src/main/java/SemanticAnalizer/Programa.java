@@ -2,8 +2,6 @@ package SemanticAnalizer;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 public class Programa extends ComponenteConcreto{
 
@@ -13,7 +11,8 @@ public class Programa extends ComponenteConcreto{
     private HashMap<String,Tipo> metodosNativos = new HashMap<>();
 
     //Para generacion de código
-    private HashMap<String,String> hilerasEnHeap = new HashMap<>();
+    private HashMap<String,String> heap = new HashMap<>();
+    private int numCadenasGenericas = 0;
 
     private Programa(){
         metodosNativos.put("raiz",Tipo.NUMERICO);
@@ -40,6 +39,14 @@ public class Programa extends ComponenteConcreto{
 
     public void setMetodosNativos(HashMap<String, Tipo> metodosNativos) {
         this.metodosNativos = metodosNativos;
+    }
+
+    public int getNumCadenasGenericas() {
+        return numCadenasGenericas;
+    }
+
+    public void setNumCadenasGenericas(int numCadenasGenericas) {
+        this.numCadenasGenericas = numCadenasGenericas;
     }
 
     @Override
@@ -103,5 +110,5 @@ public class Programa extends ComponenteConcreto{
 
 
     //Concerniente a generación de código
-    public HashMap getHilerasEnHeap(){return hilerasEnHeap;}
+    public HashMap getHeap(){return heap;}
 }

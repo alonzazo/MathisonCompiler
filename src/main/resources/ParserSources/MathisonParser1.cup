@@ -662,11 +662,11 @@ c_expresion_booleana::= c_expresion_booleana:e  Y c_expresion_booleana:f        
 /*------------------------------ Sintaxis de otras funciones reservadas ------------------------------*/
 
 c_imprimir ::= IMPRIMIR PARENTESISABIERTO c_expresion_cadena:e PARENTESISCERRADO
-                {: RESULT = new Imprimir(); RESULT.setHijoMasIzq((Componente)e);:}
+                {: RESULT = new Imprimir(e);:}
              | IMPRIMIR PARENTESISABIERTO c_variable_o_llamadoMetodo:e PARENTESISCERRADO
-                {: RESULT = new Imprimir(); RESULT.setHijoMasIzq((Componente)e);:}
+                {: RESULT = new Imprimir((Expresion)e);:}
              | IMPRIMIR PARENTESISABIERTO NUMERO:n PARENTESISCERRADO
-                {: RESULT = new Imprimir(n);:}
+                {: RESULT = new Imprimir(new ExpresionGenerico(sym.terminalNames[((Symbol)((Parser) this.parser).stack.peek()).sym],Tipo.NUMERICO,(Symbol)((Parser) this.parser).stack.peek()));:}
              ;
 
 c_leer ::= LEER PARENTESISABIERTO VAR:v PARENTESISCERRADO

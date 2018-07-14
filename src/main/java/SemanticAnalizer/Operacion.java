@@ -132,6 +132,11 @@ public class Operacion extends ComponenteConcreto implements Expresion {
         return _tipoSalida;
     }
 
+    @Override
+    public String compilar() throws SemanticError {
+        return "";
+    }
+
     public Tipo get_tipoSalida() {
         return _tipoSalida;
     }
@@ -185,4 +190,6 @@ public class Operacion extends ComponenteConcreto implements Expresion {
         _expDer.setPadre(padre);
         return super.setPadre(padre);
     }
+
+
 }

@@ -127,4 +127,9 @@ public class Si extends Estructura {
         }while(iter != null);
         return true;
     }
+
+    @Override
+    public String compilar() throws SemanticError {
+        return _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
+    }
 }

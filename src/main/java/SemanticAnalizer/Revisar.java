@@ -25,4 +25,9 @@ public class Revisar extends Estructura {
 
         return true;
     }
+
+    @Override
+    public String compilar() throws SemanticError {
+        return "";
+    }
 }

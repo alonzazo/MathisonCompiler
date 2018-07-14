@@ -35,4 +35,9 @@ public class Sino extends Estructura {
             getHermanoDerecho().evaluarSemantica();
         return true;
     }
+
+    @Override
+    public String compilar() throws SemanticError {
+        return _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
+    }
 }

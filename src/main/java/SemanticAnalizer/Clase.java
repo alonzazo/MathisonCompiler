@@ -58,4 +58,9 @@ public class Clase extends ComponenteConcreto implements Nombre {
         //Agregamos entrada
         Programa.getInstance().getTblSimbolosLocales().put(this.get_nombre(),this);
     }
+
+    @Override
+    public String compilar() throws SemanticError {
+        return _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
+    }
 }

@@ -189,5 +189,8 @@ public class Metodo extends ComponenteConcreto implements Nombre
         }
     }
 
-
+    @Override
+    public String compilar() throws SemanticError {
+        return _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
+    }
 }

@@ -134,7 +134,12 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
         this._parametros = _parametros;
     }
 
-    /*private boolean tipoCorrectoParametros(Expresion param, Tipo tipoEsperado, Componente padre) throws SemanticError {
+    @Override
+    public String compilar() throws SemanticError {
+        return null;
+    }
+
+/*private boolean tipoCorrectoParametros(Expresion param, Tipo tipoEsperado, Componente padre) throws SemanticError {
         HashMap<String,Tipo> metodosNativos = new HashMap<String,Tipo>();
         metodosNativos.put("raiz",Tipo.NUMERICO);
         Expresion iter = param;

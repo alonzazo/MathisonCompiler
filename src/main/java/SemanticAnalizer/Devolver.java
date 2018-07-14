@@ -64,4 +64,12 @@ public class Devolver extends Sentencia {
         }
 
     }
+
+    @Override
+    public String compilar() throws SemanticError {
+        if (_hermanoDerecho == null)
+            return "";
+        else
+            return _hermanoDerecho.compilar();
+    }
 }

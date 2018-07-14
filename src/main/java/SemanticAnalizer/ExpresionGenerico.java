@@ -1,5 +1,6 @@
 package SemanticAnalizer;
 
+import SyntacticalAnalizer.sym;
 import java_cup.runtime.Symbol;
 
 public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
@@ -72,5 +73,25 @@ public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
     @Override
     public boolean evaluarSemantica() throws SemanticError {
         return true;
+    }
+
+    //@Override
+    public String compilar() throws SemanticError {
+        String idReferencia;
+        if (_tipo == Tipo.CADENA){
+            //Creamos el id de referencia
+            idReferencia = "cad_generica" + Programa.getInstance().getNumCadenasGenericas();
+
+            //Lo agregamos al heap
+            Programa.getInstance().getHeap().put(idReferencia, _symbol.value);
+            Programa.getInstance().setNumCadenasGenericas(Programa.getInstance().getNumCadenasGenericas() + 1);
+            return idReferencia;
+        } else if(_tipo == Tipo.BOOLEANO){
+            if (sym.terminalNames[_symbol.sym] == "VERDADERO")
+                return "1";
+            else
+                return "0";
+        }
+        return ((Integer)_symbol.value).toString();
     }
 }
