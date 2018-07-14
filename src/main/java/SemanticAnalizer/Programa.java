@@ -1,5 +1,6 @@
 package SemanticAnalizer;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +11,9 @@ public class Programa extends ComponenteConcreto{
 
     private Componente raiz;
     private HashMap<String,Tipo> metodosNativos = new HashMap<>();
+
+    //Para generacion de código
+    private HashMap<String,String> hilerasEnHeap = new HashMap<>();
 
     private Programa(){
         metodosNativos.put("raiz",Tipo.NUMERICO);
@@ -80,10 +84,24 @@ public class Programa extends ComponenteConcreto{
     }
 
     public String compilar() throws SemanticError {
-        return "";
+        return raiz.compilar();
     }
 
-    public String compilar(String path) throws SemanticError {
-        return "";
+    public String compilar(String path) throws Exception {
+        String result = "";
+
+        //Creamos el archivo de salida
+        PrintWriter printer = new PrintWriter(path);
+        //Escribimos el codigos
+        result = compilar();
+        printer.println(result);
+        //Cerramos
+        printer.close();
+
+        return result;
     }
+
+
+    //Concerniente a generación de código
+    public HashMap getHilerasEnHeap(){return hilerasEnHeap;}
 }

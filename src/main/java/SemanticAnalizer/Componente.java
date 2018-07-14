@@ -21,5 +21,6 @@ public interface Componente {
     public int getOrdenAparicion();
     public HashMap< String, Nombre > getTblSimbolosLocales();
     boolean evaluarSemantica() throws SemanticError;
+    String compilar() throws SemanticError;
 
 }
