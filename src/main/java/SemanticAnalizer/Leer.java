@@ -24,6 +24,8 @@ public class Leer extends Sentencia {
     //@Override
     public String compilar() throws SemanticError {
         //TODO compilar de Leer.
-        return null;
+        if (_hermanoDerecho != null)
+            return _hermanoDerecho.compilar();
+        return "";
     }
 }

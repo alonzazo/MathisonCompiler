@@ -137,7 +137,6 @@ public class Asignacion extends Sentencia {
     public String compilar() throws SemanticError {
         if (_hermanoDerecho != null)
             return _hermanoDerecho.compilar();
-        else
-            return "";
+        return "";
     }
 }

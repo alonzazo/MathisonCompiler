@@ -39,6 +39,8 @@ public class Imprimir extends Sentencia {
             //TODO agregar todo la evaluación lógica de la expresion
             result = _expresion.compilar();
         }
+        if (_hermanoDerecho != null)
+            return result + _hermanoDerecho.compilar();
         return result;
     }
 }

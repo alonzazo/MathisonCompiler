@@ -136,7 +136,9 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
 
     @Override
     public String compilar() throws SemanticError {
-        return null;
+        if (_hermanoDerecho != null)
+            return _hermanoDerecho.compilar();
+        return "";
     }
 
 /*private boolean tipoCorrectoParametros(Expresion param, Tipo tipoEsperado, Componente padre) throws SemanticError {
