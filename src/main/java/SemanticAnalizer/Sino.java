@@ -38,6 +38,12 @@ public class Sino extends Estructura {
 
     @Override
     public String compilar() throws SemanticError {
-        return _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
+        if (_hijoMasIzq != null){
+            if (_hermanoDerecho != null) return _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
+            else return _hijoMasIzq.compilar();
+        } else {
+            if (_hermanoDerecho != null) return _hermanoDerecho.compilar();
+            else return "";
+        }
     }
 }
