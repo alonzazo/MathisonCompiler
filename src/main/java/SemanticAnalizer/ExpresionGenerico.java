@@ -105,6 +105,12 @@ public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
 
     @Override
     public String compilar() throws SemanticError {
-        return "";
+        String result = "";
+        if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
+            result = "\tlw\t\t$v0, (" + this.getEtiqueta()+")\n";
+        } else {
+            result = "\tla\t\t$v0, " + this.getEtiqueta()+"\n";
+        }
+        return result;
     }
 }

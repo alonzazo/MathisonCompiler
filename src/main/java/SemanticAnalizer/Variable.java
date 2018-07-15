@@ -146,6 +146,17 @@ public class Variable extends ExpresionGenerico implements Nombre{
         return  _tipo;
     }
 
+    @Override
+    public String compilar() throws SemanticError {
+        String result = "";
+        if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
+            result = "\tlw\t\t$v0, (" + this.getEtiqueta()+")\n";
+        } else {
+            result = "\tla\t\t$v0, " + this.getEtiqueta()+"\n";
+        }
+        return result;
+    }
+
     public Symbol get_valor(){
         return _valor;
     }
