@@ -39,7 +39,7 @@ public class Sino extends Estructura {
     @Override
     public String compilar() throws SemanticError {
         if (_hijoMasIzq != null){
-            if (_hermanoDerecho != null) return _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
+            if (_hermanoDerecho != null) return _hijoMasIzq.compilar() + "si_retorno" + (Programa.getInstance().getNumSi() - 1) + ":\n" + _hermanoDerecho.compilar();
             else return _hijoMasIzq.compilar();
         } else {
             if (_hermanoDerecho != null) return _hermanoDerecho.compilar();

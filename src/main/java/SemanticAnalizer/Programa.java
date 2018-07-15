@@ -17,6 +17,9 @@ public class Programa extends ComponenteConcreto{
     //Para generacion de código
     private HashMap<String, Descriptor> heap = new HashMap<>();
     private int numCadenasGenericas = 0;
+    private int numSi = 0;
+    private int numMientras = 0;
+    private int numPara = 0;
     private final int tamanoMaximoCadena = 128;
 
     private Programa(){
@@ -54,6 +57,13 @@ public class Programa extends ComponenteConcreto{
         this.numCadenasGenericas = numCadenasGenericas;
     }
 
+    public int getNumSi() {
+        return numSi;
+    }
+
+    public void setNumSi(int numSi) {
+        this.numSi = numSi;
+    }
 
     public int getTamanoMaximoCadena() {
         return tamanoMaximoCadena;

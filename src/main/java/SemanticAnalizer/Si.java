@@ -130,8 +130,34 @@ public class Si extends Estructura {
 
     @Override
     public String compilar() throws SemanticError {
+        String result = "";
+        int numSi = Programa.getInstance().getNumSi();
+        String etiqueta = "si" + numSi;
+        Programa.getInstance().setNumSi(numSi + 1);
+
+        result += _expresion.compilar();
+
         if (_hijoMasIzq != null){
-            if (_hermanoDerecho != null) return _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
+            if (_hermanoDerecho != null){
+                if (_hermanoDerecho instanceof Sino){
+                    result = result +
+                            "\tbnez\t\t$v0, " + etiqueta + "\n" +
+                            _hermanoDerecho.compilar() +            //Aquí se encuentra lo que sigue después del si, puede ser un sino
+                            etiqueta + "\n" +
+                            _hijoMasIzq.compilar() +                //Bloque del si
+                            "\tj\t\tsi_retorno" + numSi +"\n";      //Retorno del si
+                }else {
+                    result = result +
+                            "\tbnez\t\t$v0, " + etiqueta + "\n" +
+                            "si_retorno" + numSi + ":\n" +
+                            _hermanoDerecho.compilar() +            //Aquí se encuentra lo que sigue después del si, puede ser un sino
+                            etiqueta + "\n" +
+                            _hijoMasIzq.compilar() +                 //Bloque del si
+                            "\tj\t\tsi_retorno" + numSi +"\n";      //Retorno del si
+                }
+
+                return result;
+            }
             else return _hijoMasIzq.compilar();
         } else {
             if (_hermanoDerecho != null) return _hermanoDerecho.compilar();
