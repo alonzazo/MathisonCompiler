@@ -149,10 +149,26 @@ public class Variable extends ExpresionGenerico implements Nombre{
     @Override
     public String compilar() throws SemanticError {
         String result = "";
-        if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
-            result = "\tlw\t\t$v0, (" + this.getEtiqueta()+")\n";
-        } else {
-            result = "\tla\t\t$v0, " + this.getEtiqueta()+"\n";
+        if (Programa.getInstance().getHeap().containsKey(_nombre)){
+            if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
+                result = "\tlw\t\t$v0, 0(" + this.getEtiqueta()+")\n";
+            } else {
+                result = "\tla\t\t$v0, " + this.getEtiqueta()+"\n";
+            }
+        } else{
+            //Buscamos el método padre
+            Componente padreActual = this._padre;
+            for (;padreActual != null && !(padreActual instanceof Metodo);
+                 padreActual = padreActual.getPadre());
+
+            //Si lo encontramos buscamos la posición en la pila
+            if (padreActual != null) {
+                Metodo metodoPadre = (Metodo) padreActual;
+                int posicion = metodoPadre.getPilaLocal().getPosicionEnPila(_nombre);
+
+                result = "\tlw\t\t$v0, " + posicion +"($sp)\n";
+            }
+
         }
         return result;
     }

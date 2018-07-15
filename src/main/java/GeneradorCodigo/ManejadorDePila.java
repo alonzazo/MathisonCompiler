@@ -20,6 +20,10 @@ public class ManejadorDePila {
         }
     }
 
+    public int getPosicionEnPila(String variable){
+            return direcciones.get(variable);
+    }
+
     public int getTamanoPila(){
         return tamano;
     }

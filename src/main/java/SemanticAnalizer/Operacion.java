@@ -139,9 +139,9 @@ public class Operacion extends ComponenteConcreto implements Expresion {
             if ( _tipoOperacion == TipoOperador.SUMA ){
                 if (_expIzq.evaluarTipo() == Tipo.NUMERICO && _expDer.evaluarTipo() == Tipo.NUMERICO){
                     result += _expIzq.compilar() +
-                            "\tmove\t\t$t0, $v0\n" +
+                            "\tmove\t$t0, $v0\n" +
                             _expDer.compilar() +
-                            "\tadd\t\t$v0, $t0,$v0\n\n";
+                            "\tadd\t\t$v0, $t0, $v0\n\n";
                 }
                 else if ( (_expIzq.evaluarTipo() == Tipo.NUMERICO || _expIzq.evaluarTipo() == Tipo.CADENA) &&
                         (_expDer.evaluarTipo() == Tipo.NUMERICO || _expDer.evaluarTipo() == Tipo.CADENA))
@@ -151,7 +151,7 @@ public class Operacion extends ComponenteConcreto implements Expresion {
             } else if ( _tipoOperacion == TipoOperador.RESTA || _tipoOperacion == TipoOperador.MULTIPLICACION || _tipoOperacion == TipoOperador.DIVISION){
                 if (_expIzq.evaluarTipo() == Tipo.NUMERICO && _expDer.evaluarTipo() == Tipo.NUMERICO) {
                     result += _expIzq.compilar() +
-                            "\tmove\t\t$t0, $v0\n" +
+                            "\tmove\t$t0, $v0\n" +
                             _expDer.compilar();
                     switch (_tipoOperacion){
                         case RESTA:
@@ -170,20 +170,20 @@ public class Operacion extends ComponenteConcreto implements Expresion {
             } else if (_tipoOperacion == TipoOperador.MENORQUE || _tipoOperacion == TipoOperador.MENOROIGUAL || _tipoOperacion == TipoOperador.MAYORQUE || _tipoOperacion == TipoOperador.MAYOROIGUAL){
                 if (_expIzq.evaluarTipo() == Tipo.NUMERICO && _expDer.evaluarTipo() == Tipo.NUMERICO){
                     result += _expIzq.compilar() +
-                            "\tmove\t\t$t0, $v0\n" +
+                            "\tmove\t$t0, $v0\n" +
                             _expDer.compilar();
                     switch (_tipoOperacion){
                         case MENORQUE:
-                            result += "\tslt\t\t$v0,$t0,$v0\n\n";
+                            result += "\tslt\t\t$v0, $t0, $v0\n\n";
                             break;
                         case MENOROIGUAL:
-                            result += "\tsle\t\t$v0,$t0,$v0\n\n";
+                            result += "\tsle\t\t$v0, $t0, $v0\n\n";
                             break;
                         case MAYORQUE:
-                            result += "\tsgt\t\t$v0,$t0,$v0\n\n";
+                            result += "\tsgt\t\t$v0, $t0, $v0\n\n";
                             break;
                         case MAYOROIGUAL:
-                            result += "\tsge\t\t$v0,$t0,$v0\n\n";
+                            result += "\tsge\t\t$v0, $t0, $v0\n\n";
                     }
                 }
                 else
@@ -191,26 +191,26 @@ public class Operacion extends ComponenteConcreto implements Expresion {
             } else if (_tipoOperacion == TipoOperador.IGUAL || _tipoOperacion == TipoOperador.DISTINTO){
                 if (_expIzq.evaluarTipo() == _expDer.evaluarTipo()){
                     result += _expIzq.compilar() +
-                            "\tmove\t\t$t0, $v0\n" +
+                            "\tmove\t$t0, $v0\n" +
                             _expDer.compilar();
                     switch (_tipoOperacion){
                         case IGUAL:
-                            result += "\tseq\t\t$v0,$t0,$v0\n\n";
+                            result += "\tseq\t\t$v0, $t0, $v0\n\n";
                         case DISTINTO:
-                            result += "\tsne\t\t$v0,$t0,$v0\n\n";
+                            result += "\tsne\t\t$v0, $t0, $v0\n\n";
                     }
                 }
                 throw new SemanticError("Tipo de expresión incomparables:\n" + _expDer.toString() + _expIzq.toString());
             } else if (_tipoOperacion == TipoOperador.Y || _tipoOperacion == TipoOperador.O){
                 if (_expIzq.evaluarTipo() == Tipo.BOOLEANO && _expDer.evaluarTipo() == Tipo.BOOLEANO){
                     result += _expIzq.compilar() +
-                            "\tmove\t\t$t0, $v0\n" +
+                            "\tmove\t$t0, $v0\n" +
                             _expDer.compilar();
                     switch (_tipoOperacion){
                         case Y:
-                            result += "\tand\t\t$v0,$t0,$v0\n\n";
+                            result += "\tand\t\t$v0, $t0, $v0\n\n";
                         case O:
-                            result += "\tor\t\t$v0,$t0,$v0\n\n";
+                            result += "\tor\t\t$v0, $t0, $v0\n\n";
                     }
                 }
                 else

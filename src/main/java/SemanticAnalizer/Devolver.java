@@ -71,9 +71,22 @@ public class Devolver extends Sentencia {
 
         result += expresion.compilar();
 
+        //Buscamos el método padre
+        Componente padreActual = this._padre;
+        for (;padreActual != null && !(padreActual instanceof Metodo);
+             padreActual = padreActual.getPadre());
 
-        if (_hermanoDerecho != null)
-            return _hermanoDerecho.compilar();
-        return "";
+        //Si lo encontramos buscamos la posición en la pila
+        if (padreActual != null) {
+            result +=   "\t#Devolver\n" +
+                        "\taddi\t$sp, $sp, " + ((Metodo) padreActual).getPilaLocal().getTamanoPila()+ "\n" +
+                        "\tj\t\t-4($sp)\n\n";
+        }
+
+        if (_hermanoDerecho != null){
+            System.err.println("ADVERTENCIA: Codigo inalcanzable después de sentencia DEVOLVER");
+            return result + _hermanoDerecho.compilar();
+        }
+        return result;
     }
 }

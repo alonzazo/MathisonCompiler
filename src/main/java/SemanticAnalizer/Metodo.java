@@ -206,23 +206,8 @@ public class Metodo extends ComponenteConcreto implements Nombre
     public String compilar() throws SemanticError {
         String result = "";
 
-        /*if (_parametros != null)
-        _parametros.forEach( variable -> {
-            switch (variable.get_tipo()){
-                case NUMERICO:
-                    Programa.getInstance().getHeap().put(variable.getNombre(),new Descriptor(variable.getNombre(),".word",""));
-                    break;
-                case CADENA:
-                    Programa.getInstance().getHeap().put(variable.getNombre(),new Descriptor(variable.getNombre(),".space " + Programa.getInstance().getTamanoMaximoCadena(),""));
-                    break;
-                case BOOLEANO:
-                    Programa.getInstance().getHeap().put(variable.getNombre(),new Descriptor(variable.getNombre(),".space 1",""));
-                    break;
-            }
-        });*/
-
         result = _nombre + ":\n";
-
+        pilaLocal.getPosicionEnPila("ret_" + _nombre,4);
         if (_parametros != null){
             _parametros.forEach( variable -> {
                 switch (variable.get_tipo()){
@@ -237,7 +222,7 @@ public class Metodo extends ComponenteConcreto implements Nombre
                         break;
                 }
             });
-            result += "\taddi $sp, $sp, -" + pilaLocal.getTamanoPila() + "\t #Se hace espacio en la pila\n\n";
+            result += "\taddi\t$sp, $sp, -" + pilaLocal.getTamanoPila() + "\t #Se hace espacio en la pila\n\n";
         }
         if (_hijoMasIzq != null){
             if (_hermanoDerecho != null) return result + _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
