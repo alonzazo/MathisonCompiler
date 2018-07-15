@@ -135,8 +135,37 @@ public class Asignacion extends Sentencia {
 
     @Override
     public String compilar() throws SemanticError {
+        String result = "";
+
+        //Compilamos la expresion
+        result += "\t#Asignacion\n" +
+                _expresion.compilar();
+
+        //Buscamos la referencia en la pila y en el heap
+        if (Programa.getInstance().getHeap().containsKey(_nombre)){
+            if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
+                result += "\tsw\t\t$v0, " + _nombre + "\n\n";
+            } else {                                        // asignacion de cadena Cadenas
+                result += "\tsw\t\t$v0, " + _nombre + "\n\n";
+            }
+        } else{
+            //Buscamos el método padre
+            Componente padreActual = this._padre;
+            for (;padreActual != null && !(padreActual instanceof Metodo);
+                 padreActual = padreActual.getPadre());
+
+            //Si lo encontramos buscamos la posición en la pila
+            if (padreActual != null) {
+                Metodo metodoPadre = (Metodo) padreActual;
+                int posicion = metodoPadre.getPilaLocal().getPosicionEnPila(_nombre);
+
+                result += "\tsw\t\t$v0, " + (metodoPadre.getPilaLocal().getTamanoPila() - posicion) +"($sp)\n\n";
+            }
+
+        }
+
         if (_hermanoDerecho != null)
-            return _hermanoDerecho.compilar();
-        return "";
+            return result + _hermanoDerecho.compilar();
+        return result;
     }
 }
