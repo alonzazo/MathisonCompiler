@@ -191,6 +191,7 @@ public class Metodo extends ComponenteConcreto implements Nombre
 
     @Override
     public String compilar() throws SemanticError {
+
         if (_hijoMasIzq != null){
             if (_hermanoDerecho != null) return _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
             else return _hijoMasIzq.compilar();

@@ -100,7 +100,7 @@ public class Programa extends ComponenteConcreto{
         if (heap.size() > 0){
             String sectionData = "\t.data\n";
             for (Map.Entry i: heap.entrySet())
-                sectionData += i.getKey() + ": asciiz " + i.getValue() + "\n";
+                sectionData += i.getKey() + ": .asciiz " + i.getValue() + "\n";
             result = sectionData + "\n" + result;
         }
         return result;

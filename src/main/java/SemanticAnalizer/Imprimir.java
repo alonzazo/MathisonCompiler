@@ -33,13 +33,24 @@ public class Imprimir extends Sentencia {
         //TODO Compilar del imprimir
         Tipo tipoExpresion = _expresion.evaluarTipo();
         if (tipoExpresion == Tipo.NUMERICO){
-            result = "\tlw \t\t$a0, " + _expresion.compilar() + "\n" +
+            String cadena = _expresion.compilar();
+            result = "\t#imprimir(" + Programa.getInstance().getHeap().get(_expresion.getNombre())+")\n" +
+                     "\tlw \t\t$a0, " + _expresion.compilar() + "\n" +
                      "\tli \t\t$v0, 1\t\t##println(int)\n" +
-                     "\tsyscall";
+                     "\tsyscall\n\n";
         } else if (tipoExpresion == Tipo.CADENA){
-            result = "\tli $v0, 4 \t\t\t\t# Carga system call code para el print\n" +
-                     "\tla $a0, " + _expresion.compilar() + " \t\t# Carga la direccion a a0\n" +
-                     "\tsyscall ";
+            String cadena = _expresion.compilar();
+            if (_expresion instanceof Variable){
+                result = "\t#imprimir(" + cadena+")\n" +
+                        "\tli $v0, 4 \t\t\t\t# Carga system call code para el print\n" +
+                        "\tla $a0, " + cadena + " \t\t# Carga la direccion a a0\n" +
+                        "\tsyscall\n\n";
+            }else {
+                result = "\t#imprimir(" + Programa.getInstance().getHeap().get(cadena)+")\n" +
+                        "\tli $v0, 4 \t\t\t\t# Carga system call code para el print\n" +
+                        "\tla $a0, " + cadena + " \t\t# Carga la direccion a a0\n" +
+                        "\tsyscall\n\n";
+            }
         } else {
             //TODO agregar todo la evaluación lógica de la expresion
             result = _expresion.compilar();

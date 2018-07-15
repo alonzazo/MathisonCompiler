@@ -98,7 +98,8 @@ public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
         } else {
             switch (_tipo){
                 case CADENA:
-                    result = "";
+                    result = getNombre();
+                    break;
                 case NUMERICO:
                     result = "";
                 case BOOLEANO:

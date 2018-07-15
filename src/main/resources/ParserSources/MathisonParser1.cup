@@ -670,7 +670,7 @@ c_imprimir ::= IMPRIMIR PARENTESISABIERTO c_expresion_cadena:e PARENTESISCERRADO
              ;
 
 c_leer ::= LEER PARENTESISABIERTO VAR:v PARENTESISCERRADO
-            {: RESULT = new Leer(v); :}
+            {: RESULT = new Leer(new Variable(v)); :}
          ;
 
 c_devolver ::= DEVOLVER c_variable_o_llamadoMetodo:o
