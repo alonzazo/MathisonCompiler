@@ -1,4 +1,4 @@
-package SemanticAnalizer;
+package GeneradorCodigo;
 
 import java.util.HashMap;
 

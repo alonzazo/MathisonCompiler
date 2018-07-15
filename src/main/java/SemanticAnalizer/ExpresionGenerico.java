@@ -1,7 +1,10 @@
 package SemanticAnalizer;
 
+import GeneradorCodigo.Descriptor;
 import SyntacticalAnalizer.sym;
 import java_cup.runtime.Symbol;
+
+import java.awt.*;
 
 public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
     protected String _nombre;
@@ -85,7 +88,7 @@ public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
                 idReferencia = "cad_generica" + Programa.getInstance().getNumCadenasGenericas();
 
                 //Lo agregamos al heap
-                Programa.getInstance().getHeap().put(idReferencia, _symbol.value);
+                Programa.getInstance().getHeap().put(idReferencia, new Descriptor(idReferencia,".asciiz", _symbol.value.toString()) );
                 Programa.getInstance().setNumCadenasGenericas(Programa.getInstance().getNumCadenasGenericas() + 1);
                 result = idReferencia;
             } else if(_tipo == Tipo.BOOLEANO){
@@ -94,17 +97,9 @@ public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
                 else
                     result = "0";
             } else
-                result = ((Integer)_symbol.value).toString();
+                result = String.valueOf(((Double)_symbol.value).intValue());
         } else {
-            switch (_tipo){
-                case CADENA:
-                    result = getNombre();
-                    break;
-                case NUMERICO:
-                    result = "";
-                case BOOLEANO:
-                    result = "";
-            }
+            result = getNombre();
         }
         return result;
     }

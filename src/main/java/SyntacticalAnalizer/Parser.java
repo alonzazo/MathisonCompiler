@@ -1505,7 +1505,7 @@ class CUP$Parser$actions {
               try{
                 Programa.getInstance().evaluarSemantica();
                 System.out.println(Programa.getInstance().toString());
-                System.out.println(Programa.getInstance().compilar());
+                System.out.println(Programa.getInstance().compilar("out.asm"));
               }catch (SemanticError ex){
                 System.out.println(ex.getMessage());
               }
@@ -4094,7 +4094,7 @@ RESULT = p;
 		int nleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Double n = (Double)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		 RESULT = new Imprimir(new ExpresionGenerico(sym.terminalNames[((Symbol)((Parser) this.parser).stack.peek()).sym],Tipo.NUMERICO,(Symbol)((Parser) this.parser).stack.peek()));
+		 RESULT = new Imprimir(new ExpresionGenerico(sym.terminalNames[((Symbol)((Parser) this.parser).stack.elementAt(stack.size()-2)).sym],Tipo.NUMERICO,(Symbol)((Parser) this.parser).stack.elementAt(stack.size()-2)));
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_imprimir",44, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

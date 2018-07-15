@@ -13,7 +13,7 @@
               try{
                 Programa.getInstance().evaluarSemantica();
                 System.out.println(Programa.getInstance().toString());
-                System.out.println(Programa.getInstance().compilar());
+                System.out.println(Programa.getInstance().compilar("out.asm"));
               }catch (SemanticError ex){
                 System.out.println(ex.getMessage());
               }

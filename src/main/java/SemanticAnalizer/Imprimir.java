@@ -34,10 +34,18 @@ public class Imprimir extends Sentencia {
         Tipo tipoExpresion = _expresion.evaluarTipo();
         if (tipoExpresion == Tipo.NUMERICO){
             String cadena = _expresion.compilar();
-            result = "\t#imprimir(" + Programa.getInstance().getHeap().get(_expresion.getNombre())+")\n" +
-                     "\tlw \t\t$a0, " + _expresion.compilar() + "\n" +
-                     "\tli \t\t$v0, 1\t\t##println(int)\n" +
-                     "\tsyscall\n\n";
+            if (_expresion instanceof Variable){
+                result = "\t#imprimir(" + cadena +")\n" +
+                        "\tlw \t\t$a0, " + cadena + "\n" +
+                        "\tli \t\t$v0, 1\t\t##println(int)\n" +
+                        "\tsyscall\n\n";
+            } else {
+                result = "\t#imprimir(" + cadena +")\n" +
+                        "\tli \t\t$a0, " + cadena + "\n" +
+                        "\tli \t\t$v0, 1\t\t##println(int)\n" +
+                        "\tsyscall\n\n";
+            }
+
         } else if (tipoExpresion == Tipo.CADENA){
             String cadena = _expresion.compilar();
             if (_expresion instanceof Variable){
@@ -46,7 +54,7 @@ public class Imprimir extends Sentencia {
                         "\tla $a0, " + cadena + " \t\t# Carga la direccion a a0\n" +
                         "\tsyscall\n\n";
             }else {
-                result = "\t#imprimir(" + Programa.getInstance().getHeap().get(cadena)+")\n" +
+                result = "\t#imprimir(" + Programa.getInstance().getHeap().get(cadena).getValor()+")\n" +
                         "\tli $v0, 4 \t\t\t\t# Carga system call code para el print\n" +
                         "\tla $a0, " + cadena + " \t\t# Carga la direccion a a0\n" +
                         "\tsyscall\n\n";

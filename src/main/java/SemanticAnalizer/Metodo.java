@@ -1,5 +1,7 @@
 package SemanticAnalizer;
 
+import GeneradorCodigo.Descriptor;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -191,13 +193,31 @@ public class Metodo extends ComponenteConcreto implements Nombre
 
     @Override
     public String compilar() throws SemanticError {
+        String result = "";
+
+        if (_parametros != null)
+        _parametros.forEach( variable -> {
+            switch (variable.get_tipo()){
+                case NUMERICO:
+                    Programa.getInstance().getHeap().put(variable.getNombre(),new Descriptor(variable.getNombre(),".word",""));
+                    break;
+                case CADENA:
+                    Programa.getInstance().getHeap().put(variable.getNombre(),new Descriptor(variable.getNombre(),".space " + Programa.getInstance().getTamanoMaximoCadena(),""));
+                    break;
+                case BOOLEANO:
+                    Programa.getInstance().getHeap().put(variable.getNombre(),new Descriptor(variable.getNombre(),".space 1",""));
+                    break;
+            }
+        });
+
+        result = _nombre + ":\n";
 
         if (_hijoMasIzq != null){
-            if (_hermanoDerecho != null) return _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
-            else return _hijoMasIzq.compilar();
+            if (_hermanoDerecho != null) return result + _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
+            else return result + _hijoMasIzq.compilar();
         } else {
-            if (_hermanoDerecho != null) return _hermanoDerecho.compilar();
-            else return "";
+            if (_hermanoDerecho != null) return result + _hermanoDerecho.compilar();
+            else return result;
         }
     }
 }

@@ -666,7 +666,7 @@ c_imprimir ::= IMPRIMIR PARENTESISABIERTO c_expresion_cadena:e PARENTESISCERRADO
              | IMPRIMIR PARENTESISABIERTO c_variable_o_llamadoMetodo:e PARENTESISCERRADO
                 {: RESULT = new Imprimir((Expresion)e);:}
              | IMPRIMIR PARENTESISABIERTO NUMERO:n PARENTESISCERRADO
-                {: RESULT = new Imprimir(new ExpresionGenerico(sym.terminalNames[((Symbol)((Parser) this.parser).stack.peek()).sym],Tipo.NUMERICO,(Symbol)((Parser) this.parser).stack.peek()));:}
+                {: RESULT = new Imprimir(new ExpresionGenerico(sym.terminalNames[((Symbol)((Parser) this.parser).stack.elementAt(stack.size()-2)).sym],Tipo.NUMERICO,(Symbol)((Parser) this.parser).stack.elementAt(stack.size()-2)));:}
              ;
 
 c_leer ::= LEER PARENTESISABIERTO VAR:v PARENTESISCERRADO

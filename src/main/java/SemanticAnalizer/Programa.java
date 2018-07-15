@@ -1,5 +1,8 @@
 package SemanticAnalizer;
 
+import GeneradorCodigo.Descriptor;
+import com.sun.org.apache.xpath.internal.axes.DescendantIterator;
+
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +15,9 @@ public class Programa extends ComponenteConcreto{
     private HashMap<String,Tipo> metodosNativos = new HashMap<>();
 
     //Para generacion de código
-    private HashMap<String,String> heap = new HashMap<>();
+    private HashMap<String, Descriptor> heap = new HashMap<>();
     private int numCadenasGenericas = 0;
+    private final int tamanoMaximoCadena = 128;
 
     private Programa(){
         metodosNativos.put("raiz",Tipo.NUMERICO);
@@ -48,6 +52,11 @@ public class Programa extends ComponenteConcreto{
 
     public void setNumCadenasGenericas(int numCadenasGenericas) {
         this.numCadenasGenericas = numCadenasGenericas;
+    }
+
+
+    public int getTamanoMaximoCadena() {
+        return tamanoMaximoCadena;
     }
 
     @Override
@@ -94,13 +103,13 @@ public class Programa extends ComponenteConcreto{
     public String compilar() throws SemanticError {
         String result = "";
 
-        result = "\t.text\nmain:\n" + raiz.compilar();
+        result = "\t.text\n" + raiz.compilar();
 
         //Agrega las variables estáticas
         if (heap.size() > 0){
             String sectionData = "\t.data\n";
-            for (Map.Entry i: heap.entrySet())
-                sectionData += i.getKey() + ": .asciiz " + i.getValue() + "\n";
+            for (Map.Entry<String, Descriptor> i: heap.entrySet())
+                sectionData += i.getKey() + ": " + i.getValue().getDescriptor() + " " + i.getValue().getValor() + "\n";
             result = sectionData + "\n" + result;
         }
         return result;
@@ -122,5 +131,5 @@ public class Programa extends ComponenteConcreto{
 
 
     //Concerniente a generación de código
-    public HashMap getHeap(){return heap;}
+    public HashMap<String,Descriptor> getHeap(){return heap;}
 }

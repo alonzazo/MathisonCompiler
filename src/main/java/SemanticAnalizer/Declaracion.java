@@ -1,5 +1,6 @@
 package SemanticAnalizer;
 
+import GeneradorCodigo.Descriptor;
 import java_cup.runtime.Symbol;
 
 import java.util.LinkedList;
@@ -180,6 +181,39 @@ public class Declaracion extends ComponenteConcreto {
 
     @Override
     public String compilar() throws SemanticError {
+
+        //Saber si es arreglo
+        if (!is_arreglo()){
+            switch (_tipo){
+                case NUMERICO:
+                    //Agrega un etiqueta .space 4 en heap
+                    Programa.getInstance().getHeap().put(_nombre, new Descriptor(_nombre, ".word", ""));
+                    break;
+                case CADENA:
+                    //Agrega un etiqueta .space 128 en heap
+                    Programa.getInstance().getHeap().put(_nombre, new Descriptor(_nombre, ".space " + Programa.getInstance().getTamanoMaximoCadena(), ""));
+                    break;
+                case BOOLEANO:
+                    Programa.getInstance().getHeap().put(_nombre, new Descriptor(_nombre, ".space 1", ""));
+                    //Agrega una etiqueta .space 1 en heap
+                    break;
+            }
+        }else {
+            switch (_tipo){
+                case NUMERICO:
+                    //Agrega un etiqueta .space 4 * tamanoExpresion en heap
+                    Programa.getInstance().getHeap().put(_nombre, new Descriptor(_nombre, ".space " + (4 * _tamano) , ""));
+                    break;
+                case CADENA:
+                    //Agrega un etiqueta .space 128 * tamanoExpresion en heap
+                    Programa.getInstance().getHeap().put(_nombre, new Descriptor(_nombre, ".space " + (128 * _tamano), ""));
+                    break;
+                case BOOLEANO:
+                    //Agrega una etiqueta .space 1 * tamanoExpresion en heap
+                    Programa.getInstance().getHeap().put(_nombre, new Descriptor(_nombre, ".space " + (1 * _tamano), ""));
+                    break;
+            }
+        }
         if (_hermanoDerecho != null)
             return _hermanoDerecho.compilar();
         return "";
