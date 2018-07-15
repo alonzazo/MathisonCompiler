@@ -1,6 +1,7 @@
 package SemanticAnalizer;
 
 import GeneradorCodigo.Descriptor;
+import GeneradorCodigo.ManejadorDePila;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -15,6 +16,8 @@ public class Metodo extends ComponenteConcreto implements Nombre
     private List<Variable> _parametros;
     private boolean _arreglo;
     private boolean _tieneDevolver;
+    //Generacion de código
+    private ManejadorDePila pilaLocal = new ManejadorDePila();
 
 
     public Metodo(){
@@ -92,6 +95,14 @@ public class Metodo extends ComponenteConcreto implements Nombre
     @Override
     public String get_nombre() {
         return _nombre;
+    }
+
+    public ManejadorDePila getPilaLocal() {
+        return pilaLocal;
+    }
+
+    public void setPilaLocal(ManejadorDePila pilaLocal) {
+        this.pilaLocal = pilaLocal;
     }
 
     @Override
@@ -195,7 +206,7 @@ public class Metodo extends ComponenteConcreto implements Nombre
     public String compilar() throws SemanticError {
         String result = "";
 
-        if (_parametros != null)
+        /*if (_parametros != null)
         _parametros.forEach( variable -> {
             switch (variable.get_tipo()){
                 case NUMERICO:
@@ -208,10 +219,26 @@ public class Metodo extends ComponenteConcreto implements Nombre
                     Programa.getInstance().getHeap().put(variable.getNombre(),new Descriptor(variable.getNombre(),".space 1",""));
                     break;
             }
-        });
+        });*/
 
         result = _nombre + ":\n";
 
+        if (_parametros != null){
+            _parametros.forEach( variable -> {
+                switch (variable.get_tipo()){
+                    case NUMERICO:
+                        pilaLocal.getPosicionEnPila(variable.getNombre(),4);
+                        break;
+                    case CADENA:
+                        pilaLocal.getPosicionEnPila(variable.getNombre(),4);
+                        break;
+                    case BOOLEANO:
+                        pilaLocal.getPosicionEnPila(variable.getNombre(),1);
+                        break;
+                }
+            });
+            result += "\taddi $sp, $sp, -" + pilaLocal.getTamanoPila() + "\t #Se hace espacio en la pila\n\n";
+        }
         if (_hijoMasIzq != null){
             if (_hermanoDerecho != null) return result + _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
             else return result + _hijoMasIzq.compilar();

@@ -2148,7 +2148,7 @@ class CUP$Parser$actions {
 		int lpleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int lpright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		List<Variable> lp = (List<Variable>)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 v.setTipo(Tipo.NO_PRIMITIVO); ((LinkedList<Variable>)lp).addFirst(v); RESULT = lp; 
+		 v.setTipo(Tipo.NO_PRIMITIVO); ((LinkedList<Variable>)lp).addFirst(v); RESULT = lp; report_fatal_error("En este momento el compilador no soporta clases: " + w,((Parser) this.parser).stack.peek());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("lista_parametros",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2178,7 +2178,7 @@ class CUP$Parser$actions {
 		int vleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int vright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Variable v = (Variable)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 List<Variable> lp = new LinkedList<Variable>(); v.setTipo(Tipo.NO_PRIMITIVO); lp.add(v); RESULT = lp; 
+		 List<Variable> lp = new LinkedList<Variable>(); v.setTipo(Tipo.NO_PRIMITIVO); lp.add(v); RESULT = lp; report_fatal_error("En este momento el compilador no soporta clases: " + w,((Parser) this.parser).stack.peek());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("lista_parametros",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

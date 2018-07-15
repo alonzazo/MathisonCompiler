@@ -50,4 +50,6 @@ public class ManejadorDeRegistros {
         this.registros = registros;
     }
 
+
+
 }

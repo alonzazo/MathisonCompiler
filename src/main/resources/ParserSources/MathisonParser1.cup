@@ -340,11 +340,11 @@ c_vista ::= PUBLICO
 lista_parametros ::= c_tipo_primitivo:t variable_arreglo:v COMA lista_parametros:lp
                     {: v.setTipo((Tipo)t); ((LinkedList<Variable>)lp).addFirst(v); RESULT = lp; :}
                    | VAR:w variable_arreglo:v COMA lista_parametros:lp
-                    {: v.setTipo(Tipo.NO_PRIMITIVO); ((LinkedList<Variable>)lp).addFirst(v); RESULT = lp; :}
+                    {: v.setTipo(Tipo.NO_PRIMITIVO); ((LinkedList<Variable>)lp).addFirst(v); RESULT = lp; report_fatal_error("En este momento el compilador no soporta clases: " + w,((Parser) this.parser).stack.peek());:}
                    | c_tipo_primitivo:t variable_arreglo:v
                     {: List<Variable> lp = new LinkedList<Variable>(); v.setTipo((Tipo)t); lp.add(v); RESULT = lp; :}
                    | VAR:w variable_arreglo:v
-                    {: List<Variable> lp = new LinkedList<Variable>(); v.setTipo(Tipo.NO_PRIMITIVO); lp.add(v); RESULT = lp; :}
+                    {: List<Variable> lp = new LinkedList<Variable>(); v.setTipo(Tipo.NO_PRIMITIVO); lp.add(v); RESULT = lp; report_fatal_error("En este momento el compilador no soporta clases: " + w,((Parser) this.parser).stack.peek());:}
 
                     //--------------------------------------------------------Gramáticas erróneas
                     //ERROR: FALTAN COMAS
