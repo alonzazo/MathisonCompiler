@@ -206,7 +206,8 @@ public class Metodo extends ComponenteConcreto implements Nombre
     public String compilar() throws SemanticError {
         String result = "";
 
-        result = _nombre + ":\n";
+        result = _nombre + ":\n" +
+                "\tsw\t\t$ra, -4($sp) #Guardamos el valor de retorno\n";
         pilaLocal.getPosicionEnPila("ret_" + _nombre,4);
         if (_parametros != null){
             _parametros.forEach( variable -> {

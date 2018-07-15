@@ -93,6 +93,7 @@ public class Asignacion extends Sentencia {
     private boolean evaluarExpresion() throws SemanticError {
         try{
             _expresion.setPadre(this);
+            _expresion.evaluarSemantica();
             return _expresion.evaluarTipo() == _tipo;
         }catch (SemanticError e){
             throw new SemanticError("Expresión inválido en " + this.toString() + "\n" + e.getMessage());

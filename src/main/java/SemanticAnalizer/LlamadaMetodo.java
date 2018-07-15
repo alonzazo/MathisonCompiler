@@ -136,9 +136,50 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
 
     @Override
     public String compilar() throws SemanticError {
+        String result = "";
+        Metodo metodo;
+        //Para eso buscamos el componente Método que le corresponde
+        Componente padreActual = this._padre;
+        for (; padreActual != null &&                                                                   // Se busca hasta que no hayan
+                (padreActual.getTblSimbolosLocales() == null ||                                         // Si no tienen tablas de simbolos pasan
+                        (!padreActual.getTblSimbolosLocales().containsKey(_nombre) &&                   // Si sí tienen y no está pasa
+                                !(padreActual.getTblSimbolosLocales().get(_nombre) instanceof Metodo))         // Si sí tiene tabla, sí está pero no es método
+                );
+             padreActual = padreActual.getPadre());
+
+        //Si encuentra algo, debe ser método
+        if (padreActual != null) {
+            metodo = (Metodo) padreActual.getTblSimbolosLocales().get(_nombre);
+        } else {
+            throw new SemanticError("No se encontró referencia alguna al método "+ _nombre +"()\n");
+        }
+
+        int i = 0;
+        for (Expresion expresionParametro : _parametros){
+            //Compilamos las expresiones de cada parámetro
+            result += expresionParametro.compilar();
+
+            //Guardamos cada valor en el lugar que corresponde en la pila
+            int pos = metodo.getPilaLocal().getPosicionEnPila(metodo.getParametros().get(i).getNombre());
+            switch (metodo.get_tipo()){
+                case NUMERICO:
+                    result += "\tsw\t\t$v0, -"+ pos + "($sp)\n";
+                    break;
+                case CADENA:
+                    result += "\tsw\t\t$v0, -"+ pos + "($sp)\n";
+                    break;
+                case BOOLEANO:
+                    result += "\tsb\t\t$v0, -"+ pos + "($sp)\n";
+                    break;
+            }
+            i++;
+        }
+        //Se compila el llamado
+        result += "\tjal\t\t" + _nombre + "\n";
+
         if (_hermanoDerecho != null)
-            return _hermanoDerecho.compilar();
-        return "";
+            return result + _hermanoDerecho.compilar();
+        return result;
     }
 
 /*private boolean tipoCorrectoParametros(Expresion param, Tipo tipoEsperado, Componente padre) throws SemanticError {

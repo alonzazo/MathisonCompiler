@@ -256,7 +256,9 @@ public class Operacion extends ComponenteConcreto implements Expresion {
 
     @Override
     public boolean evaluarSemantica() throws SemanticError {
-        return false;
+        _expIzq.evaluarSemantica();
+        _expDer.evaluarSemantica();
+        return true;
     }
 
     @Override

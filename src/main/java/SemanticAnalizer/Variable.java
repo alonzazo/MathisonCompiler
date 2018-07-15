@@ -151,7 +151,7 @@ public class Variable extends ExpresionGenerico implements Nombre{
         String result = "";
         if (Programa.getInstance().getHeap().containsKey(_nombre)){
             if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
-                result = "\tlw\t\t$v0, 0(" + this.getEtiqueta()+")\n";
+                result = "\tlw\t\t$v0, " + this.getEtiqueta()+"\n";
             } else {
                 result = "\tla\t\t$v0, " + this.getEtiqueta()+"\n";
             }
@@ -166,7 +166,7 @@ public class Variable extends ExpresionGenerico implements Nombre{
                 Metodo metodoPadre = (Metodo) padreActual;
                 int posicion = metodoPadre.getPilaLocal().getPosicionEnPila(_nombre);
 
-                result = "\tlw\t\t$v0, " + posicion +"($sp)\n";
+                result = "\tlw\t\t$v0, " + (metodoPadre.getPilaLocal().getTamanoPila() - posicion) +"($sp)\n";
             }
 
         }
