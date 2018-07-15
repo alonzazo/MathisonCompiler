@@ -134,7 +134,92 @@ public class Operacion extends ComponenteConcreto implements Expresion {
 
     @Override
     public String compilar() throws SemanticError {
-        return "";
+        String result = "";
+        if ( _tipoSalida == null ){
+            if ( _tipoOperacion == TipoOperador.SUMA ){
+                if (_expIzq.evaluarTipo() == Tipo.NUMERICO && _expDer.evaluarTipo() == Tipo.NUMERICO){
+                    result += _expIzq.compilar() +
+                            "\tmove\t\t$t0, $v0\n" +
+                            _expDer.compilar() +
+                            "\tadd\t\t$v0, $t0,$v0\n\n";
+                }
+                else if ( (_expIzq.evaluarTipo() == Tipo.NUMERICO || _expIzq.evaluarTipo() == Tipo.CADENA) &&
+                        (_expDer.evaluarTipo() == Tipo.NUMERICO || _expDer.evaluarTipo() == Tipo.CADENA))
+                    result += _expIzq.compilar() + _expDer.compilar();//TODO Concatenacion entre entre numerico y cadena
+                else
+                    throw new SemanticError("Tipo de expresión inválido:\n" + _expDer.toString() + _expIzq.toString());
+            } else if ( _tipoOperacion == TipoOperador.RESTA || _tipoOperacion == TipoOperador.MULTIPLICACION || _tipoOperacion == TipoOperador.DIVISION){
+                if (_expIzq.evaluarTipo() == Tipo.NUMERICO && _expDer.evaluarTipo() == Tipo.NUMERICO) {
+                    result += _expIzq.compilar() +
+                            "\tmove\t\t$t0, $v0\n" +
+                            _expDer.compilar();
+                    switch (_tipoOperacion){
+                        case RESTA:
+                            result += "\tsub\t\t$v0, $t0, $v0\n\n";
+                            break;
+                        case MULTIPLICACION:
+                            result += "\tmul\t\t$v0, $t0, $v0\n\n";
+                            break;
+                        case DIVISION:
+                            result += "\tdiv\t\t$t0, $v0\n" +
+                                    "\tmflo\t\t$v0\n\n";
+                    }
+                }
+                else
+                    throw new SemanticError("Tipo de expresión inválido: Se esperaba Numerico\n" + _expDer.toString() + _expIzq.toString());
+            } else if (_tipoOperacion == TipoOperador.MENORQUE || _tipoOperacion == TipoOperador.MENOROIGUAL || _tipoOperacion == TipoOperador.MAYORQUE || _tipoOperacion == TipoOperador.MAYOROIGUAL){
+                if (_expIzq.evaluarTipo() == Tipo.NUMERICO && _expDer.evaluarTipo() == Tipo.NUMERICO){
+                    result += _expIzq.compilar() +
+                            "\tmove\t\t$t0, $v0\n" +
+                            _expDer.compilar();
+                    switch (_tipoOperacion){
+                        case MENORQUE:
+                            result += "\tslt\t\t$v0,$t0,$v0\n\n";
+                            break;
+                        case MENOROIGUAL:
+                            result += "\tsle\t\t$v0,$t0,$v0\n\n";
+                            break;
+                        case MAYORQUE:
+                            result += "\tsgt\t\t$v0,$t0,$v0\n\n";
+                            break;
+                        case MAYOROIGUAL:
+                            result += "\tsge\t\t$v0,$t0,$v0\n\n";
+                    }
+                }
+                else
+                    throw new SemanticError("Tipo de expresión inválido: Se esperaba Numerico\n" + _expDer.toString() + _expIzq.toString());
+            } else if (_tipoOperacion == TipoOperador.IGUAL || _tipoOperacion == TipoOperador.DISTINTO){
+                if (_expIzq.evaluarTipo() == _expDer.evaluarTipo()){
+                    result += _expIzq.compilar() +
+                            "\tmove\t\t$t0, $v0\n" +
+                            _expDer.compilar();
+                    switch (_tipoOperacion){
+                        case IGUAL:
+                            result += "\tseq\t\t$v0,$t0,$v0\n\n";
+                        case DISTINTO:
+                            result += "\tsne\t\t$v0,$t0,$v0\n\n";
+                    }
+                }
+                throw new SemanticError("Tipo de expresión incomparables:\n" + _expDer.toString() + _expIzq.toString());
+            } else if (_tipoOperacion == TipoOperador.Y || _tipoOperacion == TipoOperador.O){
+                if (_expIzq.evaluarTipo() == Tipo.BOOLEANO && _expDer.evaluarTipo() == Tipo.BOOLEANO){
+                    result += _expIzq.compilar() +
+                            "\tmove\t\t$t0, $v0\n" +
+                            _expDer.compilar();
+                    switch (_tipoOperacion){
+                        case Y:
+                            result += "\tand\t\t$v0,$t0,$v0\n\n";
+                        case O:
+                            result += "\tor\t\t$v0,$t0,$v0\n\n";
+                    }
+                }
+                else
+                    throw new SemanticError("Tipo de expresión inválido: Se esperaba Booleano\n" + _expDer.toString() + _expIzq.toString());
+            } else {
+                throw new SemanticError("Operación sin operador");
+            }
+        }
+        return result;
     }
 
     public Tipo get_tipoSalida() {
@@ -190,6 +275,8 @@ public class Operacion extends ComponenteConcreto implements Expresion {
         _expDer.setPadre(padre);
         return super.setPadre(padre);
     }
+
+
 
 
 }

@@ -78,8 +78,7 @@ public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
         return true;
     }
 
-    @Override
-    public String compilar() throws SemanticError {
+    public String getEtiqueta() {
         String result = "";
         String idReferencia;
         if (!(this instanceof Variable)){
@@ -102,5 +101,10 @@ public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
             result = getNombre();
         }
         return result;
+    }
+
+    @Override
+    public String compilar() throws SemanticError {
+        return "";
     }
 }

@@ -33,7 +33,7 @@ public class Imprimir extends Sentencia {
         //TODO Compilar del imprimir
         Tipo tipoExpresion = _expresion.evaluarTipo();
         if (tipoExpresion == Tipo.NUMERICO){
-            String cadena = _expresion.compilar();
+            String cadena = ((ExpresionGenerico) _expresion).getEtiqueta();
             if (_expresion instanceof Variable){
                 result = "\t#imprimir(" + cadena +")\n" +
                         "\tlw \t\t$a0, " + cadena + "\n" +
@@ -47,7 +47,7 @@ public class Imprimir extends Sentencia {
             }
 
         } else if (tipoExpresion == Tipo.CADENA){
-            String cadena = _expresion.compilar();
+            String cadena = ((ExpresionGenerico) _expresion).getEtiqueta();
             if (_expresion instanceof Variable){
                 result = "\t#imprimir(" + cadena+")\n" +
                         "\tli $v0, 4 \t\t\t\t# Carga system call code para el print\n" +
@@ -61,7 +61,7 @@ public class Imprimir extends Sentencia {
             }
         } else {
             //TODO agregar todo la evaluación lógica de la expresion
-            result = _expresion.compilar();
+            result = ((ExpresionGenerico) _expresion).getEtiqueta();;
         }
         if (_hermanoDerecho != null)
             return result + _hermanoDerecho.compilar();
