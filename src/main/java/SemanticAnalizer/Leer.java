@@ -12,8 +12,12 @@ public class Leer extends Sentencia {
     }
 
     @Override
-    public boolean evaluarSemantica() {
-        return false;
+    public boolean evaluarSemantica() throws SemanticError{
+
+        if (this.getHermanoDerecho() != null)
+            this.getHermanoDerecho().evaluarSemantica();
+
+        return true;
     }
 
     @Override

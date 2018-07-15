@@ -2,6 +2,7 @@ package SemanticAnalizer;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Programa extends ComponenteConcreto{
 
@@ -91,7 +92,18 @@ public class Programa extends ComponenteConcreto{
     }
 
     public String compilar() throws SemanticError {
-        return raiz.compilar();
+        String result = "";
+
+        result = "\t.text\nmain:\n" + raiz.compilar();
+
+        //Agrega las variables estáticas
+        if (heap.size() > 0){
+            String sectionData = "\t.data\n";
+            for (Map.Entry i: heap.entrySet())
+                sectionData += i.getKey() + ": asciiz " + i.getValue() + "\n";
+            result = sectionData + "\n" + result;
+        }
+        return result;
     }
 
     public String compilar(String path) throws Exception {

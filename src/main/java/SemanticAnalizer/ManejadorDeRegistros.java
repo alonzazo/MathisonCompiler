@@ -5,6 +5,9 @@ import java.util.HashMap;
 public class ManejadorDeRegistros {
     private HashMap<String, Integer> registros;
 
+    //TODO Reparticion de registros, durante el cual seleccionamos el conjunto de variables que residirán en los registros en cada punto del programa
+
+    //TODO Asignación de registros, durante la cual elegimos el registro específico en el que residirá una variable.
     public ManejadorDeRegistros() {
         registros.put("$v0", null);
         registros.put("$v1", null);

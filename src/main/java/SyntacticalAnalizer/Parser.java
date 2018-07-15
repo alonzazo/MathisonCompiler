@@ -1505,6 +1505,7 @@ class CUP$Parser$actions {
               try{
                 Programa.getInstance().evaluarSemantica();
                 System.out.println(Programa.getInstance().toString());
+                System.out.println(Programa.getInstance().compilar());
               }catch (SemanticError ex){
                 System.out.println(ex.getMessage());
               }

@@ -13,7 +13,12 @@ public class Imprimir extends Sentencia {
 
     @Override
     public boolean evaluarSemantica() throws SemanticError {
+        _expresion.setPadre(this);
         _expresion.evaluarTipo();
+
+        if (this.getHermanoDerecho() != null)
+            this.getHermanoDerecho().evaluarSemantica();
+
         return true;
     }
 

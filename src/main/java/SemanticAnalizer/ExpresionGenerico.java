@@ -75,23 +75,36 @@ public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
         return true;
     }
 
-    //@Override
+    @Override
     public String compilar() throws SemanticError {
+        String result = "";
         String idReferencia;
-        if (_tipo == Tipo.CADENA){
-            //Creamos el id de referencia
-            idReferencia = "cad_generica" + Programa.getInstance().getNumCadenasGenericas();
+        if (!(this instanceof Variable)){
+            if (_tipo == Tipo.CADENA){
+                //Creamos el id de referencia
+                idReferencia = "cad_generica" + Programa.getInstance().getNumCadenasGenericas();
 
-            //Lo agregamos al heap
-            Programa.getInstance().getHeap().put(idReferencia, _symbol.value);
-            Programa.getInstance().setNumCadenasGenericas(Programa.getInstance().getNumCadenasGenericas() + 1);
-            return idReferencia;
-        } else if(_tipo == Tipo.BOOLEANO){
-            if (sym.terminalNames[_symbol.sym] == "VERDADERO")
-                return "1";
-            else
-                return "0";
+                //Lo agregamos al heap
+                Programa.getInstance().getHeap().put(idReferencia, _symbol.value);
+                Programa.getInstance().setNumCadenasGenericas(Programa.getInstance().getNumCadenasGenericas() + 1);
+                result = idReferencia;
+            } else if(_tipo == Tipo.BOOLEANO){
+                if (sym.terminalNames[_symbol.sym] == "VERDADERO")
+                    result = "1";
+                else
+                    result = "0";
+            } else
+                result = ((Integer)_symbol.value).toString();
+        } else {
+            switch (_tipo){
+                case CADENA:
+                    result = "";
+                case NUMERICO:
+                    result = "";
+                case BOOLEANO:
+                    result = "";
+            }
         }
-        return ((Integer)_symbol.value).toString();
+        return result;
     }
 }
