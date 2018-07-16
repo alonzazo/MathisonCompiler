@@ -61,12 +61,80 @@ public class Mientras extends Estructura {
 
     @Override
     public String compilar() throws SemanticError {
+
+        /*Inicializa la final*/
+        String result = "";
+
+        /*Agarra el numero de la ettiqueta*/
+        int numMientras = Programa.getInstance().getNumMientras();
+        String etiqueta = "mientras" + numMientras;
+
+        /*Actualiza las etiquetas*/
+        Programa.getInstance().setNumMientras(numMientras + 1);
+
+        /*Definicion del inicio*/
+        result += "inicio_mientras:"+numMientras+": "+"\n";
+
+        result += _condicion.compilar();
+
         if (_hijoMasIzq != null){
-            if (_hermanoDerecho != null) return _hijoMasIzq.compilar() + _hermanoDerecho.compilar();
-            else return _hijoMasIzq.compilar();
-        } else {
-            if (_hermanoDerecho != null) return _hermanoDerecho.compilar();
-            else return "";
+            if (_hermanoDerecho != null){
+
+                /*Brinque a etiqueta si esta correcta la condicion, sino siga*/
+                    result += "\tbnez\t\t$v0, " + etiqueta + "\n";
+
+                /*Definicion de lo que sigue*/
+                result +=    "mientras_retorno" + numMientras + ":\n" +
+                            _hermanoDerecho.compilar();
+
+                    /*Lo que esta adentro del mientras y salta a la condicion*/
+                     result+=etiqueta + "\n"
+                             + _hijoMasIzq.compilar()
+                             + "\tj\t\tinicio_mientras:" + numMientras +"\n";     //Brinca a la condicion
+
+                return result;
+            }
+            else //Tiene algo adentro pero no sigue nada
+                {
+                 /*Brinque a etiqueta si esta correcta la condicion, sino siga*/
+                result += "\tbnez\t\t$v0, " + etiqueta + "\n";
+
+                  /*Hay que salir del programa*/
+                result +=    "mientras_retorno" + numMientras + ":\n";
+
+                /*----Deberia salir aqui---------*/
+
+                /*Lo que esta adentro del mientras y salta a la condicion*/
+                result+=etiqueta + "\n"
+                        + _hijoMasIzq.compilar()
+                        + "\tj\t\tinicio_mientras:" + numMientras +"\n";     //Brinca a la condicion
+
+                return  result;
+            }
+        } else //Adentro del while no hay nada
+            {
+                /*Brinque a etiqueta si esta correcta la condicion, sino siga*/
+                result += "\tbnez\t\t$v0, " + etiqueta + "\n";
+
+                /*Definicion de lo que sigue*/
+                result +=    "mientras_retorno" + numMientras + ":\n";
+
+                /*Si no esta vacio se compila lo que sigue*/
+                if (_hermanoDerecho != null)
+                {
+                    result += _hermanoDerecho.compilar();
+                }
+
+                else /*Si esta vacio*/
+
+                {
+                    //Deberia salir
+                }
+
+                result+=etiqueta + "\n"
+                        + "\tj\t\tinicio_mientras:" + numMientras +"\n";     //Brinca a la condicion
+
+             return result;
         }
     }
 }

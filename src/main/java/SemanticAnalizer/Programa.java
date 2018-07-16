@@ -57,6 +57,14 @@ public class Programa extends ComponenteConcreto{
         this.numCadenasGenericas = numCadenasGenericas;
     }
 
+    public int getNumMientras() {
+        return numMientras;
+    }
+
+    public void setNumMientras(int numMientras) {
+        this.numMientras = numMientras;
+    }
+
     public int getNumSi() {
         return numSi;
     }
