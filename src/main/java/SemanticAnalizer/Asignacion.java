@@ -60,9 +60,9 @@ public class Asignacion extends Sentencia {
 
         //Se evalúa el indice y la expresión
         if (!evaluarIndice())
-            throw new SemanticError("Resultado final de expresión no era de tipo esperado:\nTipo esperado: " + _tipo.toString() + " Expresión de tipo: " + _expresionIndice.evaluarTipo());
+            throw new SemanticError( "Resultado final de expresión en índice no era de tipo esperado:\nTipo esperado: " + _tipo.toString() + " Expresión de tipo: " + _expresionIndice.evaluarTipo());
         if (!evaluarExpresion())
-            throw new SemanticError("Resultado final de expresión en índice no era de tipo esperado:\nTipo esperado: " + Tipo.NUMERICO + " Expresión de tipo: " + _expresionIndice.evaluarTipo());
+            throw new SemanticError("Resultado final de expresión no era de tipo esperado:\nTipo esperado: " + Tipo.NUMERICO + " Expresión de tipo: " + _expresion.evaluarTipo());
 
         //Evaluamos las demás componentes:
         if (this.getHermanoDerecho() != null)
@@ -143,7 +143,7 @@ public class Asignacion extends Sentencia {
                 _expresion.compilar();
 
         //Buscamos la referencia en la pila y en el heap
-        if (Programa.getInstance().getHeap().containsKey(_nombre)){
+        if (Programa.getInstance().getSectionData().containsKey(_nombre)){
             if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
                 result += "\tsw\t\t$v0, " + _nombre + "\t#Asignacion\n\n";
             } else {                                        // asignacion de cadena Cadenas

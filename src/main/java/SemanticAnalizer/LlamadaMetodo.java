@@ -37,8 +37,10 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
         boolean result = true;
 
         if (Programa.getInstance().getMetodosNativos().containsKey(_nombre)){
-            if (_parametros.size() == 0){
-                _tipo = Programa.getInstance().getMetodosNativos().get(_nombre);
+            if ((_parametros == null && Programa.getInstance().getMetodosNativos().get(_nombre).getParametros() == null) ||
+                    _parametros.size() == Programa.getInstance().getMetodosNativos().get(_nombre).getParametros().size()){
+                //Consige el tipo de salida
+                _tipo = Programa.getInstance().getMetodosNativos().get(_nombre).get_tipo();
             }
             else
                 throw new SemanticError("Cantidad de parámetros en " + _nombre + "() no coincide con los esperados:\nCantidad esperada: 0 Cantidad dada: " + _parametros.size());
@@ -103,7 +105,7 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
     @Override
     public Tipo evaluarTipo() throws SemanticError{
         if (Programa.getInstance().getMetodosNativos().containsKey(_nombre))
-            return Programa.getInstance().getMetodosNativos().get(_nombre);
+            return Programa.getInstance().getMetodosNativos().get(_nombre).get_tipo();
 
         //Se busca en las tablas de simbolos la referencia
         Componente i = this._padre;
@@ -138,23 +140,34 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
     public String compilar() throws SemanticError {
         String result = "\t#" + get_nombre() +"()\n";
         Metodo metodo;
-        //Para eso buscamos el componente Método que le corresponde
-        Componente padreActual = this._padre;
-        for (; padreActual != null &&                                                                   // Se busca hasta que no hayan
-                (padreActual.getTblSimbolosLocales() == null ||                                         // Si no tienen tablas de simbolos pasan
-                        (!padreActual.getTblSimbolosLocales().containsKey(_nombre) &&                   // Si sí tienen y no está pasa
-                                !(padreActual.getTblSimbolosLocales().get(_nombre) instanceof Metodo))         // Si sí tiene tabla, sí está pero no es método
-                );
-             padreActual = padreActual.getPadre());
 
-        //Si encuentra algo, debe ser método
-        if (padreActual != null) {
-            metodo = (Metodo) padreActual.getTblSimbolosLocales().get(_nombre);
+        //Buscamos si es un metodo nativo
+        if (Programa.getInstance().getMetodosNativos().containsKey(_nombre)){
+            //Si sí lo es, lo compilamos en el pie del programa
+            metodo = Programa.getInstance().getMetodosNativos().get(_nombre);
+            Programa.getInstance().setSectionFooter(
+                    Programa.getInstance().getSectionFooter() +
+                    metodo.compilar());
         } else {
-            throw new SemanticError("No se encontró referencia alguna al método "+ _nombre +"()\n");
+            //Buscamos el componente Método que le corresponde en el árbol semantico
+            Componente padreActual = this._padre;
+            for (; padreActual != null &&                                                                   // Se busca hasta que no hayan
+                    (padreActual.getTblSimbolosLocales() == null ||                                         // Si no tienen tablas de simbolos pasan
+                            (!padreActual.getTblSimbolosLocales().containsKey(_nombre) &&                   // Si sí tienen y no está pasa
+                                    !(padreActual.getTblSimbolosLocales().get(_nombre) instanceof Metodo))         // Si sí tiene tabla, sí está pero no es método
+                    );
+                 padreActual = padreActual.getPadre());
+
+            //Si encuentra algo, debe ser método
+            if (padreActual != null) {
+                metodo = (Metodo) padreActual.getTblSimbolosLocales().get(_nombre);
+            } else {
+                throw new SemanticError("No se encontró referencia alguna al método "+ _nombre +"()\n");
+            }
         }
 
         int i = 0;
+        if (_parametros != null)
         for (Expresion expresionParametro : _parametros){
             //Compilamos las expresiones de cada parámetro
             result += expresionParametro.compilar();

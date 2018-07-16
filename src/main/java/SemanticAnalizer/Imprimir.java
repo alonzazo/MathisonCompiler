@@ -64,7 +64,7 @@ public class Imprimir extends Sentencia {
                         "\tla $a0, " + cadena + " \t\t# Carga la direccion a a0\n" +
                         "\tsyscall\n\n";
             }else {
-                result = "\t#imprimir(" + Programa.getInstance().getHeap().get(cadena).getValor()+")\n" +
+                result = "\t#imprimir(" + Programa.getInstance().getSectionData().get(cadena).getValor()+")\n" +
                         "\tli $v0, 4 \t\t\t\t# Carga system call code para el print\n" +
                         "\tla $a0, " + cadena + " \t\t# Carga la direccion a a0\n" +
                         "\tsyscall\n\n";

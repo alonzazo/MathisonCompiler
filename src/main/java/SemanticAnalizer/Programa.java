@@ -1,7 +1,6 @@
 package SemanticAnalizer;
 
 import GeneradorCodigo.Descriptor;
-import com.sun.org.apache.xpath.internal.axes.DescendantIterator;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -12,18 +11,21 @@ public class Programa extends ComponenteConcreto{
     private static Programa instance;
 
     private Componente raiz;
-    private HashMap<String,Tipo> metodosNativos = new HashMap<>();
+    private HashMap<String,Metodo> metodosNativos = new HashMap<>();
 
     //Para generacion de código
-    private HashMap<String, Descriptor> heap = new HashMap<>();
+    private HashMap<String, Descriptor> sectionData = new HashMap<>();
     private int numCadenasGenericas = 0;
     private int numSi = 0;
     private int numMientras = 0;
     private int numPara = 0;
     private final int tamanoMaximoCadena = 128;
+    private String sectionFooter = "";
 
     private Programa(){
-        metodosNativos.put("raiz",Tipo.NUMERICO);
+        //Agregamos a metodos nativos raiz(n)
+        metodosNativos.put("raiz",new MetodoRaiz());
+        metodosNativos.put("salir", new MetodoSalir());
     }
 
     public static Programa getInstance(){
@@ -41,11 +43,11 @@ public class Programa extends ComponenteConcreto{
         this.raiz = raiz;
     }
 
-    public HashMap<String, Tipo> getMetodosNativos() {
+    public HashMap<String, Metodo> getMetodosNativos() {
         return metodosNativos;
     }
 
-    public void setMetodosNativos(HashMap<String, Tipo> metodosNativos) {
+    public void setMetodosNativos(HashMap<String, Metodo> metodosNativos) {
         this.metodosNativos = metodosNativos;
     }
 
@@ -129,12 +131,13 @@ public class Programa extends ComponenteConcreto{
         result = "\t.text\n" + raiz.compilar();
 
         //Agrega las variables estáticas
-        if (heap.size() > 0){
+        if (sectionData.size() > 0){
             String sectionData = "\t.data\n";
-            for (Map.Entry<String, Descriptor> i: heap.entrySet())
+            for (Map.Entry<String, Descriptor> i: this.sectionData.entrySet())
                 sectionData += i.getKey() + ": " + i.getValue().getDescriptor() + " " + i.getValue().getValor() + "\n";
             result = sectionData + "\n" + result;
         }
+        result += sectionFooter;
         return result;
     }
 
@@ -154,5 +157,13 @@ public class Programa extends ComponenteConcreto{
 
 
     //Concerniente a generación de código
-    public HashMap<String,Descriptor> getHeap(){return heap;}
+    public HashMap<String,Descriptor> getSectionData(){return sectionData;}
+
+    public String getSectionFooter() {
+        return sectionFooter;
+    }
+
+    public void setSectionFooter(String sectionFooter) {
+        this.sectionFooter = sectionFooter;
+    }
 }

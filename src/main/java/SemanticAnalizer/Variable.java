@@ -149,7 +149,7 @@ public class Variable extends ExpresionGenerico implements Nombre{
     @Override
     public String compilar() throws SemanticError {
         String result = "";
-        if (Programa.getInstance().getHeap().containsKey(_nombre)){
+        if (Programa.getInstance().getSectionData().containsKey(_nombre)){
             if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
                 result = "\tlw\t\t$v0, " + this.getEtiqueta()+"\n";
             } else {

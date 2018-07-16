@@ -4,8 +4,6 @@ import GeneradorCodigo.Descriptor;
 import SyntacticalAnalizer.sym;
 import java_cup.runtime.Symbol;
 
-import java.awt.*;
-
 public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
     protected String _nombre;
     protected Tipo _tipo;
@@ -87,7 +85,7 @@ public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
                 idReferencia = "cad_generica" + Programa.getInstance().getNumCadenasGenericas();
 
                 //Lo agregamos al heap
-                Programa.getInstance().getHeap().put(idReferencia, new Descriptor(idReferencia,".asciiz", _symbol.value.toString()) );
+                Programa.getInstance().getSectionData().put(idReferencia, new Descriptor(idReferencia,".asciiz", _symbol.value.toString()) );
                 Programa.getInstance().setNumCadenasGenericas(Programa.getInstance().getNumCadenasGenericas() + 1);
                 result = idReferencia;
             } else if(_tipo == Tipo.BOOLEANO){

@@ -10,12 +10,12 @@ import java.util.function.Consumer;
 
 public class Metodo extends ComponenteConcreto implements Nombre
 {
-    private String _nombre;
-    private Tipo _tipo;
-    private String _nombreTipo;
-    private List<Variable> _parametros;
-    private boolean _arreglo;
-    private boolean _tieneDevolver;
+    protected String _nombre;
+    protected Tipo _tipo;
+    protected String _nombreTipo;
+    protected List<Variable> _parametros;
+    protected boolean _arreglo;
+    protected boolean _tieneDevolver;
     //Generacion de código
     private ManejadorDePila pilaLocal = new ManejadorDePila();
 
@@ -226,7 +226,7 @@ public class Metodo extends ComponenteConcreto implements Nombre
         String result = "";
 
         result = _nombre + ":\n" +
-                "\tsw\t\t$ra, 0($sp) #Guardamos el valor de retorno\n";
+                "\tsw\t\t$ra, 0($sp) #Guardamos la direccion de retorno\n";
 
         //Se hace espacio en la pila para acceder a los parametros
         if (_parametros != null){

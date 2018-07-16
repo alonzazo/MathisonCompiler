@@ -2,6 +2,7 @@ proc main(){
     num input
     leer(input)
     imprimir(fiboRec(input))
+    salir()
 }
 
 num fiboRec ( num n ) {
