@@ -147,7 +147,7 @@ public class Si extends Estructura {
                             etiqueta + ":\n" +
                             _hijoMasIzq.compilar() +                //Bloque del si
                             "\tj\t\tsi_retorno" + numSi +"\n";      //Retorno del si
-                }else {
+                } else {
                     result = result +
                             "\tbnez\t\t$v0, " + etiqueta + "\n" +
                             "si_retorno" + numSi + ":\n" +

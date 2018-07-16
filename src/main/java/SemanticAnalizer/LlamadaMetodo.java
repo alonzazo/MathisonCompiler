@@ -56,7 +56,7 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
 
             //Se busca en las tablas de simbolos la referencia
             Componente i = this._padre;
-            for (; !i.getTblSimbolosLocales().containsKey(getNombre()); i = i.getPadre());          //-----**------
+            for (; i != null && (i.getTblSimbolosLocales() == null || !i.getTblSimbolosLocales().containsKey(getNombre())); i = i.getPadre());          //-----**------
 
             if (i == null)
                 throw new SemanticError("Referencia no declarada en " + this._padre.toString() + ": " + getNombre());
@@ -107,7 +107,7 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
 
         //Se busca en las tablas de simbolos la referencia
         Componente i = this._padre;
-        while ((i instanceof Sentencia) || (i != null && !i.getTblSimbolosLocales().containsKey(getNombre()))) i = i.getPadre();          //-----**------
+        while ((i instanceof Sentencia) || (i != null && i.getTblSimbolosLocales() != null && !i.getTblSimbolosLocales().containsKey(getNombre()))) i = i.getPadre();          //-----**------
 
         if (i == null)
             throw new SemanticError("Referencia no declarada en " + this._padre.toString() + ": " + getNombre());

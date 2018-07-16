@@ -36,6 +36,7 @@ public class Devolver extends Sentencia {
             throw new SemanticError("No se espera sentencias DEVOLVER en PROCEDIMIENTO: " + ((Metodo) padreActual).get_nombre());
         //Revisamos que el tipo de retorno sea el mismo que el que se espera.
         expresion.setPadre(this);
+        expresion.evaluarSemantica();
         if (expresion.evaluarTipo() != ((Metodo) padreActual).get_tipo())
             throw new SemanticError("Tipos incompatibles en sentencia DEVOLVER:\nTipo esperado: " + ((Metodo) padreActual).get_tipo() + " Tipo dado: " + expresion.evaluarTipo()); //TODO Colocar en variables antes para no correr el método dos veces.
 
