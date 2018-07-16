@@ -1,5 +1,7 @@
 proc main(){
-    imprimir(fiboRec(5))
+    num input
+    leer(input)
+    imprimir(fiboRec(input))
 }
 
 num fiboRec ( num n ) {

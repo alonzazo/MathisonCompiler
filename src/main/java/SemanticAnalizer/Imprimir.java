@@ -15,6 +15,7 @@ public class Imprimir extends Sentencia {
     public boolean evaluarSemantica() throws SemanticError {
         _expresion.setPadre(this);
         _expresion.evaluarTipo();
+        _expresion.evaluarSemantica();
 
         if (this.getHermanoDerecho() != null)
             this.getHermanoDerecho().evaluarSemantica();
