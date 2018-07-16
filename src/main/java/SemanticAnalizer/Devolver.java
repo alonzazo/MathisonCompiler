@@ -80,7 +80,7 @@ public class Devolver extends Sentencia {
         if (padreActual != null) {
             result +=   "\t#Devolver\n" +
                         "\taddi\t$sp, $sp, " + ((Metodo) padreActual).getPilaLocal().getTamanoPila()+ "\n" +
-                        "\tlw\t$ra, -4($sp)\n" +
+                        "\tlw\t$ra, 0($sp)\n" +
                         "\tjr\t\t$ra\n\n";
         }
 

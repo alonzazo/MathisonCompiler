@@ -10,14 +10,12 @@ public class ManejadorDePila {
     int tamano = 0;
 
     public int getPosicionEnPila(String variable, int bytes){
-        if (direcciones.containsKey(variable))
-            return direcciones.get(variable);
-        else {
+        if (!direcciones.containsKey(variable)){
             pila.push(variable);
-            tamano += bytes;
             direcciones.put(variable, tamano);
-            return tamano;
+            tamano += bytes;
         }
+        return direcciones.get(variable);
     }
 
     public int getPosicionEnPila(String variable){
@@ -26,5 +24,10 @@ public class ManejadorDePila {
 
     public int getTamanoPila(){
         return tamano;
+    }
+
+    public void sacarDePila(){
+        direcciones.remove(pila.peek());
+        pila.pop();
     }
 }

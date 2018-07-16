@@ -16,7 +16,8 @@ public class Si extends Estructura {
 
     @Override
     public boolean evaluarCondicion() throws SemanticError {
-        setPadreExpresiones();
+        /*setPadreExpresiones();*/
+        _expresion.setPadre(this);
         return _expresion.evaluarTipo() == Tipo.BOOLEANO;
     }
 
@@ -130,7 +131,7 @@ public class Si extends Estructura {
 
     @Override
     public String compilar() throws SemanticError {
-        String result = "";
+        String result = "\t#si\n";
         int numSi = Programa.getInstance().getNumSi();
         String etiqueta = "si" + numSi;
         Programa.getInstance().setNumSi(numSi + 1);

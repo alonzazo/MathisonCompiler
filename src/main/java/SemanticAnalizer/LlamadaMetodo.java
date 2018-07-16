@@ -136,7 +136,7 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
 
     @Override
     public String compilar() throws SemanticError {
-        String result = "";
+        String result = "\t#" + get_nombre() +"()\n";
         Metodo metodo;
         //Para eso buscamos el componente Método que le corresponde
         Componente padreActual = this._padre;
@@ -177,8 +177,10 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
         //Se compila el llamado
         result += "\tjal\t\t" + _nombre + "\n";
 
-        if (_hermanoDerecho != null)
-            return result + _hermanoDerecho.compilar();
+        if (getPadre() instanceof Estructura || getPadre() instanceof  Metodo || getPadre() instanceof Clase){
+            if (_hermanoDerecho != null)
+                return result + _hermanoDerecho.compilar();
+        }
         return result;
     }
 

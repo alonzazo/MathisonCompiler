@@ -8,6 +8,7 @@ public class ManejadorDeRegistros {
     //TODO Reparticion de registros, durante el cual seleccionamos el conjunto de variables que residirán en los registros en cada punto del programa
 
     //TODO Asignación de registros, durante la cual elegimos el registro específico en el que residirá una variable.
+
     public ManejadorDeRegistros() {
         registros.put("$v0", null);
         registros.put("$v1", null);
@@ -49,7 +50,5 @@ public class ManejadorDeRegistros {
     public void setRegistros(HashMap<String, Integer> registros) {
         this.registros = registros;
     }
-
-
 
 }
