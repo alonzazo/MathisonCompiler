@@ -175,7 +175,7 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
             i++;
         }
         //Se compila el llamado
-        result += "\tjal\t\t" + _nombre + "\n";
+        result += "\tjal\t\t" + _nombre + "\n\n";
 
         if (getPadre() instanceof Estructura || getPadre() instanceof  Metodo || getPadre() instanceof Clase){
             if (_hermanoDerecho != null)

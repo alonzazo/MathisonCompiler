@@ -1,14 +1,16 @@
+proc main(){
+    imprimir(fiboRec(5))
+}
+
 num fiboRec ( num n ) {
     num resultado
     si ( n <= 1 ) //CASO BASE
 	{
-        imprimir (1)
 	    resultado = 1
     }
     sino          //CASO TRIVIAL
 	{
         num enesimo = fiboRec ( n - 1 ) + fiboRec ( n - 2 )
-	    imprimir (enesimo)
 	    resultado = enesimo
 	}
 	devolver resultado

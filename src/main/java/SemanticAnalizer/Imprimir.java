@@ -33,15 +33,24 @@ public class Imprimir extends Sentencia {
         //TODO Compilar del imprimir
         Tipo tipoExpresion = _expresion.evaluarTipo();
         if (tipoExpresion == Tipo.NUMERICO){
-            String cadena = ((ExpresionGenerico) _expresion).getEtiqueta();
-            if (_expresion instanceof Variable){
-                result = "\t#imprimir(" + cadena +")\n" +
-                        "\tlw \t\t$a0, " + cadena + "\n" +
-                        "\tli \t\t$v0, 1\t\t##println(int)\n" +
-                        "\tsyscall\n\n";
-            } else {
-                result = "\t#imprimir(" + cadena +")\n" +
-                        "\tli \t\t$a0, " + cadena + "\n" +
+            if ((_expresion instanceof ExpresionGenerico)){
+                String cadena = ((ExpresionGenerico) _expresion).getEtiqueta();
+                if (_expresion instanceof Variable){
+                    result = "\t#imprimir(" + cadena +")\n" +
+                            "\tlw \t\t$a0, " + cadena + "\n" +
+                            "\tli \t\t$v0, 1\t\t##println(int)\n" +
+                            "\tsyscall\n\n";
+                } else {
+                    result = "\t#imprimir(" + cadena +")\n" +
+                            "\tli \t\t$a0, " + cadena + "\n" +
+                            "\tli \t\t$v0, 1\t\t##println(int)\n" +
+                            "\tsyscall\n\n";
+                }
+            }
+            else {
+                result = _expresion.compilar() +
+                        "\t#imprimir(Expresion)\n" +
+                        "\tmove\t$a0, $v0\n" +
                         "\tli \t\t$v0, 1\t\t##println(int)\n" +
                         "\tsyscall\n\n";
             }

@@ -148,14 +148,14 @@ public class Operacion extends ComponenteConcreto implements Expresion {
                             _expDer.compilar() +
                             "\tadd\t\t$v0, $t0, $v0\n\n";*/
                     result += _expIzq.compilar() +
-                            "\tsw\t\t$v0, 0($sp)\n" +
+                            "\tsw\t\t$v0, 0($sp)\t#Operacion " + _tipoOperacion + "\n" +
                             "\taddi\t$sp, $sp, -4\n";
-                    //metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
+                    metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
                     result += _expDer.compilar() +
                             "\taddi\t$sp, $sp, 4\n" +
                             "\tlw\t\t$t0, 0($sp)\n" +
-                            "\tadd\t\t$v0, $t0, $v0\n\n";
-                    //metodoActual.getPilaLocal().sacarDePila();
+                            "\tadd\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
+                    metodoActual.getPilaLocal().sacarDePila();
                 }
                 else if ( (_expIzq.evaluarTipo() == Tipo.NUMERICO || _expIzq.evaluarTipo() == Tipo.CADENA) &&
                         (_expDer.evaluarTipo() == Tipo.NUMERICO || _expDer.evaluarTipo() == Tipo.CADENA))
@@ -168,23 +168,23 @@ public class Operacion extends ComponenteConcreto implements Expresion {
                             "\tmove\t$t0, $v0\n" +
                             _expDer.compilar();*/
                     result += _expIzq.compilar() +
-                            "\tsw\t\t$v0, 0($sp)\n" +
+                            "\tsw\t\t$v0, 0($sp)\t#Operacion " + _tipoOperacion + "\n" +
                             "\taddi\t$sp, $sp, -4\n";
-                    //metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
+                    metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
                     result += _expDer.compilar() +
                             "\taddi\t$sp, $sp, 4\n" +
                             "\tlw\t\t$t0, 0($sp)\n";
-                    //metodoActual.getPilaLocal().sacarDePila();
+                    metodoActual.getPilaLocal().sacarDePila();
                     switch (_tipoOperacion){
                         case RESTA:
-                            result += "\tsub\t\t$v0, $t0, $v0\n\n";
+                            result += "\tsub\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
                             break;
                         case MULTIPLICACION:
-                            result += "\tmul\t\t$v0, $t0, $v0\n\n";
+                            result += "\tmul\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
                             break;
                         case DIVISION:
                             result += "\tdiv\t\t$t0, $v0\n" +
-                                    "\tmflo\t\t$v0\n\n";
+                                    "\tmflo\t\t$v0\t#Operacion " + _tipoOperacion + "\n\n";
                             break;
                     }
                 }
@@ -196,25 +196,25 @@ public class Operacion extends ComponenteConcreto implements Expresion {
                             "\tmove\t$t0, $v0\n" +
                             _expDer.compilar();*/
                     result += _expIzq.compilar() +
-                            "\tsw\t\t$v0, 0($sp)\n" +
+                            "\tsw\t\t$v0, 0($sp)\t#Operacion " + _tipoOperacion + "\n" +
                             "\taddi\t$sp, $sp, -4\n";
-                    //metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
+                    metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
                     result += _expDer.compilar() +
                             "\taddi\t$sp, $sp, 4\n" +
                             "\tlw\t\t$t0, 0($sp)\n";
-                    //metodoActual.getPilaLocal().sacarDePila();
+                    metodoActual.getPilaLocal().sacarDePila();
                     switch (_tipoOperacion){
                         case MENORQUE:
-                            result += "\tslt\t\t$v0, $t0, $v0\n\n";
+                            result += "\tslt\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
                             break;
                         case MENOROIGUAL:
-                            result += "\tsle\t\t$v0, $t0, $v0\n\n";
+                            result += "\tsle\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
                             break;
                         case MAYORQUE:
-                            result += "\tsgt\t\t$v0, $t0, $v0\n\n";
+                            result += "\tsgt\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
                             break;
                         case MAYOROIGUAL:
-                            result += "\tsge\t\t$v0, $t0, $v0\n\n";
+                            result += "\tsge\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
                             break;
                     }
                 }
@@ -226,19 +226,19 @@ public class Operacion extends ComponenteConcreto implements Expresion {
                             "\tmove\t$t0, $v0\n" +
                             _expDer.compilar();*/
                     result += _expIzq.compilar() +
-                            "\tsw\t\t$v0, 0($sp)\n" +
+                            "\tsw\t\t$v0, 0($sp)\t#Operacion " + _tipoOperacion + "\n" +
                             "\taddi\t$sp, $sp, -4\n";
-                    //metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
+                    metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
                     result += _expDer.compilar() +
                             "\taddi\t$sp, $sp, 4\n" +
                             "\tlw\t\t$t0, 0($sp)\n";
-                    //metodoActual.getPilaLocal().sacarDePila();;
+                    metodoActual.getPilaLocal().sacarDePila();;
                     switch (_tipoOperacion){
                         case IGUAL:
-                            result += "\tseq\t\t$v0, $t0, $v0\n\n";
+                            result += "\tseq\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
                             break;
                         case DISTINTO:
-                            result += "\tsne\t\t$v0, $t0, $v0\n\n";
+                            result += "\tsne\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
                             break;
                     }
                 }
@@ -249,19 +249,19 @@ public class Operacion extends ComponenteConcreto implements Expresion {
                             "\tmove\t$t0, $v0\n" +
                             _expDer.compilar();*/
                     result += _expIzq.compilar() +
-                            "\tsw\t\t$v0, 0($sp)\n" +
+                            "\tsw\t\t$v0, 0($sp)\t#Operacion " + _tipoOperacion + "\n" +
                             "\taddi\t$sp, $sp, -4\n";
-                    //metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
+                    metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
                     result += _expDer.compilar() +
                             "\taddi\t$sp, $sp, 4\n" +
                             "\tlw\t\t$t0, 0($sp)\n";
-                    //metodoActual.getPilaLocal().sacarDePila();;
+                    metodoActual.getPilaLocal().sacarDePila();;
                     switch (_tipoOperacion){
                         case Y:
-                            result += "\tand\t\t$v0, $t0, $v0\n\n";
+                            result += "\tand\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
                             break;
                         case O:
-                            result += "\tor\t\t$v0, $t0, $v0\n\n";
+                            result += "\tor\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
                             break;
                     }
                 }

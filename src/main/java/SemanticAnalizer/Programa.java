@@ -121,6 +121,11 @@ public class Programa extends ComponenteConcreto{
     public String compilar() throws SemanticError {
         String result = "";
 
+        //Inicializamos las pilas
+        for (Componente i = raiz; i != null ; i = i.getHermanoDerecho())
+            if (i instanceof Metodo)
+                ((Metodo) i).inicializarPila();
+
         result = "\t.text\n" + raiz.compilar();
 
         //Agrega las variables estáticas

@@ -145,9 +145,9 @@ public class Asignacion extends Sentencia {
         //Buscamos la referencia en la pila y en el heap
         if (Programa.getInstance().getHeap().containsKey(_nombre)){
             if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
-                result += "\tsw\t\t$v0, " + _nombre + "\n\n";
+                result += "\tsw\t\t$v0, " + _nombre + "\t#Asignacion\n\n";
             } else {                                        // asignacion de cadena Cadenas
-                result += "\tsw\t\t$v0, " + _nombre + "\n\n";
+                result += "\tsw\t\t$v0, " + _nombre + "\t#Asignacion\n\n";
             }
         } else{
             //Buscamos el método padre
@@ -160,7 +160,7 @@ public class Asignacion extends Sentencia {
                 Metodo metodoPadre = (Metodo) padreActual;
                 int posicion = metodoPadre.getPilaLocal().getPosicionEnPila(_nombre);
 
-                result += "\tsw\t\t$v0, " + (metodoPadre.getPilaLocal().getTamanoPila() - posicion) +"($sp)\n\n";
+                result += "\tsw\t\t$v0, " + (metodoPadre.getPilaLocal().getTamanoPila() - posicion) +"($sp)\t#Asignacion\n\n";
             }
 
         }

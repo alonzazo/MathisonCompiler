@@ -202,12 +202,7 @@ public class Metodo extends ComponenteConcreto implements Nombre
         }
     }
 
-    @Override
-    public String compilar() throws SemanticError {
-        String result = "";
-
-        result = _nombre + ":\n" +
-                "\tsw\t\t$ra, 0($sp) #Guardamos el valor de retorno\n";
+    public void inicializarPila(){
         pilaLocal.getPosicionEnPila("ret_" + _nombre,4);
         if (_parametros != null){
             _parametros.forEach( variable -> {
@@ -223,6 +218,18 @@ public class Metodo extends ComponenteConcreto implements Nombre
                         break;
                 }
             });
+        }
+    }
+
+    @Override
+    public String compilar() throws SemanticError {
+        String result = "";
+
+        result = _nombre + ":\n" +
+                "\tsw\t\t$ra, 0($sp) #Guardamos el valor de retorno\n";
+
+        //Se hace espacio en la pila para acceder a los parametros
+        if (_parametros != null){
             result += "\taddi\t$sp, $sp, -" + pilaLocal.getTamanoPila() + "\t #Se hace espacio en la pila\n\n";
         }
         if (_hijoMasIzq != null){

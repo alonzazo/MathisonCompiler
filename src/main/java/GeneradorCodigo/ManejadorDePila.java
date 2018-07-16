@@ -12,7 +12,7 @@ public class ManejadorDePila {
     public int getPosicionEnPila(String variable, int bytes){
         if (!direcciones.containsKey(variable)){
             pila.push(variable);
-            direcciones.put(variable, tamano);
+            direcciones.put(variable, tamano); //Al lado derecho va el offset
             tamano += bytes;
         }
         return direcciones.get(variable);
@@ -27,6 +27,7 @@ public class ManejadorDePila {
     }
 
     public void sacarDePila(){
+        tamano = direcciones.get(pila.peek());
         direcciones.remove(pila.peek());
         pila.pop();
     }
