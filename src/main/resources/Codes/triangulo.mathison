@@ -7,12 +7,11 @@ publico proc imprimirTriangulo()
 	num n
 	leer(n)
 	cad fila = ""
-	para num i desde 1 hasta n avance 1
+	para num i desde 0 hasta n avance 1
     {
-        para num j desde 1 hasta i avance 1
+        para num j desde 0 hasta i avance 1
         {
-            fila = fila + c
-            imprimir(fila)
+            imprimir(c)
         }
         imprimir("\n")
 

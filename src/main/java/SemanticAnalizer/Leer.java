@@ -43,7 +43,8 @@ public class Leer extends Sentencia {
                 result = "\t#leer("  + _variable.getNombre() + ")\n" +
                         "\tli $v0, 8\n" +
                         "\tla $a0, " + _variable.getNombre() +"\n" +
-                        "\tli $a1, " + Programa.getInstance().getTamanoMaximoCadena() +"\n" +
+                        "\tli $a1, 2\n" +
+                        //"\tli $a1, " + Programa.getInstance().getTamanoMaximoCadena() +"\n" + //TODO Agregar soporte para strings
                         "\tsyscall\n\n";
                 break;
             case BOOLEANO: //Para el caso de booleano aplica igual el caso de numerico

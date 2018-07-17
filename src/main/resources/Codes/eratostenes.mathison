@@ -1,11 +1,10 @@
 proc main(){
-    cribaEratostenes(4)
+    cribaEratostenes(20)
     salir()
 }
 
 publico num[] cribaEratostenes(num n){
 
-	num limite = raiz(n)
 	num[n] numeros 	                        //Vector de num de tamaño n
 	num[] resultado	                        //Vector de num sin tamaño definido
 	para num i desde 0 hasta n avance 1		//Un ciclo for
@@ -21,12 +20,10 @@ publico num[] cribaEratostenes(num n){
 			resultado[marcado] = i  	//Está sin marcar
 		    marcado = marcado + 1	    //Aumente en uno este num
 		}					            //Marcar múltiplos
-        si(i < limite)
+
+        para num j desde i hasta n avance i
 		{
-            para num j desde i hasta limite avance i
-			{
-                numeros[j] = i
-			}
+            numeros[j] = 1
 		}
 	}
 	devolver resultado

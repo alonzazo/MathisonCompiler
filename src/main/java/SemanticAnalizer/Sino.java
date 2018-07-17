@@ -38,11 +38,17 @@ public class Sino extends Estructura {
 
     @Override
     public String compilar() throws SemanticError {
+        int numSi = (Programa.getInstance().getNumSi() - 1);
+        String result = "";
         if (_hijoMasIzq != null){
-            if (_hermanoDerecho != null) return _hijoMasIzq.compilar() + "si_retorno" + (Programa.getInstance().getNumSi() - 1) + ":\n" + _hermanoDerecho.compilar();
-            else return _hijoMasIzq.compilar() + "si_retorno" + (Programa.getInstance().getNumSi() - 1) + ":\n";
+            result = "\tj\t\tsino_retorno" + numSi + "\n" +
+                    "si_retorno" + numSi +":\n" +
+                    _hijoMasIzq.compilar() +
+                    "sino_retorno" +numSi + ":\n";
+            if (_hermanoDerecho != null) return result +_hermanoDerecho.compilar();
+            else return result;
         } else {
-            if (_hermanoDerecho != null) return _hermanoDerecho.compilar();
+            if (_hermanoDerecho != null) return "si_retorno" + numSi +":\n" + _hermanoDerecho.compilar();
             else return "";
         }
     }
