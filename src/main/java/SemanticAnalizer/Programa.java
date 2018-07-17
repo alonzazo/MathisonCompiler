@@ -67,6 +67,10 @@ public class Programa extends ComponenteConcreto{
         this.numMientras = numMientras;
     }
 
+    public int getNumPara() { return numPara; }
+
+    public void setNumPara(int numPara) {this.numPara = numPara; }
+
     public int getNumSi() {
         return numSi;
     }
