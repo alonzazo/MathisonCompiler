@@ -90,87 +90,74 @@ public class Para extends Estructura
 
     @Override
     public String compilar() throws SemanticError {
-        String result = "\t#para\n";
-        int numPara = Programa.getInstance().getNumPara();
-        String etiqueta = "para" + numPara;
-        Programa.getInstance().setNumPara(numPara+1);
-        int numRegistro1, numRegistro2, numRegistro3;
-        if(numPara == 0) //Es el primer para
-        {
-            numRegistro1 = 2;
-            numRegistro2 = 3;
-            numRegistro3 = 4;
-        }
-        else //Es el segundo para
-        {
-            numRegistro1 = 5;
-            numRegistro2 = 6;
-            numRegistro3 = 7;
-        }
-
-        int valorDesde = 0;
-        int valorHasta = 0;
-        int valorAvance = 0;
-
-        if(_desde instanceof Variable)
-        {
-            Variable vDesde = (Variable)_desde;
-            valorDesde = (int)vDesde.get_valor().value;
-            System.out.println("El desde era variable y el valor es " + valorDesde);
-        }
-        else
-        {
-            ExpresionGenerico desde = (ExpresionGenerico)_desde;
-            valorDesde = (int)desde.get_symbol().value;
-            System.out.println("El desde era numero y el valor es " + valorDesde);
-        }
-
-        if(_hasta instanceof Variable)
-        {
-            Variable vHasta = (Variable)_hasta;
-            valorHasta = (int)vHasta.get_valor().value;
-            System.out.println("El hasta era variable y el valor es " + valorHasta);
-        }
-        else
-        {
-            ExpresionGenerico hasta = (ExpresionGenerico)_hasta;
-            valorHasta = (int)hasta.get_symbol().value;
-            System.out.println("El hasta era numero y el valor es " + valorHasta);
-        }
-
-        if(_avance instanceof Variable)
-        {
-            Variable vAvance = (Variable)_avance;
-            valorAvance = (int)vAvance.get_valor().value;
-            System.out.println("El avance era variable y el valor es " + valorAvance);
-        }
-        else
-        {
-            ExpresionGenerico avance = (ExpresionGenerico)_avance;
-            valorAvance = (int)avance.get_symbol().value;
-            System.out.println("El avance era numero y el valor es " + valorAvance);
-        }
-
+        Componente padreActual = this._padre;
+        for (;padreActual != null && !(padreActual instanceof Metodo);
+             padreActual = padreActual.getPadre());
+        Metodo metodoActual = ((Metodo)padreActual);
 
         if (_hijoMasIzq != null) //Tiene codigo
         {
-            result = result + "\tli\t\t$t" + numRegistro1 + ", " + valorDesde + "\n";
-            result = result + "\tli\t\t$t" + numRegistro2 + ", " + valorHasta + "\n";
-            result = result + "\tli\t\t$t" + numRegistro3 + ", " + valorAvance + "\n";
-            result = result + "para" + numPara + ":\n";
+            String result = "\t#Para\n";
+            int numPara = Programa.getInstance().getNumPara();
+            String etiqueta = "para" + numPara;             //Sacamos la etiqueta del para
+            Programa.getInstance().setNumPara(numPara+1);   //Incrementamos la cantidad de Para
+
+            if (_declaracion != null){
+                result += "\t#Declaracion del contador\n"+
+                        _declaracion.compilar();
+            }
+            //Creamos una asignacion para aprovechar su método
+            Asignacion asig = new Asignacion(_variable);
+            asig.set_expresion(_desde);
+            asig.setPadre(this);
+            asig.setTipo(Tipo.NUMERICO);
+            asig.evaluarSemantica();
+
+            //Compilamos el contador
+            result += asig.compilar();
+                    /*"\tsw\t\t$v0, 0($sp)\t#desde -> pila \n" +
+                    "\taddi\t$sp, $sp, -4# Guardamos en contador en 4($sp)\n";
+            metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);*///Simplemente hacemos un campo
+
+            //Evaluamos la condicion: Creamos una expresion que seria variable != hasta
+            Variable contador = new Variable(_variable, Tipo.NUMERICO, false);
+            Operacion operacion = new Operacion(Operacion.TipoOperador.IGUAL,contador, _desde);
+
+            operacion.setPadre(this);
+
+            result += etiqueta + ":\n" +
+                    operacion.compilar() +
+                    "\tbnez\t\t$v0, ret_" + etiqueta + "# contador == hasta -> ret_" +etiqueta +"\n"; //Si sí son distintos sigue recto,  si no salta a ret
+
+            //Compilamos el contenido
+            result += "#Contenido de " + etiqueta +"\n"+
+                    _hijoMasIzq.compilar() +
+                    "\tsw\t\t$v0, 0($sp)\t#desde -> pila \n" +
+                    "\taddi\t$sp, $sp, -4\n";
+            metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
+
+            //Creamos una asignacion contes sea contador = contador + avance
+            Operacion operacionAvance = new Operacion(Operacion.TipoOperador.SUMA, contador, _avance);
+            Asignacion avanceAsig = new Asignacion(_variable);
+            avanceAsig.set_expresion(operacionAvance);
+            avanceAsig.setPadre(this);
+            asig.setTipo(Tipo.NUMERICO);
+            avanceAsig.evaluarSemantica();
+
+            result += "#Seccion avance " + etiqueta +"\n"+
+                    avanceAsig.compilar() +
+                    /*"\taddi\t\t$sp, $sp, 4\n #devolvemos la pila a su estado" +
+                    "\tlw\t\t$v0, 0($sp)\n" +*/
+                    "\tj\t\t" + etiqueta + "\n";
+            //metodoActual.getPilaLocal().sacarDePila();
+            result += "\taddi\t\t$sp, $sp, 4\n" +
+                    "\tlw\t\t$v0, 0($sp)\n";       //Cargamos el contador de nuevo
+            metodoActual.getPilaLocal().sacarDePila();
+
+            result += "ret_" + etiqueta +":\n";
+
             if (_hermanoDerecho != null) //Tiene codigo y hermano
-            {
-                result = result + _hijoMasIzq.compilar();
-                result = result + "\tadd\t\t$t" + numRegistro1 + ", $t" + numRegistro1 + ", $t" + numRegistro3 + "\n";
-                result = result + "\tblt\t\t$t" + numRegistro1 + ", $t" + numRegistro2 + "\n";
-                result = result + _hermanoDerecho.compilar();
-            }
-            else //Tiene codigo pero no hermano
-            {
-                result = result + _hijoMasIzq.compilar();
-                result = result + "\tadd\t\t$t" + numRegistro1 + ", $t" + numRegistro1 + ", $t" + numRegistro3 + "\n";
-                result = result + "\tblt\t\t$t" + numRegistro1 + ", $t" + numRegistro2 + "\n";
-            }
+                return result + _hermanoDerecho.compilar();
             return result;
         }
         else //No tiene codigo
