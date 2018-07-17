@@ -142,24 +142,26 @@ public class Si extends Estructura {
             if (_hermanoDerecho != null){
                 if (_hermanoDerecho instanceof Sino){
                     result = result +
-                            "\tbnez\t\t$v0, " + etiqueta + "\n" +
-                            _hermanoDerecho.compilar() +            //Aquí se encuentra lo que sigue después del si, puede ser un sino
-                            etiqueta + ":\n" +
-                            _hijoMasIzq.compilar() +                //Bloque del si
-                            "\tj\t\tsi_retorno" + numSi +"\n";      //Retorno del si
+                            "\tbeqz\t\t$v0, si_retorno" + numSi + "\n" +//Si el resultado es falso salte
+                            _hijoMasIzq.compilar() +                 //Bloque del si
+                            _hermanoDerecho.compilar();            //Aquí se encuentra lo que sigue después del si, puede ser un sino
                 } else {
                     result = result +
-                            "\tbnez\t\t$v0, " + etiqueta + "\n" +
-                            "si_retorno" + numSi + ":\n" +
-                            _hermanoDerecho.compilar() +            //Aquí se encuentra lo que sigue después del si, puede ser un sino
-                            etiqueta + ":\n" +
+                            "\tbeqz\t\t$v0, si_retorno" + numSi + "\n" +//Si el resultado es falso salte
                             _hijoMasIzq.compilar() +                 //Bloque del si
-                            "\tj\t\tsi_retorno" + numSi +"\n";      //Retorno del si
+                            "si_retorno" + numSi + ":\n" +
+                            _hermanoDerecho.compilar();            //Aquí se encuentra lo que sigue después del si, puede ser un sino
                 }
 
                 return result;
             }
-            else return _hijoMasIzq.compilar();//TODO
+            else {
+                result = result +
+                        "\tbeqz\t\t$v0, si_retorno" + numSi + "\n" +//Si el resultado es falso salte
+                        _hijoMasIzq.compilar() +                 //Bloque del si
+                        "si_retorno" + numSi + ":\n";
+                return result;
+            }
         } else {
             if (_hermanoDerecho != null) return _hermanoDerecho.compilar();
             else return "";

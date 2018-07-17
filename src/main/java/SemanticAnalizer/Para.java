@@ -130,7 +130,7 @@ public class Para extends Estructura
 
             //Evaluamos la condicion: Creamos una expresion que seria variable != hasta
             Variable contador = new Variable(_variable, Tipo.NUMERICO, false);
-            Operacion operacion = new Operacion(Operacion.TipoOperador.IGUAL,contador, _hasta);
+            Operacion operacion = new Operacion(Operacion.TipoOperador.MAYOROIGUAL,contador, _hasta);
 
             operacion.setPadre(this);
 
