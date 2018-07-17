@@ -35,56 +35,57 @@ public class LlamadaMetodo extends Sentencia implements Expresion, Nombre {
     @Override
     public boolean evaluarSemantica() throws SemanticError {
         boolean result = true;
+        List<Variable> parametrosEsperados;
+
+        //Se le asignan padres a las expresiones de los parámetros y si no tienen tablas de simbolos se les coloca vacías.
+        //NOTA: Se colocan vacías para que en tipoCorrectoParametros y aquí mismo haya garantía de que siempre getTblSimbolosLocales devuelva algo. VER ASTERISCO POR EJEMPLO
+        for (Expresion exp: _parametros)
+            for (; exp != null; exp = (Expresion) exp.getHermanoDerecho()) {
+                exp.setPadre(this);
+                if (exp.getTblSimbolosLocales() == null) exp.setTblSimbolosLocales(new HashMap<String, Nombre>());
+            }
 
         if (Programa.getInstance().getMetodosNativos().containsKey(_nombre)){
             if ((_parametros == null && Programa.getInstance().getMetodosNativos().get(_nombre).getParametros() == null) ||
                     _parametros.size() == Programa.getInstance().getMetodosNativos().get(_nombre).getParametros().size()){
                 //Consige el tipo de salida
                 _tipo = Programa.getInstance().getMetodosNativos().get(_nombre).get_tipo();
+                parametrosEsperados = Programa.getInstance().getMetodosNativos().get(_nombre)._parametros;
             }
             else
                 throw new SemanticError("Cantidad de parámetros en " + _nombre + "() no coincide con los esperados:\nCantidad esperada: 0 Cantidad dada: " + _parametros.size());
         } else {
 
-            List<Variable> parametrosEsperados;
-
-            //Se le asignan padres a las expresiones de los parámetros y si no tienen tablas de simbolos se les coloca vacías.
-            //NOTA: Se colocan vacías para que en tipoCorrectoParametros y aquí mismo haya garantía de que siempre getTblSimbolosLocales devuelva algo. VER ASTERISCO POR EJEMPLO
-            for (Expresion exp: _parametros)
-                for (; exp != null; exp = (Expresion) exp.getHermanoDerecho()) {
-                    exp.setPadre(this);
-                    if (exp.getTblSimbolosLocales() == null) exp.setTblSimbolosLocales(new HashMap<String, Nombre>());
-                }
-
             //Se busca en las tablas de simbolos la referencia
             Componente i = this._padre;
-            for (; i != null && (i.getTblSimbolosLocales() == null || !i.getTblSimbolosLocales().containsKey(getNombre())); i = i.getPadre());          //-----**------
+            for (; i != null && (i.getTblSimbolosLocales() == null || !i.getTblSimbolosLocales().containsKey(getNombre())); i = i.getPadre())
+                ;          //-----**------
 
             if (i == null)
                 throw new SemanticError("Referencia no declarada en " + this._padre.toString() + ": " + getNombre());
 
             //Se checkean la referencia encontrada si es realmente un Metodo
-            if (i.getTblSimbolosLocales().get(getNombre()) instanceof Metodo){
+            if (i.getTblSimbolosLocales().get(getNombre()) instanceof Metodo) {
                 Metodo metodo = (Metodo) i.getTblSimbolosLocales().get(getNombre());
                 parametrosEsperados = metodo.getParametros();
-            }else
-                throw new SemanticError("Referencia a método " + getNombre() + "() no declarada");
-
-            //Se checkea la cantidad de parametros
-            if (_parametros.size() == parametrosEsperados.size()){
-                Expresion expresion;
-                Variable variable;
-                //Se checkean los tipos de los parametros
-                for (int numParametro = 0; numParametro < _parametros.size(); numParametro++){
-                    expresion = _parametros.get(numParametro);
-                    variable = parametrosEsperados.get(numParametro);
-                    //TODO Falta verificar si es arreglo
-                    if (expresion.evaluarTipo() != variable.get_tipo())
-                        throw new SemanticError("Tipo de parametro #" + numParametro +" no coincide con su declaración en método " + getNombre());
-                }
             } else
-                throw new SemanticError("Cantidad de parámetros de llamada a método "+ getNombre() + "(" + _parametros.size() + ") no coincide con la de la declaración (" + parametrosEsperados.size() +")");
+                throw new SemanticError("Referencia a método " + getNombre() + "() no declarada");
         }
+            //Se checkea la cantidad de parametros
+        if (_parametros.size() == parametrosEsperados.size()){
+            Expresion expresion;
+            Variable variable;
+                //Se checkean los tipos de los parametros
+            for (int numParametro = 0; numParametro < _parametros.size(); numParametro++){
+                expresion = _parametros.get(numParametro);
+                variable = parametrosEsperados.get(numParametro);
+                //TODO Falta verificar si es arreglo
+                if (expresion.evaluarTipo() != variable.get_tipo())
+                    throw new SemanticError("Tipo de parametro #" + numParametro +" no coincide con su declaración en método " + getNombre());
+            }
+        } else
+            throw new SemanticError("Cantidad de parámetros de llamada a método "+ getNombre() + "(" + _parametros.size() + ") no coincide con la de la declaración (" + parametrosEsperados.size() +")");
+
 
         if (this.getHermanoDerecho() != null)
             this.getHermanoDerecho().evaluarSemantica();
