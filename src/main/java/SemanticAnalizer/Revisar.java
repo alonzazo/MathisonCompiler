@@ -18,4 +18,16 @@ public class Revisar extends Estructura {
     public boolean evaluarCondicion() throws SemanticError {
         return false;
     }
+
+    @Override
+    public boolean evaluarSemantica() throws SemanticError {
+        setPadreDeMisHijos();
+
+        return true;
+    }
+
+    @Override
+    public String compilar() throws SemanticError {
+        return "";
+    }
 }

@@ -1,5 +1,7 @@
 package SemanticAnalizer;
 
+import GeneradorCodigo.Descriptor;
+import SyntacticalAnalizer.sym;
 import java_cup.runtime.Symbol;
 
 public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
@@ -67,5 +69,46 @@ public class ExpresionGenerico extends ComponenteConcreto implements Expresion {
     @Override
     public Tipo evaluarTipo() throws SemanticError{
         return getTipo();
+    }
+
+    @Override
+    public boolean evaluarSemantica() throws SemanticError {
+        return true;
+    }
+
+    public String getEtiqueta() {
+        String result = "";
+        String idReferencia;
+        if (!(this instanceof Variable)){
+            if (_tipo == Tipo.CADENA){
+                //Creamos el id de referencia
+                idReferencia = "cad_generica" + Programa.getInstance().getNumCadenasGenericas();
+
+                //Lo agregamos al heap
+                Programa.getInstance().getSectionData().put(idReferencia, new Descriptor(idReferencia,".asciiz", _symbol.value.toString()) );
+                Programa.getInstance().setNumCadenasGenericas(Programa.getInstance().getNumCadenasGenericas() + 1);
+                result = idReferencia;
+            } else if(_tipo == Tipo.BOOLEANO){
+                if (sym.terminalNames[_symbol.sym] == "VERDADERO")
+                    result = "1";
+                else
+                    result = "0";
+            } else
+                result = String.valueOf(((Double)_symbol.value).intValue());
+        } else {
+            result = getNombre();
+        }
+        return result;
+    }
+
+    @Override
+    public String compilar() throws SemanticError {
+        String result = "";
+        if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
+            result = "\tli\t\t$v0, " + this.getEtiqueta()+"\t#Expresion generica " + _tipo + "\n";
+        } else {
+            result = "\tla\t\t$v0, " + this.getEtiqueta()+"\t#Expresion generica " + _tipo + "\n";
+        }
+        return result;
     }
 }

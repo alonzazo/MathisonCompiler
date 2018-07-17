@@ -83,6 +83,7 @@ FIN		= 		(f|F)(i|I)(n|N)
 VERDADERO	=		(V|v)(E|e)(R|r)(D|d)(A|a)(D|d)(E|e)(R|r)(O|o)
 FALSO		=		(F|f)(A|a)(L|l)(S|s)(O|o)
 
+
 //Operadores compuestos
 
 MEI			=		\<\=
@@ -95,10 +96,9 @@ NUMERO 		=    	[0-9]+(\.[0-9]+)?
 VAR 		= 		([a-z]|[A-Z])([a-z]|[A-Z]|_|[0-9])*
 
 FIN_LINEA	=		(\r|\n)
-CARACTER	=		[^\r\n]
 COMENTARIO	= {COMENTARIO_NORMAL} | {COMENTARIO_LINEA}
 COMENTARIO_NORMAL   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
-COMENTARIO_LINEA	= \/\/{CARACTER}*{FIN_LINEA}?
+COMENTARIO_LINEA	= \/\/[^\r\n]*{FIN_LINEA}?
 
 ESPACIO     =       {FIN_LINEA} | [ \t\f]
 
@@ -320,6 +320,11 @@ CADENA      =       \"(([^\"][^\"]|\\\")*([^\"][^\\\"]|[^\\\"]|\\\"))?\"
     {
     return symbol(sym.DOSPUNTOS);
     }
+
+    ";"
+        {
+        return symbol(sym.PUNTOYCOMA);
+        }
 
 ","
     {

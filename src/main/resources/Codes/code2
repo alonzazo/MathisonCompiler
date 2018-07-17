@@ -1,36 +1,14 @@
-publico num sumar(num n1, num n2){
-
-    num n4 = 0
-    num n3 = n1 + n2
-
-    HACER
+publico proc hola()
+{
+    num n1 = 1
+    num n2 = 7
+    num n4 = 2
+    PARA num n3 DESDE n1 HASTA n2 AVANCE 1
     {
-        n1 = n1 + n2
-        n2 = n1 - n2
-        n1 = n1 - n2
-    } MIENTRAS (n4 < n3)
-
-    PARA n3 DESDE n1 HASTA n2 AVANCE 1
-    {
-        n4 = n4 + n3
+        imprimir(n3)
     }
-}
-
-
-publico num hola(num n2){
-
-    num n4 = 0
-    num n3 = n1 + n2
-
-    HACER
+    PARA num n3 DESDE 1 HASTA 2 AVANCE n4
     {
-        n1 = n1 + n2
-        n2 = n1 - n2
-        n1 = n1 - n2
-    } MIENTRAS (n4 < n3)
-
-    PARA n3 DESDE n1 HASTA n2 AVANCE 1
-    {
-        n4 = n4 + n3
+        imprimir(n3)
     }
 }

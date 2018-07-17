@@ -16,8 +16,30 @@ public class Si extends Estructura {
 
     @Override
     public boolean evaluarCondicion() throws SemanticError {
-        setPadreExpresiones();
+        /*setPadreExpresiones();*/
+        _expresion.setPadre(this);
         return _expresion.evaluarTipo() == Tipo.BOOLEANO;
+    }
+
+    @Override
+    public boolean evaluarSemantica() throws SemanticError {
+        setPadreDeMisHijos();
+
+        _tblSimbolosLocales = new HashMap<>();
+
+        if (!evaluarCondicion())
+            throw new SemanticError("Expresión de tipo inesperada en estructura SI: \nTipo esperado: " + Tipo.BOOLEANO + " Tipo dado: " + _expresion.evaluarTipo());
+
+        //Evaluamos las demás sentencias, en este caso hacemos profundidad primero.
+        if (this.getHijoMasIzq() != null)
+            getHijoMasIzq().evaluarSemantica();
+        else
+            System.out.println("ADVERTENCIA: Estructura SI sin sentencias -> SE IGNORARÁ");
+
+        if (this.getHermanoDerecho() != null)
+            getHermanoDerecho().evaluarSemantica();
+
+        return false;
     }
 
     private void setPadreExpresiones(){
@@ -105,5 +127,44 @@ public class Si extends Estructura {
             iter = (Expresion) iter.getHermanoDerecho();
         }while(iter != null);
         return true;
+    }
+
+    @Override
+    public String compilar() throws SemanticError {
+        String result = "\t#si\n";
+        int numSi = Programa.getInstance().getNumSi();
+        String etiqueta = "si" + numSi;
+        Programa.getInstance().setNumSi(numSi + 1);
+
+        result += _expresion.compilar();
+
+        if (_hijoMasIzq != null){
+            if (_hermanoDerecho != null){
+                if (_hermanoDerecho instanceof Sino){
+                    result = result +
+                            "\tbeqz\t\t$v0, si_retorno" + numSi + "\n" +//Si el resultado es falso salte
+                            _hijoMasIzq.compilar() +                 //Bloque del si
+                            _hermanoDerecho.compilar();            //Aquí se encuentra lo que sigue después del si, puede ser un sino
+                } else {
+                    result = result +
+                            "\tbeqz\t\t$v0, si_retorno" + numSi + "\n" +//Si el resultado es falso salte
+                            _hijoMasIzq.compilar() +                 //Bloque del si
+                            "si_retorno" + numSi + ":\n" +
+                            _hermanoDerecho.compilar();            //Aquí se encuentra lo que sigue después del si, puede ser un sino
+                }
+
+                return result;
+            }
+            else {
+                result = result +
+                        "\tbeqz\t\t$v0, si_retorno" + numSi + "\n" +//Si el resultado es falso salte
+                        _hijoMasIzq.compilar() +                 //Bloque del si
+                        "si_retorno" + numSi + ":\n";
+                return result;
+            }
+        } else {
+            if (_hermanoDerecho != null) return _hermanoDerecho.compilar();
+            else return "";
+        }
     }
 }

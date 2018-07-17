@@ -132,6 +132,148 @@ public class Operacion extends ComponenteConcreto implements Expresion {
         return _tipoSalida;
     }
 
+    @Override
+    public String compilar() throws SemanticError {
+        Componente padreActual = this._padre;
+        for (;padreActual != null && !(padreActual instanceof Metodo);
+             padreActual = padreActual.getPadre());
+        Metodo metodoActual = ((Metodo)padreActual);
+
+        String result = "\t#Operacion " + _tipoOperacion + "\n";
+        if ( _tipoSalida == null ){
+            if ( _tipoOperacion == TipoOperador.SUMA ){
+                if (_expIzq.evaluarTipo() == Tipo.NUMERICO && _expDer.evaluarTipo() == Tipo.NUMERICO){
+                    /*result += _expIzq.compilar() +
+                            "\tmove\t$t0, $v0\n" +
+                            _expDer.compilar() +
+                            "\tadd\t\t$v0, $t0, $v0\n\n";*/
+                    result += _expIzq.compilar() +
+                            "\tsw\t\t$v0, 0($sp)\t#Operacion " + _tipoOperacion + "\n" +
+                            "\taddi\t$sp, $sp, -4\n";
+                    metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
+                    result += _expDer.compilar() +
+                            "\taddi\t$sp, $sp, 4\n" +
+                            "\tlw\t\t$t0, 0($sp)\n" +
+                            "\tadd\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
+                    metodoActual.getPilaLocal().sacarDePila();
+                }
+                else if ( (_expIzq.evaluarTipo() == Tipo.NUMERICO || _expIzq.evaluarTipo() == Tipo.CADENA) &&
+                        (_expDer.evaluarTipo() == Tipo.NUMERICO || _expDer.evaluarTipo() == Tipo.CADENA))
+                    result += _expIzq.compilar() + _expDer.compilar();//TODO Concatenacion entre entre numerico y cadena
+                else
+                    throw new SemanticError("Tipo de expresión inválido:\n" + _expDer.toString() + _expIzq.toString());
+            } else if ( _tipoOperacion == TipoOperador.RESTA || _tipoOperacion == TipoOperador.MULTIPLICACION || _tipoOperacion == TipoOperador.DIVISION){
+                if (_expIzq.evaluarTipo() == Tipo.NUMERICO && _expDer.evaluarTipo() == Tipo.NUMERICO) {
+                    /*result += _expIzq.compilar() +
+                            "\tmove\t$t0, $v0\n" +
+                            _expDer.compilar();*/
+                    result += _expIzq.compilar() +
+                            "\tsw\t\t$v0, 0($sp)\t#Operacion " + _tipoOperacion + "\n" +
+                            "\taddi\t$sp, $sp, -4\n";
+                    metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
+                    result += _expDer.compilar() +
+                            "\taddi\t$sp, $sp, 4\n" +
+                            "\tlw\t\t$t0, 0($sp)\n";
+                    metodoActual.getPilaLocal().sacarDePila();
+                    switch (_tipoOperacion){
+                        case RESTA:
+                            result += "\tsub\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
+                            break;
+                        case MULTIPLICACION:
+                            result += "\tmul\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
+                            break;
+                        case DIVISION:
+                            result += "\tdiv\t\t$t0, $v0\n" +
+                                    "\tmflo\t\t$v0\t#Operacion " + _tipoOperacion + "\n\n";
+                            break;
+                    }
+                }
+                else
+                    throw new SemanticError("Tipo de expresión inválido: Se esperaba Numerico\n" + _expDer.toString() + _expIzq.toString());
+            } else if (_tipoOperacion == TipoOperador.MENORQUE || _tipoOperacion == TipoOperador.MENOROIGUAL || _tipoOperacion == TipoOperador.MAYORQUE || _tipoOperacion == TipoOperador.MAYOROIGUAL){
+                if (_expIzq.evaluarTipo() == Tipo.NUMERICO && _expDer.evaluarTipo() == Tipo.NUMERICO){
+                    /*result += _expIzq.compilar() +
+                            "\tmove\t$t0, $v0\n" +
+                            _expDer.compilar();*/
+                    result += _expIzq.compilar() +
+                            "\tsw\t\t$v0, 0($sp)\t#Operacion " + _tipoOperacion + "\n" +
+                            "\taddi\t$sp, $sp, -4\n";
+                    metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
+                    result += _expDer.compilar() +
+                            "\taddi\t$sp, $sp, 4\n" +
+                            "\tlw\t\t$t0, 0($sp)\n";
+                    metodoActual.getPilaLocal().sacarDePila();
+                    switch (_tipoOperacion){
+                        case MENORQUE:
+                            result += "\tslt\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
+                            break;
+                        case MENOROIGUAL:
+                            result += "\tsle\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
+                            break;
+                        case MAYORQUE:
+                            result += "\tsgt\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
+                            break;
+                        case MAYOROIGUAL:
+                            result += "\tsge\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
+                            break;
+                    }
+                }
+                else
+                    throw new SemanticError("Tipo de expresión inválido: Se esperaba Numerico\n" + _expDer.toString() + _expIzq.toString());
+            } else if (_tipoOperacion == TipoOperador.IGUAL || _tipoOperacion == TipoOperador.DISTINTO){
+                if (_expIzq.evaluarTipo() == _expDer.evaluarTipo()){
+                    /*result += _expIzq.compilar() +
+                            "\tmove\t$t0, $v0\n" +
+                            _expDer.compilar();*/
+                    result += _expIzq.compilar() +
+                            "\tsw\t\t$v0, 0($sp)\t#Operacion " + _tipoOperacion + "\n" +
+                            "\taddi\t$sp, $sp, -4\n";
+                    metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
+                    result += _expDer.compilar() +
+                            "\taddi\t$sp, $sp, 4\n" +
+                            "\tlw\t\t$t0, 0($sp)\n";
+                    metodoActual.getPilaLocal().sacarDePila();;
+                    switch (_tipoOperacion){
+                        case IGUAL:
+                            result += "\tseq\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
+                            break;
+                        case DISTINTO:
+                            result += "\tsne\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
+                            break;
+                    }
+                } else
+                    throw new SemanticError("Tipo de expresión incomparables:\n" + _expDer.toString() + _expIzq.toString());
+            } else if (_tipoOperacion == TipoOperador.Y || _tipoOperacion == TipoOperador.O){
+                if (_expIzq.evaluarTipo() == Tipo.BOOLEANO && _expDer.evaluarTipo() == Tipo.BOOLEANO){
+                    /*result += _expIzq.compilar() +
+                            "\tmove\t$t0, $v0\n" +
+                            _expDer.compilar();*/
+                    result += _expIzq.compilar() +
+                            "\tsw\t\t$v0, 0($sp)\t#Operacion " + _tipoOperacion + "\n" +
+                            "\taddi\t$sp, $sp, -4\n";
+                    metodoActual.getPilaLocal().getPosicionEnPila("derechaExpresion" +metodoActual.getPilaLocal().getTamanoPila() , 4);//Simplemente hacemos un campo
+                    result += _expDer.compilar() +
+                            "\taddi\t$sp, $sp, 4\n" +
+                            "\tlw\t\t$t0, 0($sp)\n";
+                    metodoActual.getPilaLocal().sacarDePila();;
+                    switch (_tipoOperacion){
+                        case Y:
+                            result += "\tand\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
+                            break;
+                        case O:
+                            result += "\tor\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
+                            break;
+                    }
+                }
+                else
+                    throw new SemanticError("Tipo de expresión inválido: Se esperaba Booleano\n" + _expDer.toString() + _expIzq.toString());
+            } else {
+                throw new SemanticError("Operación sin operador");
+            }
+        }
+        return result;
+    }
+
     public Tipo get_tipoSalida() {
         return _tipoSalida;
     }
@@ -165,6 +307,13 @@ public class Operacion extends ComponenteConcreto implements Expresion {
     }
 
     @Override
+    public boolean evaluarSemantica() throws SemanticError {
+        _expIzq.evaluarSemantica();
+        _expDer.evaluarSemantica();
+        return true;
+    }
+
+    @Override
     public String getNombre() {
         return null;
     }
@@ -173,4 +322,15 @@ public class Operacion extends ComponenteConcreto implements Expresion {
     public Tipo getTipo() {
         return null;
     }
+
+    @Override
+    public Componente setPadre(Componente padre) {
+        _expIzq.setPadre(padre);
+        _expDer.setPadre(padre);
+        return super.setPadre(padre);
+    }
+
+
+
+
 }

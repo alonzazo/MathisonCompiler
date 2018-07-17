@@ -1469,372 +1469,6 @@ public class Parser extends java_cup.runtime.lr_parser {
 class CUP$Parser$actions {
 
 
-    //public HashMap<String, Object> tablaSimbolos = new HashMap<String, Object>();
-
-    //Se declaran las variables de control del árbol semántico.
-    public Componente raiz = new Programa();
-
-    public String imprimirArbol() {
-            //Recorrido en profundidad primero
-            if (raiz == null) return "";
-            return toStringAux("", 0,  raiz);
-    }
-
-    private String toStringAux(String text,int indexLevel, Componente actual){
-        if (actual == null) return text;
-
-        text += '\n';
-        for (int i = 0; i < indexLevel; i++) text += "|\t";
-
-        text += actual.toString();
-
-        if (actual.getTblSimbolosLocales() != null  && !actual.getTblSimbolosLocales().isEmpty()) {
-                  text += '\n';
-                  for (int i = 0; i < indexLevel; i++) text += "|\t";
-                  text += "TABLA SIMBOLOS: " + actual.getTblSimbolosLocales().toString();
-                }
-
-        if ( actual.getHijoMasIzq() != null){
-            text = toStringAux(text, indexLevel + 1, actual.getHijoMasIzq());
-        }
-        if ( actual.getHermanoDerecho() != null ){
-            text = toStringAux(text, indexLevel, actual.getHermanoDerecho());
-        }
-        return text;
-    }
-
-    public boolean existeSimbolo(String nombre, Componente compActual, HashMap<String,Nombre> tabla){
-        boolean existe = false;
-        if(!tabla.containsKey(nombre))
-        {
-            Componente iterPadres = compActual.getPadre();
-            while (iterPadres != null && !existe)
-            {
-                if (iterPadres.getTblSimbolosLocales() == null || !iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
-                {
-                    iterPadres = iterPadres.getPadre();
-                }
-                else{
-                    existe = true;
-                }
-            }
-            if(iterPadres == null)
-            {
-                existe = false;
-            }
-        }
-        else {
-            existe = true;
-        }
-        return existe;
-    }
-
-    public void llenarTabla() throws SemanticError
-        {
-            HashMap<String, Nombre> tablaSimbolos = new HashMap<String, Nombre>();
-            LinkedList cola = new LinkedList();
-            cola.addLast(raiz);
-            int aparicion = 0;
-            while (!cola.isEmpty()) //Mientras la cola no esté vacía
-            {
-                Componente aux = (Componente) cola.removeFirst();
-
-                //Ver si es un simbolo guardado
-                /*if(aux instanceof  Clase || aux instanceof Metodo)
-                {
-                    Nombre simbolo = (Nombre) aux;
-                    System.out.println("Soy " + simbolo.get_nombre());
-                }
-                else
-                {
-                    System.out.println("Soy solo un " + aux.toString());
-                }*/
-
-                Componente hijo = aux.getHijoMasIzq();
-                while (hijo != null) //Mientras tenga hijos
-                {
-                    hijo.setPadre(aux);
-                    cola.addLast(hijo);
-                    hijo.setOrdenAparicion(aparicion);
-
-                    /*if (hijo instanceof Para){
-                        Para para = (Para) hijo;
-                        if (!existeSimbolo(para.get_variable(),hijo,tablaSimbolos))
-                            tablaSimbolos.put(declaracion.get_nombre(), new Variable(declaracion.get_nombre(), declaracion.get_tipo(), declaracion.is_arreglo()));
-                        else throw new SemanticError("ERROR SEMANTICO: Declaración duplicada de variable: " + declaracion.get_nombre());
-                    }*/
-                    //Agregar a la tabla del padre si es Clase, Metodo o Variable
-                    if(hijo instanceof Clase)
-                    {
-                        Clase hijoSimbolo = (Clase) hijo;
-                        hijoSimbolo.setOrdenAparicion(aparicion);
-                        if (!existeSimbolo(hijoSimbolo.get_nombre(),(Componente) hijoSimbolo,tablaSimbolos))
-                            tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
-                        else throw new SemanticError("Declaracion duplicada de clase: " + hijoSimbolo.get_nombre());
-                    }
-                    if(hijo instanceof Metodo)
-                    {
-                        Metodo hijoSimbolo = (Metodo) hijo;
-                        hijoSimbolo.setOrdenAparicion(aparicion);
-                        if (!existeSimbolo(hijoSimbolo.get_nombre(),hijoSimbolo,tablaSimbolos))
-                            tablaSimbolos.put(hijoSimbolo.get_nombre(), hijoSimbolo);
-                        else throw new SemanticError("Declaración duplicada de metodo: " + hijoSimbolo.get_nombre());
-                        //Agregamos los parametros como declaraciones
-                        List<Variable> variables = hijoSimbolo.getParametros();
-                        if(variables != null)
-                        {
-                            for ( Variable i:variables ) {
-                              Declaracion decl = new Declaracion(i.get_nombre(),i.get_tipo(),i.is_arreglo());
-                              decl.setHermanoDerecho(hijoSimbolo.getHijoMasIzq());
-                              hijoSimbolo.setHijoMasIzq(decl);
-                            }
-                        }
-                    }
-                    if (hijo instanceof Declaracion){
-                        Declaracion declaracion = (Declaracion) hijo;
-                        if (!existeSimbolo(declaracion.get_nombre(),hijo,tablaSimbolos))
-                        {
-                            Variable variable = new Variable(declaracion.get_nombre(), declaracion.get_tipo(), declaracion.is_arreglo());
-                            variable.setOrdenAparicion(aparicion);
-                            tablaSimbolos.put(declaracion.get_nombre(), variable);
-                        }
-                        else throw new SemanticError("ERROR SEMANTICO: Declaración duplicada de variable: " + declaracion.get_nombre());
-                    }
-                    hijo = hijo.getHermanoDerecho();
-                    aparicion++;
-                }
-                aux.setTblSimbolosLocales(tablaSimbolos);
-
-                        //System.out.println("Tabla asignada a " + aux.toString() + "\n" + aux.getTblSimbolosLocales().toString());
-
-                        tablaSimbolos = new HashMap<String, Nombre>(); //Reinicia la tabla del padre
-                    }
-                }
-
-    public boolean verificarExistencias() throws SemanticError
-            {
-                boolean todoBien = true;
-                LinkedList cola = new LinkedList();
-                cola.addLast(raiz.getHijoMasIzq());
-                HashMap<String,Tipo> metodosNativos = new HashMap<String,Tipo>();
-                metodosNativos.put("raiz",Tipo.NUMERICO);
-                while (cola.size() != 0 && todoBien) //Mientras la cola no esté vacía
-                {
-                    boolean tieneDevolver = false;
-                    Componente aux = (Componente) cola.removeFirst();
-                    HashMap<String, Nombre> tabla = aux.getTblSimbolosLocales();
-                    Componente hijo = aux.getHijoMasIzq();
-                    while (hijo != null && todoBien) //Mientras tenga hijos
-                    {
-
-                        if(hijo instanceof Variable)
-                        {
-                            String nombre = ((Variable) hijo).get_nombre();
-                            if(!tabla.containsKey(nombre))
-                            {
-                                Componente iterPadres = aux;
-                                while (iterPadres != null)
-                                {
-                                    if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
-                                    {
-                                        iterPadres = iterPadres.getPadre();
-                                    }else break;
-                                }
-                                if(iterPadres == null)
-                                {
-                                    todoBien = false;
-                                    throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
-                                }
-                            }
-                        }
-                        if (hijo instanceof Declaracion){
-                            Declaracion decl = (Declaracion)hijo;
-                            try {
-                                decl.evaluarIndice();
-                            } catch (SemanticError e){ throw new SemanticError("Indice inválido en declaración: " + decl.get_nombre() + "\n" + e.getMessage());}
-
-                        }
-                        if(hijo instanceof Asignacion)
-                        {
-                            String nombre = ((Asignacion) hijo).get_nombre();
-                            if(!tabla.containsKey(nombre))
-                            {
-                                Componente iterPadres = aux;
-                                while (iterPadres != null)
-                                {
-                                    if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
-                                    {
-                                        iterPadres = iterPadres.getPadre();
-                                    }else break;
-                                }
-                                if(iterPadres == null)
-                                {
-                                    todoBien = false;
-                                    throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
-                                }
-
-                                Asignacion asig = (Asignacion) hijo;
-                                if (metodosNativos.containsKey(asig.get_nombre())) throw new SemanticError("Palabra reservada para método nativo: " + asig.get_nombre());
-                                else asig.setTipo(iterPadres.getTblSimbolosLocales().get(nombre).get_tipo());
-                                if(!((Asignacion) hijo).evaluarSemantica()){
-                                    throw new SemanticError("Tipo de dato no compatible");
-                                }
-                            }
-                            else //Si lo tiene, debe buscar que se declaró antes de usarlo
-                            {
-                                Variable simbolo = (Variable) tabla.get(nombre);
-                                if(hijo.getOrdenAparicion() < simbolo.getOrdenAparicion())
-                                    throw new SemanticError("Variable todavia no declarada: " + nombre);
-                                /*ExpresionGenerico ex = ((Asignacion) hijo).get_expresion();
-                                Tipo t = tabla.get(nombre).get_tipo();
-                                Componente h = (Asignacion) hijo;
-                                if(!tipoDatosCorrecto( ex, t, h)){
-                                    throw new SemanticError("Tipo de dato no compatible");
-                                }*/
-
-                                //Se hace verificacion de tipos
-                                Asignacion asig = (Asignacion) hijo;
-                                if (metodosNativos.containsKey(asig.get_nombre())) throw new SemanticError("Palabra reservada para método nativo: " + asig.get_nombre());
-                                else asig.setTipo(tabla.get(nombre).get_tipo());
-                                if(!((Asignacion) hijo).evaluarSemantica()){
-                                    throw new SemanticError("Tipo de dato no compatible");
-                                }
-                            }
-                        }
-
-                    if (hijo instanceof LlamadaMetodo){
-                        //String nombre = ((LlamadaMetodo) hijo).getNombre();
-                        LlamadaMetodo metodo = (LlamadaMetodo) hijo;
-                        if (!metodosNativos.containsKey(metodo.getNombre())){
-                            /*if(!tabla.containsKey(nombre))
-                            {
-                                Componente iterPadres = aux;
-                                while (iterPadres != null)
-                                {
-                                    if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Metodo))
-                                    {
-                                        iterPadres = iterPadres.getPadre();
-                                    }else break;
-                                }
-                                if(iterPadres == null)
-                                {
-                                    todoBien = false;
-                                    throw new SemanticError("Referencia no declarada en " + hijo.getPadre().toString() + ": " + nombre);
-                                }
-                            }*/
-                            metodo.evaluarSemantica();
-                        }else {
-
-                            metodo.setTipo(Tipo.NUMERICO);
-                            todoBien = metodo.evaluarSemantica();
-
-                        }
-                    }
-                    if (hijo instanceof Para){
-                        Para para = (Para)hijo;
-                        todoBien = para.evaluarCondicion();
-                    }
-                    if (hijo instanceof Si){
-                        Si si = (Si)hijo;
-                        todoBien = si.evaluarCondicion();
-                    }
-                    if(hijo instanceof Devolver)
-                    {
-                        tieneDevolver = true;
-                        Componente iterPadre = aux;
-                        while (!(iterPadre instanceof Metodo)) //Hasta que llegue al metodo
-                            iterPadre = iterPadre.getPadre();
-                        Metodo metodo = (Metodo)iterPadre;
-                        if(metodo.get_tipo() == null) //No devuelve nada
-                           throw new SemanticError("Sentencia devolver en metodo " + metodo.get_nombre() + " que no devuelve nada");
-                        Devolver devolver = (Devolver) hijo;
-                        if(devolver.get_tipo() != null)
-                        {
-                            if(metodo.get_tipo() != devolver.get_tipo())
-                                throw new SemanticError("Tipo de retorno equivocado en metodo " + metodo.get_nombre());
-                        }
-                        else
-                        {
-                            String nombre = devolver.getNombre();
-                            Boolean estaEnPadre = false;
-                            if(!tabla.containsKey(nombre))
-                            {
-                                Componente iterPadres = aux;
-                                while (iterPadres != null && !estaEnPadre)
-                                {
-                                    if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
-                                        iterPadres = iterPadres.getPadre();
-                                    else
-                                        estaEnPadre = true;
-                                }
-                                if(iterPadres == null)
-                                {
-                                    throw new SemanticError("Se intenta devolver una referencia no declarada en metodo " + metodo.get_nombre() + ": " + nombre);
-                                }
-                            }
-                            if(tabla.containsKey(nombre) || estaEnPadre)
-                            {
-                                Nombre referencia = tabla.get(nombre);
-                                if(metodo.get_tipo() != referencia.get_tipo())
-                                    throw new SemanticError("Tipo de retorno equivocado en metodo " + metodo.get_nombre());
-                            }
-                        }
-                    }
-
-                    if(hijo instanceof Mientras)
-                    {
-                        /*Mientras mientras = (Mientras) hijo;
-                        Componente cond = mientras.get_condicion();
-                        while (cond != null)
-                        {
-                            if(cond instanceof Nombre)
-                            {
-                                Boolean estaEnPadre = false;
-                                Nombre nom = (Nombre) cond;
-                                String nombre = nom.get_nombre();
-                                if(!tabla.containsKey(nombre))
-                                {
-                                    Componente iterPadres = aux;
-                                    while (iterPadres != null && !estaEnPadre)
-                                    {
-                                        if (!iterPadres.getTblSimbolosLocales().containsKey(nombre) || !(iterPadres.getTblSimbolosLocales().get(nombre) instanceof Variable))
-                                            iterPadres = iterPadres.getPadre();
-                                        else
-                                            estaEnPadre = true;
-                                    }
-                                    if(iterPadres == null)
-                                    {
-                                        throw new SemanticError("Referencia no declarada en condicion del mientras: " + nombre);
-                                    }
-                                }
-                                if(tabla.containsKey(nombre) || estaEnPadre)
-                                {
-                                    Nombre referencia = tabla.get(nombre);
-                                    if(nom.get_tipo() != referencia.get_tipo())
-                                        throw new SemanticError("Tipo equivocado en condicion del mientras: " + nom.get_nombre());
-                                }
-                            }
-                            cond = cond.getHermanoDerecho();
-                        }*/
-                        Mientras mientras = (Mientras) hijo;
-                        todoBien = mientras.evaluarCondicion();
-                    }
-
-                    cola.addLast(hijo);
-                    hijo = hijo.getHermanoDerecho();
-
-                }
-                if(aux instanceof Metodo) //Revisa si es un método y le faltó Devolver
-                {
-                    Metodo metodo = (Metodo)aux;
-                    if(metodo.get_tipo() != null && !tieneDevolver)
-                    {
-                        throw new SemanticError("Sentencia de retorno faltante en metodo " + metodo.get_nombre());
-                    }
-                }
-            }
-            return todoBien;
-        }
 
 
   private final Parser parser;
@@ -1866,17 +1500,16 @@ class CUP$Parser$actions {
 		int start_valright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Componente start_val = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		RESULT = start_val;
+              
               //--------------------------------------------------------POST-ACTIONS
-              Programa raizReal = new Programa();
-              raizReal.setHijoMasIzq(raiz);
-              raiz = raizReal;
               try{
-                llenarTabla();
-                System.out.println(imprimirArbol());
-                verificarExistencias();
+                Programa.getInstance().evaluarSemantica();
+                System.out.println(Programa.getInstance().toString());
+                System.out.println(Programa.getInstance().compilar("out.asm"));
               }catch (SemanticError ex){
                 System.out.println(ex.getMessage());
               }
+              Programa.resetInstance();
               //---------------------------------------------------------------------
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -1894,7 +1527,7 @@ class CUP$Parser$actions {
 		int pleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int pright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Componente p = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 c.setHermanoDerecho(p); RESULT = c; raiz = RESULT;
+		 c.setHermanoDerecho(p); RESULT = c; Programa.getInstance().setRaiz(RESULT);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1906,7 +1539,7 @@ class CUP$Parser$actions {
 		int cleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int cright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Clase c = (Clase)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = c; raiz = RESULT;
+		 RESULT = c; Programa.getInstance().setRaiz(RESULT);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1921,7 +1554,7 @@ class CUP$Parser$actions {
 		int pleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int pright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Componente p = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 m.setHermanoDerecho(p); RESULT = m;  raiz = RESULT;
+		 m.setHermanoDerecho(p); RESULT = m;  Programa.getInstance().setRaiz(RESULT);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1933,7 +1566,7 @@ class CUP$Parser$actions {
 		int mleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int mright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Metodo m = (Metodo)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = m; raiz = RESULT;
+		 RESULT = m; Programa.getInstance().setRaiz(RESULT);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2515,7 +2148,7 @@ class CUP$Parser$actions {
 		int lpleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int lpright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		List<Variable> lp = (List<Variable>)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 v.setTipo(Tipo.NO_PRIMITIVO); ((LinkedList<Variable>)lp).addFirst(v); RESULT = lp; 
+		 v.setTipo(Tipo.NO_PRIMITIVO); ((LinkedList<Variable>)lp).addFirst(v); RESULT = lp; report_fatal_error("En este momento el compilador no soporta clases: " + w,((Parser) this.parser).stack.peek());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("lista_parametros",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2545,7 +2178,7 @@ class CUP$Parser$actions {
 		int vleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int vright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Variable v = (Variable)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 List<Variable> lp = new LinkedList<Variable>(); v.setTipo(Tipo.NO_PRIMITIVO); lp.add(v); RESULT = lp; 
+		 List<Variable> lp = new LinkedList<Variable>(); v.setTipo(Tipo.NO_PRIMITIVO); lp.add(v); RESULT = lp; report_fatal_error("En este momento el compilador no soporta clases: " + w,((Parser) this.parser).stack.peek());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("lista_parametros",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2880,7 +2513,7 @@ RESULT = p;
 		int lsleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int lsright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Componente ls = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		 Asignacion a = new Asignacion(v); a.set_expresion(desde); a.setHermanoDerecho(ls);RESULT = new Para(v, a, desde, hasta, avance);
+		 RESULT = new Para(v, ls, desde, hasta, avance);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_para",36, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-10)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2904,7 +2537,7 @@ RESULT = p;
 		int lsleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int lsright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Componente ls = (Componente)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		 Asignacion a = new Asignacion(v); a.set_expresion(desde); Declaracion decl = new Declaracion(v, Tipo.NUMERICO); decl.setHermanoDerecho(a); a.setHermanoDerecho(ls); RESULT = new Para(v, decl, desde, hasta, avance);
+		 Declaracion decl = new Declaracion(v, Tipo.NUMERICO); RESULT = new Para(v, decl, ls, desde, hasta, avance);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_para",36, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-11)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -4437,7 +4070,7 @@ RESULT = p;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Expresion e = (Expresion)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		 RESULT = new Imprimir(); RESULT.setHijoMasIzq((Componente)e);
+		 RESULT = new Imprimir(e);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_imprimir",44, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -4449,7 +4082,7 @@ RESULT = p;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Nombre e = (Nombre)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		 RESULT = new Imprimir(); RESULT.setHijoMasIzq((Componente)e);
+		 RESULT = new Imprimir((Expresion)e);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_imprimir",44, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -4461,7 +4094,7 @@ RESULT = p;
 		int nleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Double n = (Double)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		 RESULT = new Imprimir(n);
+		 RESULT = new Imprimir(new ExpresionGenerico(sym.terminalNames[((Symbol)((Parser) this.parser).stack.elementAt(stack.size()-2)).sym],Tipo.NUMERICO,(Symbol)((Parser) this.parser).stack.elementAt(stack.size()-2)));
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_imprimir",44, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -4473,7 +4106,7 @@ RESULT = p;
 		int vleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int vright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		String v = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		 RESULT = new Leer(v); 
+		 RESULT = new Leer(new Variable(v)); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_leer",45, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -4485,7 +4118,7 @@ RESULT = p;
 		int oleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int oright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Nombre o = (Nombre)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new Devolver(o); 
+		 RESULT = new Devolver((Expresion)o); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_devolver",46, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -4497,7 +4130,7 @@ RESULT = p;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Expresion e = (Expresion)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new Devolver(Tipo.NUMERICO); 
+		 RESULT = new Devolver(e); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_devolver",46, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -4509,7 +4142,7 @@ RESULT = p;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Expresion e = (Expresion)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new Devolver(Tipo.CADENA); 
+		 RESULT = new Devolver(e); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_devolver",46, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -4521,7 +4154,7 @@ RESULT = p;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Expresion e = (Expresion)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new Devolver(Tipo.BOOLEANO); 
+		 RESULT = new Devolver(e); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("c_devolver",46, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

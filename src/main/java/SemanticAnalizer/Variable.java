@@ -146,6 +146,57 @@ public class Variable extends ExpresionGenerico implements Nombre{
         return  _tipo;
     }
 
+    @Override
+    public String compilar() throws SemanticError {
+        String result = "";
+        //Buscamos el método padre
+        Componente padreActual = this._padre;
+        for (;padreActual != null && !(padreActual instanceof Metodo);
+             padreActual = padreActual.getPadre());
+
+        //Verificamos si es una variable declarada
+        if (Programa.getInstance().getSectionData().containsKey(_nombre)){
+            if (!_arreglo){
+                if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
+                    result += "\tlw\t\t$v0, " + this.getEtiqueta()+"\n";
+                } else {
+                    result += "\tla\t\t$v0, " + this.getEtiqueta()+"\n";
+                }
+            } else {
+                if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
+                    result += _expresionTamano.compilar();
+                    String reg = Programa.getInstance().getRegistros().asignarRegTemporal();
+                    result += "\tmul\t\t$v0, $v0, 4\n" +                   //Multiplicamos por 4 para calcular el numero de bytes
+                            "\tmove\t\t" + reg + ", $v0\n" +              //Movemos el resultado de la expresion en un reg temporal
+                            "\tla\t\t$v0, " + this.getEtiqueta() + "\n" +   //Cargamos en $v0 la direccion de la variable
+                            "\tadd\t\t$v0, $v0, " + reg + "\n" +            //Sumamos a esa variable el valor del reg temporal
+                            "\tlw\t\t$v0, 0($v0)\n";                        //Cargamos el valor de la direccion
+                    Programa.getInstance().getRegistros().liberarRegTemporal(reg);
+                } else {
+                    result += _expresionTamano.compilar();
+                    String reg = Programa.getInstance().getRegistros().asignarRegTemporal();
+                    result += "\tmul\t\t$v0, $v0, 4\n" +                   //Multiplicamos por 4 para calcular el numero de bytes
+                            "\tmove\t\t" + reg + ", $v0\n" +              //Movemos el resultado de la expresion en un reg temporal
+                            "\tla\t\t$v0, " + this.getEtiqueta() + "\n" +   //Cargamos en $v0 la direccion de la variable
+                            "\tadd\t\t$v0, $v0, " + reg + "\n" +            //Sumamos a esa variable el valor del reg temporal
+                    Programa.getInstance().getRegistros().liberarRegTemporal(reg);
+                }
+            }
+        } else{
+
+
+            //Si lo encontramos buscamos la posición en la pila
+            if (padreActual != null) {
+                Metodo metodoPadre = (Metodo) padreActual;
+                int posicion = metodoPadre.getPilaLocal().getPosicionEnPila(_nombre);
+
+                result += "\tlw\t\t$v0, " + (metodoPadre.getPilaLocal().getTamanoPila() - posicion) +"($sp)\n";
+            }
+
+        }
+        return result;
+    }
+
     public Symbol get_valor(){
         return _valor;
     }
@@ -163,7 +214,6 @@ public class Variable extends ExpresionGenerico implements Nombre{
     }
 
     public void set_valor(Symbol _valor) {
-        //TODO Agregar restricciones
         this._valor = _valor;
     }
 }
