@@ -173,8 +173,8 @@ public class Asignacion extends Sentencia {
                     result += "\tmove\t\t"+ registro + ", $v0\t#Guardamos el resultado de expresion para evaluar indice\n" +
                             _expresionIndice.compilar() +   //Calculamos indice y colocamos en $v0
                             "\tmul\t\t$v0, $v0, 4\n" +      //Multiplimos por 4 el indice
-                            "\tla\t$v1, " + _nombre + "\n" +//Cargamos la direccion del destino en $v1
-                            "\taddi\t$v0, $v1, $v0\n" +     //Sumamos la direccion direccion destino con el indice
+                            "\tla\t\t$v1, " + _nombre + "\n" +//Cargamos la direccion del destino en $v1
+                            "\tadd\t\t$v0, $v1, $v0\n" +     //Sumamos la direccion direccion destino con el indice
                             "\tsw\t\t"+ registro +", 0($v0)\t#Asignacion\n\n";  //Guardamos el resultado en la direccion destino
 
                     Programa.getInstance().getRegistros().liberarRegTemporal(registro);//Liberamos el registro

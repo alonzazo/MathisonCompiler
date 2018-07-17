@@ -57,6 +57,10 @@ public class Para extends Estructura
         _hasta.setPadre(this);
         _avance.setPadre(this);
 
+        _desde.evaluarSemantica();
+        _hasta.evaluarSemantica();
+        _avance.evaluarSemantica();
+
         if (_desde.evaluarTipo() != Tipo.NUMERICO)
             throw new SemanticError("Se esperaba expresión numerica en segmento DESDE en PARA.");
         if (_hasta.evaluarTipo() != Tipo.NUMERICO)
@@ -73,6 +77,11 @@ public class Para extends Estructura
         _tblSimbolosLocales = new HashMap<>();
         if (_declaracion != null)
             getTblSimbolosLocales().put(_declaracion.get_nombre(), new Variable(_declaracion.get_nombre(),_declaracion.get_tipo(),_declaracion.get_expresionTamano(),_declaracion.is_arreglo()));
+        //Evaluamos la asignacion
+        Asignacion asig = new Asignacion(_variable);
+        asig.set_expresion(_desde);
+        asig.setPadre(this);
+        asig.evaluarSemantica();
 
         evaluarCondicion();
 
@@ -121,7 +130,7 @@ public class Para extends Estructura
 
             //Evaluamos la condicion: Creamos una expresion que seria variable != hasta
             Variable contador = new Variable(_variable, Tipo.NUMERICO, false);
-            Operacion operacion = new Operacion(Operacion.TipoOperador.IGUAL,contador, _desde);
+            Operacion operacion = new Operacion(Operacion.TipoOperador.IGUAL,contador, _hasta);
 
             operacion.setPadre(this);
 
@@ -146,13 +155,13 @@ public class Para extends Estructura
 
             result += "#Seccion avance " + etiqueta +"\n"+
                     avanceAsig.compilar() +
-                    /*"\taddi\t\t$sp, $sp, 4\n #devolvemos la pila a su estado" +
-                    "\tlw\t\t$v0, 0($sp)\n" +*/
+                    "\taddi\t\t$sp, $sp, 4\n #devolvemos la pila a su estado" +
+                    "\tlw\t\t$v0, 0($sp)\n" +
                     "\tj\t\t" + etiqueta + "\n";
-            //metodoActual.getPilaLocal().sacarDePila();
-            result += "\taddi\t\t$sp, $sp, 4\n" +
-                    "\tlw\t\t$v0, 0($sp)\n";       //Cargamos el contador de nuevo
             metodoActual.getPilaLocal().sacarDePila();
+            /*result += "\taddi\t\t$sp, $sp, 4\n" +
+                    "\tlw\t\t$v0, 0($sp)\n";*/       //Cargamos el contador de nuevo
+            //metodoActual.getPilaLocal().sacarDePila();
 
             result += "ret_" + etiqueta +":\n";
 

@@ -421,10 +421,10 @@ c_estructuras ::= c_para:p
 
 c_para ::=  PARA VAR:v DESDE c_asignacion_expresion_Numerica_Total:desde HASTA c_asignacion_expresion_Numerica_Total:hasta
             AVANCE c_asignacion_expresion_Numerica_Total:avance LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: Asignacion a = new Asignacion(v); a.set_expresion(desde); a.setHermanoDerecho(ls);RESULT = new Para(v, a, desde, hasta, avance);:}
+            {: RESULT = new Para(v, ls, desde, hasta, avance);:}
          |  PARA NUM VAR:v DESDE c_asignacion_expresion_Numerica_Total:desde HASTA c_asignacion_expresion_Numerica_Total:hasta
             AVANCE c_asignacion_expresion_Numerica_Total:avance LLAVEABIERTO c_lista_sentencias:ls LLAVECERRADO
-            {: Asignacion a = new Asignacion(v); a.set_expresion(desde); Declaracion decl = new Declaracion(v, Tipo.NUMERICO); a.setHermanoDerecho(ls); RESULT = new Para(v, decl, a, desde, hasta, avance);:}
+            {: Declaracion decl = new Declaracion(v, Tipo.NUMERICO); RESULT = new Para(v, decl, ls, desde, hasta, avance);:}
          ;
 
 c_mientras ::= MIENTRAS PARENTESISABIERTO c_asignacion_expresion_Booleana_Total:e PARENTESISCERRADO

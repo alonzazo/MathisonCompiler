@@ -1,9 +1,9 @@
 publico proc imprimirTriangulo()
 {
-	imprimir("Digite el caracter que desea imprimir en un triangulo")
+	imprimir("Digite el caracter que desea imprimir en un triangulo\n")
 	cad c
 	leer(c)
-	imprimir("Digite el numero de filas que desea que tenga el triangulo")
+	imprimir("Digite el numero de filas que desea que tenga el triangulo\n")
 	num n
 	leer(n)
 	cad fila = ""

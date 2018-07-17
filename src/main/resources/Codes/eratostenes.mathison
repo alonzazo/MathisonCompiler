@@ -1,4 +1,7 @@
-
+proc main(){
+    cribaEratostenes(4)
+    salir()
+}
 
 publico num[] cribaEratostenes(num n){
 

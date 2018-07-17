@@ -185,7 +185,7 @@ public class Declaracion extends ComponenteConcreto {
             switch (_tipo){
                 case NUMERICO:
                     //Agrega un etiqueta .space 4 en heap
-                    Programa.getInstance().getSectionData().put(_nombre, new Descriptor(_nombre, ".word", ""));
+                    Programa.getInstance().getSectionData().put(_nombre, new Descriptor(_nombre, ".space 4", ""));
                     break;
                 case CADENA:
                     //Agrega un etiqueta .space 128 en heap
