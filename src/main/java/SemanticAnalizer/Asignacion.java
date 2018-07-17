@@ -142,27 +142,69 @@ public class Asignacion extends Sentencia {
         result += "\t#Asignacion\n" +
                 _expresion.compilar();
 
-        //Buscamos la referencia en la pila y en el heap
-        if (Programa.getInstance().getSectionData().containsKey(_nombre)){
-            if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
-                result += "\tsw\t\t$v0, " + _nombre + "\t#Asignacion\n\n";
-            } else {                                        // asignacion de cadena Cadenas
-                result += "\tsw\t\t$v0, " + _nombre + "\t#Asignacion\n\n";
+        if (_expresionIndice == null){
+            //Buscamos la referencia en la pila y en el heap
+            if (Programa.getInstance().getSectionData().containsKey(_nombre)){
+                if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
+                    result += "\tsw\t\t$v0, " + _nombre + "\t#Asignacion\n\n";
+                } else {                                        // asignacion de cadena Cadenas
+                    result += "\tsw\t\t$v0, " + _nombre + "\t#Asignacion\n\n";
+                }
+            } else{
+                //Buscamos el método padre
+                Componente padreActual = this._padre;
+                for (;padreActual != null && !(padreActual instanceof Metodo);
+                     padreActual = padreActual.getPadre());
+
+                //Si lo encontramos buscamos la posición en la pila
+                if (padreActual != null) {
+                    Metodo metodoPadre = (Metodo) padreActual;
+                    int posicion = metodoPadre.getPilaLocal().getPosicionEnPila(_nombre);
+
+                    result += "\tsw\t\t$v0, " + (metodoPadre.getPilaLocal().getTamanoPila() - posicion) +"($sp)\t#Asignacion\n\n";
+                }
             }
-        } else{
-            //Buscamos el método padre
-            Componente padreActual = this._padre;
-            for (;padreActual != null && !(padreActual instanceof Metodo);
-                 padreActual = padreActual.getPadre());
+        } else {
+            //Para variables arreglo declaradas
+            //Buscamos la referencia en la pila y en el data
+            if (Programa.getInstance().getSectionData().containsKey(_nombre)){
+                if (_tipo == Tipo.NUMERICO || _tipo == Tipo.BOOLEANO){
+                    String registro = Programa.getInstance().getRegistros().asignarRegTemporal(); //Buscamos un registro temporal libre
+                    result += "\tmove\t\t"+ registro + ", $v0\t#Guardamos el resultado de expresion para evaluar indice\n" +
+                            _expresionIndice.compilar() +   //Calculamos indice y colocamos en $v0
+                            "\tmul\t\t$v0, $v0, 4\n" +      //Multiplimos por 4 el indice
+                            "\tla\t$v1, " + _nombre + "\n" +//Cargamos la direccion del destino en $v1
+                            "\taddi\t$v0, $v1, $v0\n" +     //Sumamos la direccion direccion destino con el indice
+                            "\tsw\t\t"+ registro +", 0($v0)\t#Asignacion\n\n";  //Guardamos el resultado en la direccion destino
 
-            //Si lo encontramos buscamos la posición en la pila
-            if (padreActual != null) {
-                Metodo metodoPadre = (Metodo) padreActual;
-                int posicion = metodoPadre.getPilaLocal().getPosicionEnPila(_nombre);
+                    Programa.getInstance().getRegistros().liberarRegTemporal(registro);//Liberamos el registro
+                } else {                                        // asignacion de cadena Cadenas
+                    result += "\tsw\t\t$v0, " + _nombre + "\t#Asignacion\n\n";// TODO Asignacion de cadenas
+                }
+            } else{
+                //Para asignaciones en parámetros
+                //Buscamos el método padre
+                Componente padreActual = this._padre;
+                for (;padreActual != null && !(padreActual instanceof Metodo);
+                     padreActual = padreActual.getPadre());
 
-                result += "\tsw\t\t$v0, " + (metodoPadre.getPilaLocal().getTamanoPila() - posicion) +"($sp)\t#Asignacion\n\n";
+                //Si lo encontramos buscamos la posición en la pila
+                if (padreActual != null) {
+                    Metodo metodoPadre = (Metodo) padreActual;
+                    int posicion = metodoPadre.getPilaLocal().getPosicionEnPila(_nombre);   //Obtenemos la posicion en la pila
+
+                    String registro = Programa.getInstance().getRegistros().asignarRegTemporal(); //Buscamos un registro temporal libre
+
+                    result += "\tmove\t\t"+ registro + ", $v0\t#Guardamos el resultado de expresion para evaluar indice\n" +
+                            _expresionIndice.compilar() +   //Calculamos indice y colocamos en $v0
+                            "\tmul\t\t$v0, $v0, 4\n" +      //Multiplimos por 4 el indice, en $v0
+                            "\taddi\t\t$v0, $v0, " + (metodoPadre.getPilaLocal().getTamanoPila() - posicion) +"\n" + //Sumamos la direccion direccion destino con el indice
+                            "\tadd\t\t$v0, $v0, $sp\n" + //Obtenemos la direccion de destino final
+                            "\tsw\t\t"+ registro +", $v0\t#Asignacion\n\n";  //Guardamos el resultado en la direccion destino
+
+                    Programa.getInstance().getRegistros().liberarRegTemporal(registro);//Liberamos el registro
+                }
             }
-
         }
 
         if (_hermanoDerecho != null)

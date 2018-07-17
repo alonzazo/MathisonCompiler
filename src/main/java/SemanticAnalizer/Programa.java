@@ -1,6 +1,7 @@
 package SemanticAnalizer;
 
 import GeneradorCodigo.Descriptor;
+import GeneradorCodigo.ManejadorDeRegistros;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -20,7 +21,9 @@ public class Programa extends ComponenteConcreto{
     private int numMientras = 0;
     private int numPara = 0;
     private final int tamanoMaximoCadena = 128;
+    private final int tamanoMaximoArreglos = 128;
     private String sectionFooter = "";
+    private ManejadorDeRegistros registros = new ManejadorDeRegistros();
 
     private Programa(){
         //Agregamos a metodos nativos raiz(n)
@@ -77,6 +80,19 @@ public class Programa extends ComponenteConcreto{
 
     public int getTamanoMaximoCadena() {
         return tamanoMaximoCadena;
+    }
+
+    public int getTamanoMaximoArreglos() {
+        return tamanoMaximoArreglos;
+    }
+
+
+    public ManejadorDeRegistros getRegistros() {
+        return registros;
+    }
+
+    public void setRegistros(ManejadorDeRegistros registros) {
+        this.registros = registros;
     }
 
     @Override

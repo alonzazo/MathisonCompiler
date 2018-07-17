@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 public class ManejadorDeRegistros {
-    private HashMap<String, Boolean> registros;
+    private HashMap<String, Boolean> registros = new HashMap<>();
 
     //TODO Reparticion de registros, durante el cual seleccionamos el conjunto de variables que residirán en los registros en cada punto del programa
 
@@ -68,7 +68,7 @@ public class ManejadorDeRegistros {
 
     public boolean liberarRegTemporal(String reg){
         if (registros.containsKey(reg)){
-            registros.put("reg", false);
+            registros.put(reg, false);
             return true;
         }
         return false;

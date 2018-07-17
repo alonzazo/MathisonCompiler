@@ -1,6 +1,7 @@
 package SemanticAnalizer;
 
 import GeneradorCodigo.Descriptor;
+import java_cup.runtime.Symbol;
 
 public class Declaracion extends ComponenteConcreto {
 
@@ -178,7 +179,7 @@ public class Declaracion extends ComponenteConcreto {
 
     @Override
     public String compilar() throws SemanticError {
-
+        String result = "";
         //Saber si es arreglo
         if (!is_arreglo()){
             switch (_tipo){
@@ -196,23 +197,43 @@ public class Declaracion extends ComponenteConcreto {
                     break;
             }
         }else {
+            //Buscamos el método padre
+            Componente padreActual = this._padre;
+            for (;padreActual != null && !(padreActual instanceof Metodo);
+                 padreActual = padreActual.getPadre());
+            //Verificamos el tipo de declaracion
             switch (_tipo){
-                case NUMERICO:
-                    //Agrega un etiqueta .space 4 * tamanoExpresion en heap
-                    Programa.getInstance().getSectionData().put(_nombre, new Descriptor(_nombre, ".space " + (4 * _tamano) , ""));
-                    break;
                 case CADENA:
-                    //Agrega un etiqueta .space 128 * tamanoExpresion en heap
-                    Programa.getInstance().getSectionData().put(_nombre, new Descriptor(_nombre, ".space " + (128 * _tamano), ""));
+                case NUMERICO:
+                    //Si lo encontramos buscamos la posición en la pila
+                    if (padreActual != null) {
+                        Metodo metodoPadre = (Metodo) padreActual;
+                        //La opción default: Si no es una expresion generica con symbol entonces hace un espacio de byte * 128 en pila
+                        if (_expresionTamano == null ||  _expresionTamano instanceof Variable || _expresionTamano instanceof LlamadaMetodo || _expresionTamano instanceof Operacion){
+                            Programa.getInstance().getSectionData().put(_nombre, new Descriptor(_nombre, ".space " + 4 * Programa.getInstance().getTamanoMaximoArreglos(), ""));
+                        } else {
+                            Symbol simbolo = ((ExpresionGenerico)_expresionTamano)._symbol;
+                            Programa.getInstance().getSectionData().put(_nombre, new Descriptor(_nombre, ".space " + 4 * ((Integer)simbolo.value), ""));
+                        }
+                    }
                     break;
                 case BOOLEANO:
-                    //Agrega una etiqueta .space 1 * tamanoExpresion en heap
-                    Programa.getInstance().getSectionData().put(_nombre, new Descriptor(_nombre, ".space " + (1 * _tamano), ""));
+                    if (padreActual != null) {
+                        Metodo metodoPadre = (Metodo) padreActual;
+                        //La opción default: Si no es una expresion generica con symbol entonces hace un espacio de byte * 128 en pila
+                        if (_expresionTamano == null ||  _expresionTamano instanceof Variable || _expresionTamano instanceof LlamadaMetodo || _expresionTamano instanceof Operacion){
+                            Programa.getInstance().getSectionData().put(_nombre, new Descriptor(_nombre, ".space " + Programa.getInstance().getTamanoMaximoArreglos(), ""));
+                        } else {
+                            Symbol simbolo = ((ExpresionGenerico)_expresionTamano)._symbol;
+                            Programa.getInstance().getSectionData().put(_nombre, new Descriptor(_nombre, ".space " + ((Integer)simbolo.value), ""));
+                        }
+                    }
                     break;
             }
+
         }
         if (_hermanoDerecho != null)
-            return _hermanoDerecho.compilar();
-        return "";
+            return result + _hermanoDerecho.compilar();
+        return result;
     }
 }

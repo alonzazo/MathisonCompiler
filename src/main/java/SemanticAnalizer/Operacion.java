@@ -241,8 +241,8 @@ public class Operacion extends ComponenteConcreto implements Expresion {
                             result += "\tsne\t\t$v0, $t0, $v0\t#Operacion " + _tipoOperacion + "\n\n";
                             break;
                     }
-                }
-                throw new SemanticError("Tipo de expresión incomparables:\n" + _expDer.toString() + _expIzq.toString());
+                } else
+                    throw new SemanticError("Tipo de expresión incomparables:\n" + _expDer.toString() + _expIzq.toString());
             } else if (_tipoOperacion == TipoOperador.Y || _tipoOperacion == TipoOperador.O){
                 if (_expIzq.evaluarTipo() == Tipo.BOOLEANO && _expDer.evaluarTipo() == Tipo.BOOLEANO){
                     /*result += _expIzq.compilar() +
