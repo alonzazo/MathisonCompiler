@@ -86,6 +86,9 @@ publico proc imprimirTriangulo(num n)
     	}
 }
 ```
+
+![DiagramaDeClases](https://raw.githubusercontent.com/alonzazo/MathisonCompiler/master/src/main/resources/Diagrams/diagram.svg)
+
 ## Instrucciones paso a paso para ejecutar el programa
 Requisitos:
 - Tener instalado Java (La usada fue la versiòn 8)
