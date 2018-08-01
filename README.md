@@ -88,7 +88,8 @@ publico proc imprimirTriangulo(num n)
 ```
 ## Diagrama de clases
 
-![DiagramaDeClases](https://github.com/alonzazo/MathisonCompiler/raw/master/src/main/resources/Diagrams/diagram.png)
+![Diagrama de clases](https://raw.githubusercontent.com/alonzazo/MathisonCompiler/master/src/main/resources/Diagrams/diagram.svg?sanitize=true)
+<img src="https://raw.githubusercontent.com/alonzazo/MathisonCompiler/master/src/main/resources/Diagrams/diagram.svg?sanitize=true">
 
 ## Instrucciones paso a paso para ejecutar el programa
 Requisitos:
